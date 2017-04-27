@@ -1,0 +1,660 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Payne Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="&amp;nbsp;下面给出二叉树的前序、后序、中序遍历的递归和非递归加上层序的非递归算法/前序遍历，递归/    public void preorder(TreeNode root){        TreeNode node = root;        if(node!=null){            visit(node);            preorder(node.left);">
+<meta name="keywords">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[原]二叉树的遍历 Java版">
+<meta property="og:url" content="http://yoursite.com/2016/04/21/原-二叉树的遍历-Java版/index.html">
+<meta property="og:site_name" content="Payne Blog">
+<meta property="og:description" content="&amp;nbsp;下面给出二叉树的前序、后序、中序遍历的递归和非递归加上层序的非递归算法/前序遍历，递归/    public void preorder(TreeNode root){        TreeNode node = root;        if(node!=null){            visit(node);            preorder(node.left);">
+<meta property="og:updated_time" content="2017-04-26T08:27:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[原]二叉树的遍历 Java版">
+<meta name="twitter:description" content="&amp;nbsp;下面给出二叉树的前序、后序、中序遍历的递归和非递归加上层序的非递归算法/前序遍历，递归/    public void preorder(TreeNode root){        TreeNode node = root;        if(node!=null){            visit(node);            preorder(node.left);">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/04/21/原-二叉树的遍历-Java版/"/>
+
+
+
+
+
+  <title> [原]二叉树的遍历 Java版 | Payne Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Payne Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/21/原-二叉树的遍历-Java版/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="payne">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Payne Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                [原]二叉树的遍历 Java版
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-21T16:00:14+08:00">
+                2016-04-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&nbsp;<span style="font-size:18px">下面给出二叉树的前序、后序、中序遍历的递归和非递归加上层序的非递归算法</span><pre code_snippet_id="1656121" snippet_file_name="blog_20160421_1_3975235" name="code" class="html">/<em>前序遍历，递归</em>/<br>    public void preorder(TreeNode root){<br>        TreeNode node = root;<br>        if(node!=null){<br>            visit(node);<br>            preorder(node.left);<br>            preorder(node.right);<br>        }<br>    }<br>    /<em>中序遍历，递归</em>/<br>    public void inorder(TreeNode root){<br>        TreeNode node = root;<br>        if(node!=null){<br>            inorder(node.left);<br>            visit(node);<br>            inorder(node.right);<br>        }<br>    }<br>    /<em>后序遍历，递归</em>/<br>    public void postorder(TreeNode root){<br>        TreeNode node = root;<br>        if(node!=null){<br>            postorder(node.left);<br>            postorder(node.right);<br>            visit(node);<br>        }<br>    }<br>    /<em>前序遍历非递归</em>/<br>    public void preorderNonRecursion(TreeNode root){<br>        if(root==null)<br>            return ;<br>        TreeNode node = root;<br>        Stack&lt;TreeNode&gt; stack = new Stack&lt;TreeNode&gt;();<br>        while(node!=null||!stack.isEmpty()){<br>            while(node!=null){<br>                visit(node);<br>                stack.push(node);<br>                node = node.left;<br>            }<br>            TreeNode tn = stack.pop();<br>            node = tn.right;<br>        }<br>    }<br>    /<em>中序遍历非递归</em>/<br>    public void inorderNonRecursion(TreeNode root){<br>        if(root==null)<br>            return ;<br>        TreeNode node = root;<br>        Stack&lt;TreeNode&gt; stack = new Stack&lt;TreeNode&gt;();<br>        while(node!=null||!stack.isEmpty()){<br>            while(node!=null){<br>                stack.push(node);<br>                node = node.left;<br>            }<br>            TreeNode tn = stack.pop();<br>            visit(tn);<br>            node = tn.right;<br>        }<br>    }<br>    /<em>后序遍历非递归</em>/<br>    public void postorderNonRecursion(TreeNode root){<br>        if(root==null)<br>            return ;<br>        TreeNode node = root;<br>        Stack&lt;TreeNode&gt; stack = new Stack&lt;TreeNode&gt;();<br>        TreeNode previst = null;//记录上一次访问的节点<br>        while(node!=null||!stack.isEmpty()){<br>            while(node!=null){<br>                stack.push(node);<br>                node = node.left;<br>            }<br>            TreeNode tn = stack.peek();<br>            //如果该节点的右孩子为空，或者改节点的右孩子已经被访问过，那么访问该节点<br>            if(tn.right==null||tn.right==previst){<br>                visit(tn);<br>                stack.pop();<br>                previst = tn;<br>            }else<br>                node = tn.right;<br>        }<br>    }<br>    /<em>层序遍历，非递归</em>/<br>    public void cengNonRecursion(TreeNode root){<br>        if(root==null)<br>            return ;<br>        TreeNode node = root;<br>        Queue&lt;TreeNode&gt; queue = new LinkedList&lt;TreeNode&gt;();<br>        queue.add(node);<br>        while(!queue.isEmpty()){<br>            TreeNode tn = queue.poll();<br>            visit(tn);<br>            if(tn.left!=null)<br>                queue.add(tn.left);<br>            if(tn.right!=null)<br>                queue.add(tn.right);<br>        }</pre></p>
+<pre><code>}
+public void visit(TreeNode node){
+    System.out.print(node.val+&amp;quot; &amp;quot;);
+}
+</code></pre><p></p>
+<pre><code>&lt;div&gt;
+    作者：zhangpan19910604 发表于2016/4/21 16:00:14 [原文链接](http://blog.csdn.net/zhangpan19910604/article/details/51209838)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：95 评论：0 [查看评论](http://blog.csdn.net/zhangpan19910604/article/details/51209838#comments)
+&lt;/div&gt;
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/26/原-vnc-安装配置/" rel="next" title="[原]vnc 安装配置">
+                <i class="fa fa-chevron-left"></i> [原]vnc 安装配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/17/原-Exception-in-thread-quot-main-quot-java-util-ConcurrentModificationExceptions/" rel="prev" title="[原]Exception in thread &quot;main&quot; java.util.ConcurrentModificationExceptions">
+                [原]Exception in thread &quot;main&quot; java.util.ConcurrentModificationExceptions <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="payne" />
+          <p class="site-author-name" itemprop="name">payne</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">payne</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

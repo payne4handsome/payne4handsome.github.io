@@ -1,0 +1,706 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Payne Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文主要说明hadoop的完全分布式的安装，至于单节点、伪分布式的安装很简单，基本上很少的配置，参加官网： http://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html    安装环境：1、三台Ubuntu同系统的服务器 uname -a Linux panzha-master 3">
+<meta name="keywords">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[原]hadoop cluster分布式安装">
+<meta property="og:url" content="http://yoursite.com/2016/06/14/原-hadoop-cluster分布式安装/index.html">
+<meta property="og:site_name" content="Payne Blog">
+<meta property="og:description" content="本文主要说明hadoop的完全分布式的安装，至于单节点、伪分布式的安装很简单，基本上很少的配置，参加官网： http://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html    安装环境：1、三台Ubuntu同系统的服务器 uname -a Linux panzha-master 3">
+<meta property="og:updated_time" content="2017-04-26T08:27:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[原]hadoop cluster分布式安装">
+<meta name="twitter:description" content="本文主要说明hadoop的完全分布式的安装，至于单节点、伪分布式的安装很简单，基本上很少的配置，参加官网： http://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html    安装环境：1、三台Ubuntu同系统的服务器 uname -a Linux panzha-master 3">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/06/14/原-hadoop-cluster分布式安装/"/>
+
+
+
+
+
+  <title> [原]hadoop cluster分布式安装 | Payne Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Payne Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/14/原-hadoop-cluster分布式安装/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="payne">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Payne Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                [原]hadoop cluster分布式安装
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-14T21:13:31+08:00">
+                2016-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><span style="font-size:18px">本文主要说明hadoop的完全分布式的安装，至于单节点、伪分布式的安装很简单，基本上很少的配置，参加官网：</span></p>
+<p><span style="font-size:18px"><a href="http://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="external">http://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html</a></span></p>
+<p></p>
+<p><span style="font-size:18px"></span></p>
+<p></p>
+<h1 id="安装环境："><a href="#安装环境：" class="headerlink" title="安装环境："></a><span style="font-size:18px">安装环境：</span></h1><p><span style="font-size:18px">1、三台Ubuntu同系统的服务器</span></p>
+<pre code_snippet_id="1716993" snippet_file_name="blog_20160614_1_1276490" name="code" class="html">uname -a
+Linux panzha-master 3.16.0-71-generic #92~14.04.1-Ubuntu SMP Thu May 12 23:31:46 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux</pre>
+
+<p><span style="font-size:18px">2、hadoop 2.7.2</span></p>
+<p><span style="font-size:18px">3、jdk 1.7</span></p>
+<p><span style="font-size:18px">4、maven 3.3.9</span></p>
+<h1 id="HADOOP安装过程"><a href="#HADOOP安装过程" class="headerlink" title="HADOOP安装过程"></a><span style="font-size:18px">HADOOP安装过程</span></h1><div><br><br><span lang="en-US" style="font-family:Calibri">1</span><span lang="zh-CN" style="font-family:SimSun">、安装</span><span lang="en-US" style="font-family:Calibri">ssh</span><span lang="zh-CN" style="font-family:SimSun">服务</span><br><br><span lang="en-US" style="font-family:Calibri">2</span><span lang="zh-CN" style="font-family:SimSun">、</span><br><br><span lang="zh-CN" style="font-family:SimSun">配置</span><span lang="en-US" style="font-family:Calibri">master</span><span lang="zh-CN" style="font-family:SimSun">无密码登录</span><br><br><span lang="en-US" style="font-family:Calibri">2.1</span><span lang="zh-CN" style="font-family:SimSun">在</span><span lang="en-US" style="font-family:Calibri">/root/.ssh</span><span lang="zh-CN" style="font-family:SimSun">目录下面键入下面命令，生成密钥对：</span><br><br><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">ssh-keygen -t rsa</span><span lang="en-US" style="font-family:Calibri">&nbsp;//</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">一路回车，不用输入文件名和密码</span><br><br><span lang="en-US" style="font-family:Calibri">2.2</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">然后将公钥追加到文件</span><br><br>cat id_rsa.pub &gt;&gt; authorized_keys<br><br><span lang="en-US" style="font-family:Calibri">2.3</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">赋予权限</span><br><br><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">chmod 600 .ssh/authorized_keys</span><span lang="en-US" style="font-family:Calibri"> //</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">可以是</span><span lang="en-US" style="font-family:Calibri">600</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">或者</span><span lang="en-US" style="font-family:Calibri">700</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">，其他用户或者用户组</span><br><br>不能拥有权限，不然用可能导致搭建不成功<br><br><span lang="en-US" style="font-family:Calibri">2.4</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">验证本机可以无密码访问</span><br><br><span lang="en-US" style="color:#333333">Ssh</span><span lang="zh-CN">10.124.22.213</span><br><br><span lang="en-US" style="font-family:Calibri">3</span><span lang="zh-CN" style="font-family:SimSun">、配置</span><span lang="en-US" style="font-family:Calibri">master</span><span lang="zh-CN" style="font-family:SimSun">本机无密码到</span><span lang="en-US" style="font-family:Calibri">slave1</span><span lang="zh-CN" style="font-family:SimSun">、</span><span lang="en-US" style="font-family:Calibri">slave2</span><br><br><span lang="zh-CN" style="font-family:SimSun">将</span><span lang="en-US" style="font-family:Calibri">master</span><span lang="zh-CN" style="font-family:SimSun">的公钥复制到</span><span lang="en-US" style="font-family:Calibri">slave1</span><span lang="zh-CN" style="font-family:SimSun">和</span><span lang="en-US" style="font-family:Calibri">slave2</span><span lang="zh-CN" style="font-family:SimSun">，并追加到他们的</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;; color:#333333">authorized_keys文件，然后验证是否可以在</span><span lang="en-US" style="font-family:Calibri; color:#333333">master</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;; color:#333333">登录到</span><span lang="en-US" style="font-family:Calibri; color:#333333">slave1</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;; color:#333333">和</span><span lang="en-US" style="font-family:Calibri; color:#333333">slave2</span><br><br><span lang="en-US" style="font-family:Calibri">4</span><span lang="zh-CN" style="font-family:SimSun">、配置</span><span lang="en-US" style="font-family:Calibri">slave1</span><span lang="zh-CN" style="font-family:SimSun">和</span><span lang="en-US" style="font-family:Calibri">slave2</span><span lang="zh-CN" style="font-family:SimSun">登录到</span><span lang="en-US" style="font-family:Calibri">master</span><br><br><span lang="zh-CN" style="font-family:SimSun">在</span><span lang="en-US" style="font-family:Calibri">slave1</span><span lang="zh-CN" style="font-family:SimSun">的</span><span lang="en-US" style="font-family:Calibri">/root/.ssh</span><span lang="zh-CN" style="font-family:SimSun">下面生成公钥然后复制到</span><span lang="en-US" style="font-family:Calibri">master</span><span lang="zh-CN" style="font-family:SimSun">，并追加到</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">authorized_keys文件，然后验证</span><br><br><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">总结：可以用</span><span lang="en-US" style="font-family:Calibri">ssh-copy-id</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">命令将公钥复制到远程机器的authorized_keys文件，为了方便起见可以在所有的机器上先生成无密码的公钥，然后追加到</span><span lang="en-US" style="font-family:Calibri">master</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">的authorized_keys文件，然后将</span><span lang="en-US" style="font-family:Calibri">master</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">的authorized_keys文件</span><span lang="en-US" style="font-family:Calibri">copy</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">到各个</span><span lang="en-US" style="font-family:Calibri">slave</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">机器</span><br><br><span lang="en-US" style="font-family:Calibri">5</span><span lang="zh-CN" style="font-family:SimSun">、安装</span><span lang="en-US" style="font-family:Calibri">hadoop</span><br><br><span lang="en-US" style="font-family:Calibri">1</span><span lang="zh-CN" style="font-family:SimSun">、安装</span><span lang="en-US" style="font-family:Calibri">jdk</span><span lang="zh-CN" style="font-family:SimSun">、</span><span lang="en-US" style="font-family:Calibri">hadoop</span><span lang="zh-CN" style="font-family:SimSun">、</span><span lang="en-US" style="font-family:Calibri">maven</span><span lang="zh-CN" style="font-family:SimSun">。</span><br><br><span lang="en-US" style="font-family:Calibri">1.1</span><span lang="zh-CN" style="font-family:SimSun">在官网</span><span lang="zh-CN" style="font-family:Calibri"><u><a href="http://hadoop.apache.org/releases.html" target="_blank" rel="external">http://hadoop.apache.org/releases.html</a></u></span><span lang="zh-CN" style="font-family:SimSun"><u>上下载一个稳定版本的</u></span><span lang="en-US" style="font-family:Calibri"><u>hadoop</u></span><span lang="zh-CN" style="font-family:SimSun"><u>到</u></span><span lang="en-US" style="font-family:Calibri"><u>master</u></span><span lang="zh-CN" style="font-family:SimSun"><u>，然后用</u></span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;; color:#333333">tar<br> -zxvf</span><span lang="en-US" style="font-family:Calibri; color:#333333"> </span><br><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;; color:#333333">解压</span><br><br><span lang="en-US" style="font-family:Calibri">2.2</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;">下载</span><span lang="en-US" style="font-family:Calibri">maven</span><br><br><span lang="en-US">Wget</span><a href="http://www.interior-dsgn.com/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz" target="_blank" rel="external"><span lang="zh-CN">http://www.interior-dsgn.com/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz</span></a><br><br><span lang="en-US" style="font-family:Calibri">3.3</span><span lang="zh-CN" style="font-family:SimSun">安装</span><span lang="en-US" style="font-family:Calibri">jdk</span><span lang="zh-CN" style="font-family:SimSun">（</span><span lang="en-US" style="font-family:Calibri">1.7</span><span lang="zh-CN" style="font-family:SimSun">以上版本）</span><br><br><span lang="en-US" style="font-family:Calibri">2</span><span lang="zh-CN" style="font-family:SimSun">、环境变量配置（我的</span><span lang="en-US" style="font-family:Calibri">maven</span><span lang="zh-CN" style="font-family:SimSun">、</span><span lang="en-US" style="font-family:Calibri">jdk</span><span lang="zh-CN" style="font-family:SimSun">、</span><span lang="en-US" style="font-family:Calibri">hadoop</span><span lang="zh-CN" style="font-family:SimSun">全部安装在</span><span lang="en-US" style="font-family:Calibri">/BBBB</span><span lang="zh-CN" style="font-family:SimSun">目录下，方便管理）</span><br><br><span lang="zh-CN" style="font-family:SimSun">在</span><span lang="en-US" style="font-family:Calibri">root/.bashrc</span><span lang="zh-CN" style="font-family:SimSun">的末尾加上下面配置</span><br><br>exportJAVA_HOME=/BBBB/jdk1.7<br><br>exportJRE_HOME=$JAVA_HOME/jre<br><br>exportM2_HOME=/BBBB/maven3.3.9<br><br>exportM2=$M2_HOME/bin<br><br>exportHADOOP_INSTALL=/BBBB/hadoop2.7.2<br><br>exportPATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin:$M2_HOME/bin:$HADOOP_INSTALL/bin:$HADOOP_INSTALL/sbin<br><br><span lang="en-US" style="font-family:Calibri">3</span><span lang="zh-CN" style="font-family:SimSun">、</span><span lang="en-US" style="font-family:Calibri">hadoop</span><span lang="zh-CN" style="font-family:SimSun">环境配置</span><br><br><span lang="en-US" style="font-family:Calibri">1</span><span lang="zh-CN" style="font-family:SimSun">、在</span><span lang="en-US" style="font-family:Calibri">hadoop</span><span lang="zh-CN" style="font-family:SimSun">的安装目录下：</span><span lang="en-US" style="font-family:Calibri">etc</span><span lang="zh-CN" style="font-family:SimSun">、</span><span lang="en-US" style="font-family:Calibri">had</span><span lang="en-US" style="font-family:SimSun">oop</span><span lang="zh-CN" style="font-family:SimSun">下面的</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;; color:#333333">hadoop-env.sh中配置</span><span lang="en-US" style="font-family:SimSun; color:#333333">jdk</span><span lang="zh-CN" style="font-family:&quot;Source Code Pro&quot;; color:#333333">的安装目录</span><br><br><pre code_snippet_id="1716993" snippet_file_name="blog_20160614_2_8528254" name="code" class="html">JAVA_HOME=/BBBB/jdk1.7<br>exportJAVA_HOME=${JAVA_HOME}</pre><br><br><span lang="en-US" style="font-family:Calibri">2</span><span lang="zh-CN" style="font-family:SimSun">、配置</span><span lang="en-US" style="font-family:Calibri">core-site.xml</span><br><br><pre code_snippet_id="1716993" snippet_file_name="blog_20160614_3_1734621" name="code" class="html">&lt;configuration&gt;<br>    &lt;property&gt;<br>        &lt;name&gt;fs.defaultFS&lt;/name&gt;<br>       &lt;value&gt;hdfs://10.124.22.213:9000&lt;/value&gt;<br>    &lt;/property&gt;<br>    &lt;!–&lt;property&gt;<br>        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;<br>       &lt;value&gt;file:/BBBB/hadoop2.7.2/tmp&lt;/value&gt;<br>    &lt;/property&gt;–&gt;<br>    &lt;property&gt;<br>       &lt;name&gt;io.file.buffer.size&lt;/name&gt;<br>        &lt;value&gt;13170&lt;/value&gt;<br>    &lt;/property&gt;<br>&lt;/configuration&gt;</pre><br><br>3<span lang="zh-CN" style="font-family:SimSun">、配置</span><span lang="en-US">hdfs-site.xml</span><span lang="zh-CN" style="font-family:SimSun">文件</span><br><br><pre code_snippet_id="1716993" snippet_file_name="blog_20160614_4_3304784" name="code" class="html">&lt;configuration&gt;<br>     &lt;property&gt;<br>               &lt;name&gt;dfs.replication&lt;/name&gt;<br>                &lt;value&gt;2&lt;/value&gt;<br>        &lt;/property&gt;<br>    &lt;property&gt;<br>           &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;<br>           &lt;value&gt;file:/BBBB/hadoop2.7.2/dfs/name&lt;/value&gt;<br>        &lt;/property&gt;<br>        &lt;property&gt;<br>           &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;<br>           &lt;value&gt;file:/BBBB/hadoop2.7.2/dfs/data&lt;/value&gt;<br>    &lt;/property&gt;<br>  &lt;/configuration&gt;</pre><br><br><span lang="en-US" style="font-family:Calibri"><br><br>4</span><span lang="zh-CN" style="font-family:SimSun">、配置</span><span lang="en-US" style="font-family:Calibri">mapred-site.xml</span><span lang="zh-CN" style="font-family:SimSun">文件</span><br><br><pre code_snippet_id="1716993" snippet_file_name="blog_20160614_5_3654231" name="code" class="html">&lt;configuration&gt;<br>     &lt;property&gt;<br>               &lt;name&gt;mapred.framework.name&lt;/name&gt;<br>                &lt;value&gt;yarn&lt;/value&gt;<br>        &lt;/property&gt;<br>    &lt;property&gt;<br>           &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;<br>           &lt;value&gt;10.124.22.213:10020&lt;/value&gt;<br>        &lt;/property&gt;<br>        &lt;property&gt;<br>            &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;<br>           &lt;value&gt;10.124.22.213:19888&lt;/value&gt;<br>         &lt;/property&gt;<br>&lt;/configuration&gt;</pre><br><br>5<span lang="zh-CN" style="font-family:SimSun">、配置</span><span lang="en-US">yarn-site.xml</span><br><br><pre code_snippet_id="1716993" snippet_file_name="blog_20160614_6_1287680" name="code" class="html">&lt;configuration&gt;<br><br>&lt;!–Site specific YARN configuration properties –&gt;<br>    &lt;property&gt;<br>       &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;<br>       &lt;value&gt;mapreduce_shuffle&lt;/value&gt;<br>    &lt;/property&gt;<br>    &lt;property&gt;<br>           &lt;name&gt;yarn.nodemanager.auxservices.mapreduce.shuffle.class&lt;/name&gt;<br>           &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;<br>    &lt;/property&gt;<br>    &lt;property&gt;<br>       &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;<br>       &lt;value&gt;10.124.22.213:8032&lt;/value&gt;<br>    &lt;/property&gt;<br>    &lt;property&gt;<br>       &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;<br>       &lt;value&gt;10.124.22.213:8030&lt;/value&gt;<br>    &lt;/property&gt;<br>    &lt;property&gt;<br>       &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;<br>       &lt;value&gt;10.124.22.213:8031&lt;/value&gt;<br>    &lt;/property&gt;<br>    &lt;property&gt;<br>       &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;<br>       &lt;value&gt;10.124.22.213:8033&lt;/value&gt;<br>    &lt;/property&gt;<br>    &lt;property&gt;<br>       &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;<br>       &lt;value&gt;10.124.22.213:8088&lt;/value&gt;<br>    &lt;/property&gt;<br>    &lt;property&gt;<br>       &lt;name&gt;yarn.nodemanager.resource.memory-mb&lt;/name&gt;<br>        &lt;value&gt;768&lt;/value&gt;<br>    &lt;/property&gt;<br>&lt;/configuration&gt;</pre><br><br><span lang="en-US" style="font-family:Calibri">6</span><span lang="zh-CN" style="font-family:SimSun">、配置</span><span lang="en-US" style="font-family:Calibri">slaves</span><span lang="zh-CN" style="font-family:SimSun">文件</span><br><br><pre code_snippet_id="1716993" snippet_file_name="blog_20160614_7_4494046" name="code" class="html"><br>10.124.10.9<br>10.75.7.64</pre><br><br>&nbsp;7、配置hosts和hostname文件（在2.7.2，机器间通知hostname来通信，如果不配置将无法通信）<br><br><span style="white-space:pre"></span>master、slave1和slave2的hosts文件和hostname文件均要配置<br><br><span style="white-space:pre"></span>hosts文件：<br><br><span style="white-space:pre">10.124.22.213 &nbsp; panzha-master<br><br>10.124.10.9 &nbsp; &nbsp; panzha-slave001<br><br>10.75.7.64 &nbsp; &nbsp; &nbsp;panzha-slave002</span><br><br><span style="white-space:pre"></span>hostname文件：<br><br><span style="white-space:pre"></span>写上你的主机名<br><br><span lang="en-US" style="font-family:Calibri">6</span><span lang="zh-CN" style="font-family:SimSun">、将配置好的</span><span lang="en-US" style="font-family:Calibri">hadoop整个目录&nbsp;</span><span lang="zh-CN" style="font-family:SimSun">拷贝到</span><span lang="en-US" style="font-family:Calibri">slave1</span><span lang="zh-CN" style="font-family:SimSun">和</span><span lang="en-US" style="font-family:Calibri">slave2</span><br><br><span lang="en-US" style="font-family:Calibri">7</span><span lang="zh-CN" style="font-family:SimSun">、启动</span><span lang="en-US" style="font-family:Calibri">hadoop</span><br><br>Start-dfs.sh<br><br>Start-yarn.sh<br><br># 常用命令<br><br><div><br><br><span style="font-size:14px"><span lang="zh-CN" style="font-family:宋体">1、&#26684;式化</span><span lang="en-US" style="font-family:Calibri">HDFS</span><span lang="zh-CN" style="font-family:宋体">文件系统：</span></span><br><br><span style="font-size:14px">Hadooopnamenode -format</span><br><br><span style="font-size:14px">2、<span style="font-family:&quot;microsoft yahei&quot;; line-height:26px">命令查看Hadoop集群的状态</span></span></div>
+
+<pre><code>&lt;span style=&quot;font-size:14px&quot;&gt;hadoop dfsadmin -report&lt;/span&gt;
+</code></pre><div><br><br><span style="font-size:14px"><span lang="zh-CN" style="font-family:Calibri">hadoop fs -copyFromLocal /BBBB/b.txt /user/sunny/d.txt</span><span lang="en-US" style="font-family:Calibri">&nbsp;&nbsp;&nbsp;//</span><span lang="zh-CN" style="font-family:宋体">将本地的</span><span lang="en-US" style="font-family:Calibri">b.txt</span><span lang="zh-CN" style="font-family:宋体">，拷贝到</span><span lang="en-US" style="font-family:Calibri">HDFS</span><span lang="zh-CN" style="font-family:宋体">中</span></span><br><br><span style="font-size:14px"><span lang="zh-CN" style="font-family:Calibri">hadoop fs -copy</span><span lang="en-US" style="font-family:Calibri">toLocal&nbsp; XXX XXX //</span><span lang="zh-CN" style="font-family:宋体">将</span><span lang="en-US" style="font-family:Calibri">HDFS</span><span lang="zh-CN" style="font-family:宋体">中的文件复制到本地</span></span><br><br><span style="font-size:14px">Hadoop fs-mkidr&nbsp; XXX</span><br><br><span style="font-size:14px">Hadoop fs-ls</span><br><br><span style="font-size:14px">&nbsp;</span><br><br><span style="font-size:14px"><span lang="en-US" style="font-family:Calibri">Hadoop fs</span><span lang="zh-CN" style="font-family:宋体">等价于</span><span lang="en-US" style="font-family:Calibri"> hdfs dfs</span></span><br><br><span style="font-size:14px"><span lang="en-US" style="font-family:Calibri"><br><br></span></span><br><br>## <span style="font-size:14px"><span lang="en-US" style="font-family:Calibri">常见错误</span></span><br><br><div><span lang="en-US" style="font-family:Calibri"><span style="font-size:14px">1、<span lang="zh-CN" style="font-family:宋体">如果</span><span lang="en-US">start-dfs.sh</span><span lang="zh-CN" style="font-family:宋体">后</span><span lang="en-US">jps</span><span lang="zh-CN" style="font-family:宋体">，没有找到</span><span lang="en-US">namenode</span><span lang="zh-CN" style="font-family:宋体">并且日志出现下面字样</span></span></span><br><br><span style="font-size:14px">Namenodenot formatted</span><br><br><span style="font-size:14px"><span lang="zh-CN" style="font-family:宋体">运行如下命令，然后重启</span><span lang="en-US">start-dfs.sh</span></span><br><br><span style="background:rgb(239,240,241)"><span style="font-size:14px">hadoop namenode -format</span></span><br><br><span style="font-size:14px"><br><br></span><br><br><span style="font-size:14px">&nbsp;2、<a href="http://blog.csdn.net/lulynn/article/details/46725683" target="_blank" rel="external">How-to:Resolve &quot;Datanode denied communication with<br> namenode because hostnamecannot be resolved (</a></span><br><br><span style="font-weight:bold"><span style="font-size:14px">Error:</span></span><br><br><span style="font-size:14px">org.apache.hadoop.hdfs.server.protocol.DisallowedDatanodeException:Datanode denied communication with namenode because hostname cannot be resolved(ip=172.31.34.70,<br> h</span><br><br><span style="font-size:14px">ostname=172.31.34.70): DatanodeRegistration(0.0.0.0,datanodeUuid=e218bf57-41b5-46a6-8343-ced968272b9a, infoPort=50075,ipcPort=50020, storageInfo=lv=-56;cid=CID-28174</span><br><br><span style="font-size:14px">aeb-5c3e-4500-ba25-1d9ca001538f;nsid=122644145;c=0)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.hdfs.server.blockmanagement.DatanodeManager.registerDatanode(DatanodeManager.java:904)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.hdfs.server.namenode.FSNamesystem.registerDatanode(FSNamesystem.java:5085)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.registerDatanode(NameNodeRpcServer.java:1140)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.hdfs.protocolPB.DatanodeProtocolServerSideTranslatorPB.registerDatanode(DatanodeProtocolServerSideTranslatorPB.java:92)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.hdfs.protocol.proto.DatanodeProtocolProtos$DatanodeProtocolService$2.callBlockingMethod(DatanodeProtocolProtos.java:27329)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:619)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.ipc.RPC$Server.call(RPC.java:1060)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2044)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2040)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atjava.security.AccessController.doPrivileged(Native Method)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atjavax.security.auth.Subject.doAs(Subject.java:415)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1671)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atorg.apache.hadoop.ipc.Server$Handler.run(Server.java:2038)</span><br><br><span style="font-weight:bold"><span style="font-size:14px">Analytics:</span></span><br><br><span style="font-size:14px">This error was throwned viaorg/apache/hadoop/hdfs/server/blockmanagement/DatanodeManager.java:</span><br><br><span style="font-size:14px">&nbsp; public void registerDatanode(DatanodeRegistrationnodeReg)</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throwsDisallowedDatanodeException, UnresolvedTopologyException {</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp; InetAddress dnAddress = Server.getRemoteIp();</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp; if (dnAddress != null) {</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Mostly called inside an RPC,update ip and peer hostname</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String hostname =dnAddress.getHostName();</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String ip =dnAddress.getHostAddress();</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:bold">&nbsp;if(checkIpHostnameInRegistration &amp;&amp; !isNameResolved(dnAddress))&nbsp;</span>{</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Rejectregistration of unresolved datanode to prevent performance</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // impact ofrepetitive DNS lookups later.</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; final String message= &quot;hostname cannot be resolved (ip=&quot;</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#43; ip &#43; &quot;, hostname=&quot; &#43; hostname &#43; &quot;)&quot;;</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOG.warn(&quot;Unresolved datanode registration: &quot; &#43; message);</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw newDisallowedDatanodeException(nodeReg, message);</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span><br><br><span style="font-size:14px"><span style="font-weight:bold">checkIpHostnameInRegistration&nbsp;</span>iscontroled by hdfs-site.xml property&quot;dfs.namenode.datanode.registration.ip-hostname-check&quot;.<br> And&nbsp;<span style="font-weight:bold">isNameResolved(dnAddress)&nbsp;</span>is controle byreverse dns and /etc/hosts.</span><br><br><span style="font-weight:bold"><span style="font-size:14px">Resolution:</span></span><br><br><span style="font-weight:bold"><span style="font-size:14px">Add datanode ip/hostname into/etc/hosts. Or enable reverse DNS(Make sure you could get hostname via command:host ip).<br> Or add following property in hdfs-site.xml:</span></span><br><br><span style="font-size:14px">&nbsp; &nbsp; &nbsp; &nbsp; &lt;property&gt;</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;dfs.namenode.datanode.registration.ip-hostname-check&lt;/name&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;value&gt;false&lt;/value&gt;</span><br><br><span style="font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/property&gt;</span><br><br><span style="font-size:14px">3、<span style="line-height:22pt">safe&nbsp; mode</span></span><br><br><span style="background:#EFF0F1"><span style="font-size:14px">hadoop dfsadmin -safemode leave</span></span><br><br><span style="background-color:rgb(239,240,241)"><span style="font-size:14px">4、<span lang="en-US" style="font-family:Calibri; line-height:22pt">o</span><span lang="zh-CN" style="font-family:Calibri; line-height:22pt">rg.apache.hadoop.ipc.RemoteException(java.io.IOException):<br> File/a.tcl.<em>COPYING</em> could only be replicated to 0 nodes instead of minReplication(=1).&nbsp; There are 0 datanode(s) runningand no node(s) are excluded in this operation.</span></span></span><br><br><span style=""><span style="font-size:14px">解决方案：</span></span><br><br><span style="font-size:14px"><span style="font-family:Calibri">这个问题是由于没有添加节点的原因，也就是说需要先启动</span><span style="font-family:Arial">namenode</span><span style="font-family:Calibri">，再启动</span><span style="font-family:Arial">datanode</span><span style="font-family:Calibri">，然后启动</span><span style="font-family:Arial">jobtracker</span><span style="font-family:Calibri">和</span><span style="font-family:Arial">tasktracker</span><span style="font-family:Calibri">。这样就不会存在这个问题了。</span><span style="font-family:Arial"><br></span><span style="font-family:Calibri">目前解决办法是分别启动节点</span><span style="font-family:Arial">#hadoop-daemon.sh start namenode#$hadoop-daemon.sh start datanode</span></span><br><br><span style="font-size:14px"><span style="font-family:Arial"><span style="white-space:pre"></span>1.&nbsp;&nbsp;<br></span><span style="font-family:SimSun">重新启动</span><span style="font-family:Arial">namenode</span></span><br><br><span style=""><span style="font-size:14px"><span style="white-space:pre"></span># hadoop-daemon.sh start namenode</span></span><br><br><span style=""><span style="font-size:14px"><span style="white-space:pre"></span>starting namenode, logging to/usr/hadoop-0.21.0/bin/../logs/hadoop-root-namenode-www.keli.com.out</span></span><br><br><span style=""><span style="font-size:14px">&nbsp;</span></span><br><br><span style="font-size:14px"><span style="font-family:Arial"><span style="white-space:pre"></span>2.&nbsp;&nbsp;<br></span><span style="font-family:SimSun">重新启动</span><span style="font-family:Arial">datanode</span></span><br><br><span style=""><span style="font-size:14px"><span style="white-space:pre"></span># hadoop-daemon.sh start datanode</span></span><br><br><span style=""><span style="font-size:14px"><span style="white-space:pre"></span>starting datanode, logging to/usr/hadoop-0.21.0/bin/../logs/hadoop-root-datanode-www.keli.com.out</span></span><br><br></div>
+
+<p><span style="font-size:14px"><span lang="en-US" style="font-family:Calibri">参考文献：</span></span></p>
+<p><span style="font-size:14px"><span lang="en-US" style="font-family:Calibri"><a href="http://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/ClusterSetup.html" target="_blank" rel="external">http://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/ClusterSetup.html</a></span></span></p>
+<p></p>
+<p><span style="font-size:14px"><span lang="en-US" style="font-family:Calibri"><a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-multi-node-cluster/" target="_blank" rel="external">http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-multi-node-cluster/</a></span></span></p>
+<p></p>
+<p><a href="http://blog.csdn.net/andie_guo/article/details/44055761" target="_blank" rel="external">http://blog.csdn.net/andie_guo/article/details/44055761</a></p>
+<p></p></div><p></p>
+<div><a href="http://blog.csdn.net/lulynn/article/details/46725683" target="_blank" rel="external">http://blog.csdn.net/lulynn/article/details/46725683</a><br><br></div>
+
+<p></p></div><p></p>
+<pre><code>&lt;div&gt;
+    作者：zhangpan19910604 发表于2016/6/14 21:13:31 [原文链接](http://blog.csdn.net/zhangpan19910604/article/details/51674551)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：130 评论：0 [查看评论](http://blog.csdn.net/zhangpan19910604/article/details/51674551#comments)
+&lt;/div&gt;
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/04/原-大数加减乘除问题/" rel="next" title="[原]大数加减乘除问题">
+                <i class="fa fa-chevron-left"></i> [原]大数加减乘除问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/19/原-java并发编程：顺序输出A、B、C循环10次/" rel="prev" title="[原]java并发编程：顺序输出A、B、C循环10次">
+                [原]java并发编程：顺序输出A、B、C循环10次 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="payne" />
+          <p class="site-author-name" itemprop="name">payne</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装环境："><span class="nav-number">1.</span> <span class="nav-text">安装环境：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HADOOP安装过程"><span class="nav-number">2.</span> <span class="nav-text">HADOOP安装过程</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">payne</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Payne Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文分为3个部分，第一个部分列出常用的jvm指令，每一个指令基本都有几个类&amp;#20284;的指令，看名字就知道了，比如像iconst、lconst、fconst、dconst这些主要是针对不同的类型（int、long、float、double），将对应类型的&amp;#20540;push到栈顶，其他指令类&amp;#20284;，所以基本指令就给出一个例子，其他的联想一个就好，第二部分，给出一小段代码，并给出指">
+<meta name="keywords">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[原]jvm 指令集代码">
+<meta property="og:url" content="http://yoursite.com/2016/08/19/原-jvm-指令集代码/index.html">
+<meta property="og:site_name" content="Payne Blog">
+<meta property="og:description" content="本文分为3个部分，第一个部分列出常用的jvm指令，每一个指令基本都有几个类&amp;#20284;的指令，看名字就知道了，比如像iconst、lconst、fconst、dconst这些主要是针对不同的类型（int、long、float、double），将对应类型的&amp;#20540;push到栈顶，其他指令类&amp;#20284;，所以基本指令就给出一个例子，其他的联想一个就好，第二部分，给出一小段代码，并给出指">
+<meta property="og:updated_time" content="2017-04-26T08:27:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[原]jvm 指令集代码">
+<meta name="twitter:description" content="本文分为3个部分，第一个部分列出常用的jvm指令，每一个指令基本都有几个类&amp;#20284;的指令，看名字就知道了，比如像iconst、lconst、fconst、dconst这些主要是针对不同的类型（int、long、float、double），将对应类型的&amp;#20540;push到栈顶，其他指令类&amp;#20284;，所以基本指令就给出一个例子，其他的联想一个就好，第二部分，给出一小段代码，并给出指">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/08/19/原-jvm-指令集代码/"/>
+
+
+
+
+
+  <title> [原]jvm 指令集代码 | Payne Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Payne Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/19/原-jvm-指令集代码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="payne">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Payne Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                [原]jvm 指令集代码
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-19T20:36:52+08:00">
+                2016-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><span style="font-size:14px">本文分为3个部分，<strong>第一个部分列出常用的jvm指令</strong>，每一个指令基本都有几个类&#20284;的指令，看名字就知道了，比如像iconst、lconst、fconst、dconst这些主要是针对不同的类型（int、long、float、double），将对应类型的&#20540;push到栈顶，其他指令类&#20284;，所以基本指令就给出一个例子，其他的联想一个就好，<strong>第二部分，给出一小段代码，</strong>并给出指令集并详细给出每一行代码的解释。<strong>第三部给出jvm全部的指令集，</strong>方便查询</span></p>
+<h1 id="jvm基本指令"><a href="#jvm基本指令" class="headerlink" title="jvm基本指令"></a><span style="font-size:14px"><strong><span lang="en-US" style="font-family:Calibri">jvm</span><span lang="zh-CN" style="font-family:宋体">基本指令</span></strong></span></h1><div><span style="font-size:14px"><strong><span lang="zh-CN" style="font-family:宋体"><br><br></span></strong></span></div><br><div style="direction:ltr"><br><table border="1" cellpadding="0" cellspacing="0" valign="top" style="direction:ltr; border-collapse:collapse; border-style:solid; border-color:#A3A3A3; border-width:1pt"><br><tbody><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>iconst_1<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>int型常量&#20540;1进栈<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>bipush<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>将一个byte型常量&#20540;推送至栈顶<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>iload_1<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="zh-CN" style="font-family:Calibri">第二个int型局部变量进栈</span><span lang="zh-CN" style="font-family:宋体">，从</span><span lang="en-US" style="font-family:Calibri">0</span><span lang="zh-CN" style="font-family:宋体">开始计数</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>istore_1<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="zh-CN">将栈顶int型数&#20540;存入第二个局部变量，从</span><span lang="en-US">0</span><span lang="zh-CN">开始计数</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>iadd<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>栈顶两int型数&#20540;相加，并且结果进栈<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>return<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>当前方法返回void<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>getstatic<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>获取指定类的静态域，并将其&#20540;压入栈顶<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>putstatic<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>为指定的类的静态域赋&#20540;<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>invokevirtual<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>调用实例方法<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>invokespecial<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>调用超类构造方法、实例初始化方法、私有方法<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>invokestatic<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>调用静态方法<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>invokeinterface<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>调用接口方法<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>new<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>创建一个对象，并且其引用进栈<br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:1.3236in; padding:4pt 4pt 4pt 4pt"><br><br>newarray<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.6333in; padding:4pt 4pt 4pt 4pt"><br><br>创建一个基本类型数组，并且其引用进栈<br><br></td><br></tr><br></tbody><br></table><br></div><br><div style="direction:ltr"><strong><span style="font-size:14px"><br><br></span></strong></div>
+
+<h1 id="二、具体分析"><a href="#二、具体分析" class="headerlink" title="二、具体分析"></a><strong><span style="font-size:14px">二、具体分析</span></strong></h1><div style="direction:ltr">一个简单的code如下，以此分析每一行代码的指令</div><br><div style="direction:ltr"><br><br><pre code_snippet_id="1840952" snippet_file_name="blog_20160819_1_7331391" name="code" class="html">publicstatic void main(String[] args) {<br>inta = 1;<br>intb = 9;<br>intc = a+b;<br>System.out.println(c);<br>System.out.println(&quot;HelloWorld&quot;);<br>}</pre><br><br></div><br><div style="direction:ltr"><br><br>&nbsp;public static void main(java.lang.String[]);<br><br>&nbsp;&nbsp; Code:<br><br><div style="direction:ltr"><br><table border="1" cellpadding="0" cellspacing="0" valign="top" style="direction:ltr; border-collapse:collapse; border-style:solid; border-color:#A3A3A3; border-width:1pt"><br><tbody><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.1451in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0: iconst_1<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.8131in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">将</span><span lang="en-US" style="font-family:Calibri">int</span><span lang="zh-CN" style="font-family:宋体">型</span><span lang="en-US" style="font-family:Calibri">1</span><span lang="zh-CN" style="font-family:宋体">推送到栈顶</span><span lang="en-US" style="font-family:Calibri">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.1451in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="zh-CN">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1: istore_1</span><span lang="en-US">&nbsp;</span><br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.8131in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">&nbsp;//</span><span lang="zh-CN" style="font-family:宋体">将栈顶元素存入第二个本地变量</span><span lang="en-US" style="font-family:Calibri">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.1451in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US">&nbsp;&nbsp;</span><span lang="zh-CN">&nbsp;&nbsp;&nbsp;&nbsp;2: bipush&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9</span><span lang="en-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br></span><br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.8131in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">&nbsp;//</span><span lang="zh-CN" style="font-family:宋体">将</span><span lang="en-US" style="font-family:Calibri">int</span><span lang="zh-CN" style="font-family:宋体">型</span><span lang="en-US" style="font-family:Calibri">9</span><span lang="zh-CN" style="font-family:宋体">推送到栈顶</span><span lang="en-US" style="font-family:Calibri">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.1451in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="zh-CN">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4: istore_2</span><span lang="en-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.8131in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">&nbsp;//</span><span lang="zh-CN" style="font-family:Calibri">将栈顶元素存入第</span><span lang="zh-CN" style="font-family:宋体">三</span><span lang="zh-CN" style="font-family:Calibri">个本地变量</span><span lang="en-US" style="font-family:Calibri">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.1451in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5: iload_1<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.8131in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">将第二个</span><span lang="en-US" style="font-family:Calibri">int</span><span lang="zh-CN" style="font-family:宋体">型数&#20540;推送到栈顶</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.1451in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6: iload_2<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.8131in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">将第三个</span><span lang="en-US" style="font-family:Calibri">int</span><span lang="zh-CN" style="font-family:宋体">型数&#20540;推送到栈顶</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.1451in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7: iadd<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.8131in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">将栈顶两个</span><span lang="en-US" style="font-family:Calibri">int</span><span lang="zh-CN" style="font-family:宋体">数&#20540;相加然后推入栈顶</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.1451in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8: istore_3<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:.6673in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:2.8131in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">将栈顶</span><span lang="en-US" style="font-family:Calibri">int</span><span lang="zh-CN" style="font-family:宋体">型数&#20540;存入第四个本地变量</span><br><br></td><br></tr><br></tbody><br></table><br></div><br><div style="direction:ltr"><br><table border="1" cellpadding="0" cellspacing="0" valign="top" style="direction:ltr; border-collapse:collapse; border-style:solid; border-color:#A3A3A3; border-width:1pt"><br><tbody><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:6.9125in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="zh-CN">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9: getstatic&nbsp;&nbsp;&nbsp;&nbsp; #16 // Field java/lang/System.out:Ljava/</span><span lang="en-US">i</span><span lang="zh-CN">o/PrintStream;</span><br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.4215in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">获取指定类的静态域，并将其压入栈顶</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:6.9125in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;&nbsp;&nbsp;&nbsp; 12: iload_3<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.4215in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">将第四个</span><span lang="en-US" style="font-family:Calibri">int</span><span lang="zh-CN" style="font-family:宋体">型数&#20540;推送到栈顶</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:6.9125in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="zh-CN">&nbsp;&nbsp;&nbsp;&nbsp; 13: invokevirtual #22 // Method java/io/PrintStream.printl</span><span lang="en-US">n</span><span lang="zh-CN">:(I)V</span><br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.4215in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">调用实例方法</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:6.9125in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="zh-CN">&nbsp;&nbsp;&nbsp;&nbsp; 16: getstatic&nbsp;&nbsp;&nbsp;&nbsp; #16 // Field java/lang/System.out:Ljava/</span><span lang="en-US">i</span><span lang="zh-CN">o/PrintStream;</span><br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.4215in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">获取指定类的静态域，并将其压入栈顶</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:6.9125in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;&nbsp;&nbsp;&nbsp; 19: ldc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #28 // String Hello World<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.4215in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">将</span><span lang="en-US" style="font-family:Calibri">int</span><span lang="zh-CN" style="font-family:宋体">、</span><span lang="en-US" style="font-family:Calibri">float</span><span lang="zh-CN" style="font-family:宋体">、</span><span lang="en-US" style="font-family:Calibri">String</span><span lang="zh-CN" style="font-family:宋体">类型常量从常量池中推送带栈顶</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:6.9125in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="zh-CN">&nbsp;&nbsp;&nbsp;&nbsp; 21: invokevirtual #30 // Method java/io/PrintStream.printl</span><span lang="en-US">n</span><span lang="zh-CN">:(Ljava/lang/String;)V</span><br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.4215in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">调用实例方法</span><br><br></td><br></tr><br><tr><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:6.9125in; padding:4pt 4pt 4pt 4pt"><br><br>&nbsp;&nbsp;&nbsp;&nbsp; 24: return<br><br></td><br><td style="border-style:solid; border-color:#A3A3A3; border-width:1pt; vertical-align:top; width:3.4215in; padding:4pt 4pt 4pt 4pt"><br><br><span lang="en-US" style="font-family:Calibri">//</span><span lang="zh-CN" style="font-family:宋体">从当前方法返回</span><span lang="en-US" style="font-family:Calibri">void</span><br><br></td><br></tr><br></tbody><br></table><br></div>
+
+<p></p></div><p></p>
+<div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div>
+
+<h1 id="三、全部Jvm指令"><a href="#三、全部Jvm指令" class="headerlink" title="三、全部Jvm指令"></a><strong><span style="font-size:14px">三、全部Jvm指令</span></strong></h1><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br><span style="font-family:&quot;Courier New&quot;">&nbsp;<strong>JVM指令集（指令码、助记符、功能描述）</strong></span><br><br><div align="center" style="font-family:Arial; font-size:14px; line-height:26px"><br><table border="1" cellspacing="0" cellpadding="0" style="width:515px; height:13749px"><br><tbody><br><tr><br><td><br><br><strong>指令码</strong><br><br></td><br><td><br><br><strong>助记符</strong><br><br></td><br><td><br><br><strong>功能描述</strong><br><br></td><br></tr><br><tr><br><td><br><br>0x00<br><br></td><br><td><br><br><strong>nop</strong><br><br></td><br><td><br><br>无操作<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x01<br><br></td><br><td><br><br><strong>aconst_null</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：&nbsp; aconst_null<br><br>&nbsp;<br><br>功能描述：&nbsp; null进栈。<br><br>&nbsp;<br><br><table border="1" cellspacing="0" cellpadding="0"><br><tbody><br><tr><br><td><br><br>指令执行前<br><br></td><br><td><br><br>指令执行后<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈底<br><br></td><br></tr><br><tr><br><td><br><br>…<br><br></td><br><td><br><br>…<br><br></td><br></tr><br><tr><br><td><br><br>&nbsp;<br><br></td><br><td><br><br>null<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈顶<br><br></td><br></tr><br></tbody><br></table><br><br>&nbsp;<br><br>注意：JVM并没有为null指派一个具体的&#20540;。<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x02<br><br></td><br><td><br><br><strong>iconst_m1</strong><br><br></td><br><td><br><br>int型常量&#20540;-1进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x03<br><br></td><br><td><br><br><strong>iconst_0</strong><br><br></td><br><td><br><br>int型常量&#20540;0进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x04<br><br></td><br><td><br><br><strong>iconst_1</strong><br><br></td><br><td><br><br>int型常量&#20540;1进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x05<br><br></td><br><td><br><br><strong>iconst_2</strong><br><br></td><br><td><br><br>int型常量&#20540;2进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x06<br><br></td><br><td><br><br><strong>iconst_3</strong><br><br></td><br><td><br><br>int型常量&#20540;3进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x07<br><br></td><br><td><br><br><strong>iconst_4</strong><br><br></td><br><td><br><br>int型常量&#20540;4进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x08<br><br></td><br><td><br><br><strong>iconst_5</strong><br><br></td><br><td><br><br>int型常量&#20540;5进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x09<br><br></td><br><td><br><br><strong>lconst_0</strong><br><br></td><br><td><br><br>long型常量&#20540;0进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x0A<br><br></td><br><td><br><br><strong>lconst_1</strong><br><br></td><br><td><br><br>long型常量&#20540;1进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x0B<br><br></td><br><td><br><br><strong>fconst_0</strong><br><br></td><br><td><br><br>float型常量&#20540;0进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x0C<br><br></td><br><td><br><br><strong>fconst_1</strong><br><br></td><br><td><br><br>float型常量&#20540;1进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x0D<br><br></td><br><td><br><br><strong>fconst_2</strong><br><br></td><br><td><br><br>float型常量&#20540;2进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x0E<br><br></td><br><td><br><br><strong>dconst_0</strong><br><br></td><br><td><br><br>double型常量&#20540;0进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x0F<br><br></td><br><td><br><br><strong>dconst_1</strong><br><br></td><br><td><br><br>double型常量&#20540;1进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x10<br><br></td><br><td><br><br><strong>bipush</strong><br><br></td><br><td><br><br>将一个byte型常量&#20540;推送至栈顶<br><br></td><br></tr><br><tr><br><td><br><br>0x11<br><br></td><br><td><br><br><strong>sipush</strong><br><br></td><br><td><br><br>将一个short型常量&#20540;推送至栈顶<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x12<br><br></td><br><td><br><br><strong>ldc</strong><br><br></td><br><td><br><br>将int、float或String型常量&#20540;从常量池中推送至栈顶<br><br></td><br></tr><br><tr><br><td><br><br>0x13<br><br></td><br><td><br><br><strong>ldc_w</strong><br><br></td><br><td><br><br>将int、float或String型常量&#20540;从常量池中推送至栈顶（宽索引）<br><br></td><br></tr><br><tr><br><td><br><br>0x14<br><br></td><br><td><br><br><strong>ldc2_w</strong><br><br></td><br><td><br><br>将long或double型常量&#20540;从常量池中推送至栈顶（宽索引）<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x15<br><br></td><br><td><br><br><strong>iload</strong><br><br></td><br><td><br><br>指定的int型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x16<br><br></td><br><td><br><br><strong>lload</strong><br><br></td><br><td><br><br>指定的long型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x17<br><br></td><br><td><br><br><strong>fload</strong><br><br></td><br><td><br><br>指定的float型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x18<br><br></td><br><td><br><br><strong>dload</strong><br><br></td><br><td><br><br>指定的double型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x19<br><br></td><br><td><br><br><strong>aload</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：&nbsp; aload index<br><br>&nbsp;<br><br>功能描述：&nbsp; 当前frame的局部变量数组中下标为<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; index的引用型局部变量进栈<br><br>&nbsp;<br><br><table border="1" cellspacing="0" cellpadding="0"><br><tbody><br><tr><br><td><br><br>指令执行前<br><br></td><br><td><br><br>指令执行后<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈底<br><br></td><br></tr><br><tr><br><td><br><br>…<br><br></td><br><td><br><br>…<br><br></td><br></tr><br><tr><br><td><br><br>&nbsp;<br><br></td><br><td><br><br>objectref<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈顶<br><br></td><br></tr><br></tbody><br></table><br><br>&nbsp;<br><br>index&nbsp; ：&nbsp; 无符号一byte整型。和wide指令联用，<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 可以使index为两byte。<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x1A<br><br></td><br><td><br><br><strong>iload_0</strong><br><br></td><br><td><br><br>第一个int型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x1B<br><br></td><br><td><br><br><strong>iload_1</strong><br><br></td><br><td><br><br>第二个int型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x1C<br><br></td><br><td><br><br><strong>iload_2</strong><br><br></td><br><td><br><br>第三个int型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x1D<br><br></td><br><td><br><br><strong>iload_3</strong><br><br></td><br><td><br><br>第四个int型局部变量进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x1E<br><br></td><br><td><br><br><strong>lload_0</strong><br><br></td><br><td><br><br>第一个long型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x1F<br><br></td><br><td><br><br><strong>lload_1</strong><br><br></td><br><td><br><br>第二个long型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x20<br><br></td><br><td><br><br><strong>lload_2</strong><br><br></td><br><td><br><br>第三个long型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x21<br><br></td><br><td><br><br><strong>lload_3</strong><br><br></td><br><td><br><br>第四个long型局部变量进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x22<br><br></td><br><td><br><br><strong>fload_0</strong><br><br></td><br><td><br><br>第一个float型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x23<br><br></td><br><td><br><br><strong>fload_1</strong><br><br></td><br><td><br><br>第二个float型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x24<br><br></td><br><td><br><br><strong>fload_2</strong><br><br></td><br><td><br><br>第三个float型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x25<br><br></td><br><td><br><br><strong>fload_3</strong><br><br></td><br><td><br><br>第四个float型局部变量进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x26<br><br></td><br><td><br><br><strong>dload_0</strong><br><br></td><br><td><br><br>第一个double型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x27<br><br></td><br><td><br><br><strong>dload_1</strong><br><br></td><br><td><br><br>第二个double型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x28<br><br></td><br><td><br><br><strong>dload_2</strong><br><br></td><br><td><br><br>第三个double型局部变量进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x29<br><br></td><br><td><br><br><strong>dload_3</strong><br><br></td><br><td><br><br>第四个double型局部变量进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x2A<br><br></td><br><td><br><br><strong>aload_0</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：aload_0<br><br>&nbsp;<br><br>该指令的行为类&#20284;于aload指令index为0的情况。<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x2B<br><br></td><br><td><br><br><strong>aload_1</strong><br><br></td><br><td><br><br>&nbsp;<br><br>同上<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x2C<br><br></td><br><td><br><br><strong>aload_2</strong><br><br></td><br><td><br><br>&nbsp;<br><br>同上<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x2D<br><br></td><br><td><br><br><strong>aload_3</strong><br><br></td><br><td><br><br>&nbsp;<br><br>同上<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x2E<br><br></td><br><td><br><br><strong>iaload</strong><br><br></td><br><td><br><br>指定的int型数组的指定下标处的&#20540;进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x2F<br><br></td><br><td><br><br><strong>laload</strong><br><br></td><br><td><br><br>指定的long型数组的指定下标处的&#20540;进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x30<br><br></td><br><td><br><br><strong>faload</strong><br><br></td><br><td><br><br>指定的float型数组的指定下标处的&#20540;进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x31<br><br></td><br><td><br><br><strong>daload</strong><br><br></td><br><td><br><br>指定的double型数组的指定下标处的&#20540;进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x32<br><br></td><br><td><br><br><strong>aaload</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：&nbsp; aaload<br><br>&nbsp;<br><br>功能描述：&nbsp; 栈顶的数组下标（index）、数组引用<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; （arrayref）出栈，并根据这两个数&#20540;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 取出对应的数组元素&#20540;（value）进栈。<br><br>&nbsp;<br><br>抛出异常：&nbsp; 如果arrayref的&#20540;为null，会抛出<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NullPointerException。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果index造成数组越界，会抛出<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ArrayIndexOutOfBoundsException。<br><br>&nbsp;<br><br><table border="1" cellspacing="0" cellpadding="0"><br><tbody><br><tr><br><td><br><br>指令执行前<br><br></td><br><td><br><br>指令执行后<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈底<br><br></td><br></tr><br><tr><br><td><br><br>…<br><br></td><br><td><br><br>…<br><br></td><br></tr><br><tr><br><td><br><br>arrayref<br><br></td><br><td><br><br>value<br><br></td><br></tr><br><tr><br><td><br><br>index<br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈顶<br><br></td><br></tr><br></tbody><br></table><br><br>&nbsp;<br><br>index&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ：&nbsp; int类型<br><br>arrayref&nbsp;&nbsp; ：&nbsp; 数组的引用<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x33<br><br></td><br><td><br><br><strong>baload</strong><br><br></td><br><td><br><br>指定的boolean或byte型数组的指定下标处的&#20540;进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x34<br><br></td><br><td><br><br><strong>caload</strong><br><br></td><br><td><br><br>指定的char型数组的指定下标处的&#20540;进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x35<br><br></td><br><td><br><br><strong>saload</strong><br><br></td><br><td><br><br>指定的short型数组的指定下标处的&#20540;进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x36<br><br></td><br><td><br><br><strong>istore</strong><br><br></td><br><td><br><br>将栈顶int型数&#20540;存入指定的局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x37<br><br></td><br><td><br><br><strong>lstore</strong><br><br></td><br><td><br><br>将栈顶long型数&#20540;存入指定的局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x38<br><br></td><br><td><br><br><strong>fstore</strong><br><br></td><br><td><br><br>将栈顶float型数&#20540;存入指定的局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x39<br><br></td><br><td><br><br><strong>dstore</strong><br><br></td><br><td><br><br>将栈顶double型数&#20540;存入指定的局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x3A<br><br></td><br><td><br><br><strong>astore</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：&nbsp; astore index<br><br>&nbsp;<br><br>功能描述：&nbsp; 将栈顶数&#20540;（objectref）存入当前<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frame的局部变量数组中指定下标<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; （index）处的变量中，栈顶数&#20540;出栈。<br><br>&nbsp;<br><br><table border="1" cellspacing="0" cellpadding="0"><br><tbody><br><tr><br><td><br><br>指令执行前<br><br></td><br><td><br><br>指令执行后<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈底<br><br></td><br></tr><br><tr><br><td><br><br>…<br><br></td><br><td><br><br>…<br><br></td><br></tr><br><tr><br><td><br><br>objectref<br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈顶<br><br></td><br></tr><br></tbody><br></table><br><br>&nbsp;<br><br>index&nbsp; ：&nbsp; 无符号一byte整数。该指令和wide联<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 用，index可以为无符号两byte整数。<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x3B<br><br></td><br><td><br><br><strong>istore_0</strong><br><br></td><br><td><br><br>将栈顶int型数&#20540;存入第一个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x3C<br><br></td><br><td><br><br><strong>istore_1</strong><br><br></td><br><td><br><br>将栈顶int型数&#20540;存入第二个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x3D<br><br></td><br><td><br><br><strong>istore_2</strong><br><br></td><br><td><br><br>将栈顶int型数&#20540;存入第三个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x3E<br><br></td><br><td><br><br><strong>istore_3</strong><br><br></td><br><td><br><br>将栈顶int型数&#20540;存入第四个局部变量<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x3F<br><br></td><br><td><br><br><strong>lstore_0</strong><br><br></td><br><td><br><br>将栈顶long型数&#20540;存入第一个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x40<br><br></td><br><td><br><br><strong>lstore_1</strong><br><br></td><br><td><br><br>将栈顶long型数&#20540;存入第二个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x41<br><br></td><br><td><br><br><strong>lstore_2</strong><br><br></td><br><td><br><br>将栈顶long型数&#20540;存入第三个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x42<br><br></td><br><td><br><br><strong>lstore_3</strong><br><br></td><br><td><br><br>将栈顶long型数&#20540;存入第四个局部变量<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x43<br><br></td><br><td><br><br><strong>fstore_0</strong><br><br></td><br><td><br><br>将栈顶float型数&#20540;存入第一个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x44<br><br></td><br><td><br><br><strong>fstore_1</strong><br><br></td><br><td><br><br>将栈顶float型数&#20540;存入第二个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x45<br><br></td><br><td><br><br><strong>fstore_2</strong><br><br></td><br><td><br><br>将栈顶float型数&#20540;存入第三个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x46<br><br></td><br><td><br><br><strong>fstore_3</strong><br><br></td><br><td><br><br>将栈顶float型数&#20540;存入第四个局部变量<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x47<br><br></td><br><td><br><br><strong>dstore_0</strong><br><br></td><br><td><br><br>将栈顶double型数&#20540;存入第一个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x48<br><br></td><br><td><br><br><strong>dstore_1</strong><br><br></td><br><td><br><br>将栈顶double型数&#20540;存入第二个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x49<br><br></td><br><td><br><br><strong>dstore_2</strong><br><br></td><br><td><br><br>将栈顶double型数&#20540;存入第三个局部变量<br><br></td><br></tr><br><tr><br><td><br><br>0x4A<br><br></td><br><td><br><br><strong>dstore_3</strong><br><br></td><br><td><br><br>将栈顶double型数&#20540;存入第四个局部变量<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x4B<br><br></td><br><td><br><br><strong>astore_0</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：&nbsp; astore_0<br><br>&nbsp;<br><br>功能描述：&nbsp; 该指令的行为类&#20284;于astore指令index<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 为0的情况。<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x4C<br><br></td><br><td><br><br><strong>astore_1</strong><br><br></td><br><td><br><br>&nbsp;<br><br>同上<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x4D<br><br></td><br><td><br><br><strong>astore_2</strong><br><br></td><br><td><br><br>&nbsp;<br><br>同上<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x4E<br><br></td><br><td><br><br><strong>astore_3</strong><br><br></td><br><td><br><br>&nbsp;<br><br>同上<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x4F<br><br></td><br><td><br><br><strong>iastore&nbsp;</strong><br><br></td><br><td><br><br>将栈顶int型数&#20540;存入指定数组的指定下标处<br><br></td><br></tr><br><tr><br><td><br><br>0x50<br><br></td><br><td><br><br><strong>lastore</strong><br><br></td><br><td><br><br>将栈顶long型数&#20540;存入指定数组的指定下标处<br><br></td><br></tr><br><tr><br><td><br><br>0x51<br><br></td><br><td><br><br><strong>fastore</strong><br><br></td><br><td><br><br>将栈顶float型数&#20540;存入指定数组的指定下标处<br><br></td><br></tr><br><tr><br><td><br><br>0x52<br><br></td><br><td><br><br><strong>dastore</strong><br><br></td><br><td><br><br>将栈顶double型数&#20540;存入指定数组的指定下标处<br><br></td><br></tr><br><tr><br><td><br><br>0x53<br><br></td><br><td><br><br><strong>aastore</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：&nbsp; aastore<br><br>&nbsp;<br><br>功能描述：&nbsp; 根据栈顶的引用型数&#20540;（value）、数组下<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 标（index）、数组引用（arrayref）出<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 栈，将数&#20540;存入对应的数组元素中。<br><br>&nbsp;<br><br>抛出异常：&nbsp; 如果value的类型和arrayref所引用<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 的数组的元素类型不兼容，会抛出抛出<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ArrayStoreException。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果index造成数组越界，会抛出<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ArrayIndexOutOfBoundsException。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果arrayref&#20540;为null，会抛出<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NullPointerException。<br><br>&nbsp;<br><br><table border="1" cellspacing="0" cellpadding="0"><br><tbody><br><tr><br><td><br><br>指令执行前<br><br></td><br><td><br><br>指令执行后<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈底<br><br></td><br></tr><br><tr><br><td><br><br>…<br><br></td><br><td><br><br>…<br><br></td><br></tr><br><tr><br><td><br><br>arrayref<br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>index<br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>value<br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈顶<br><br></td><br></tr><br></tbody><br></table><br><br>&nbsp;<br><br>arrayref&nbsp;&nbsp; ：&nbsp; 必须是对数组的引用<br><br>index&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ：&nbsp; int类型<br><br>value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ：&nbsp; 引用类型<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x54<br><br></td><br><td><br><br><strong>bastore</strong><br><br></td><br><td><br><br>将栈顶boolean或byte型数&#20540;存入指定数组的指定下标处<br><br></td><br></tr><br><tr><br><td><br><br>0x55<br><br></td><br><td><br><br><strong>castore</strong><br><br></td><br><td><br><br>将栈顶char型数&#20540;存入指定数组的指定下标处<br><br></td><br></tr><br><tr><br><td><br><br>0x56<br><br></td><br><td><br><br><strong>sastore</strong><br><br></td><br><td><br><br>将栈顶short型数&#20540;存入指定数组的指定下标处<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x57<br><br></td><br><td><br><br><strong>pop</strong><br><br></td><br><td><br><br>栈顶数&#20540;出栈 (该栈顶数&#20540;不能是long或double型)<br><br></td><br></tr><br><tr><br><td><br><br>0x58<br><br></td><br><td><br><br><strong>pop2</strong><br><br></td><br><td><br><br>栈顶的一个（如果是long、double型的)或两个（其它类型的）数&#20540;出栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x59<br><br></td><br><td><br><br><strong>dup</strong><br><br></td><br><td><br><br>复制栈顶数&#20540;，并且复制&#20540;进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x5A<br><br></td><br><td><br><br><strong>dup_x1</strong><br><br></td><br><td><br><br>复制栈顶数&#20540;，并且复制&#20540;进栈2次<br><br></td><br></tr><br><tr><br><td><br><br>0x5B<br><br></td><br><td><br><br><strong>dup_x2</strong><br><br></td><br><td><br><br>复制栈顶数&#20540;，并且复制&#20540;进栈2次或3次<br><br></td><br></tr><br><tr><br><td><br><br>0x5C<br><br></td><br><td><br><br><strong>dup2</strong><br><br></td><br><td><br><br>复制栈顶一个（long、double型的)或两个（其它类型的）数&#20540;，并且复制&#20540;进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x5D<br><br></td><br><td><br><br><strong>dup2_x1</strong><br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x5E<br><br></td><br><td><br><br><strong>dup2_x2</strong><br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x5F<br><br></td><br><td><br><br><strong>swap</strong><br><br></td><br><td><br><br>栈顶的两个数&#20540;互换(要求栈顶的两个数&#20540;不能是long或double型的)<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x60<br><br></td><br><td><br><br><strong>iadd</strong><br><br></td><br><td><br><br>栈顶两int型数&#20540;相加，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x61<br><br></td><br><td><br><br><strong>ladd</strong><br><br></td><br><td><br><br>栈顶两long型数&#20540;相加，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x62<br><br></td><br><td><br><br><strong>fadd</strong><br><br></td><br><td><br><br>栈顶两float型数&#20540;相加，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x63<br><br></td><br><td><br><br><strong>dadd</strong><br><br></td><br><td><br><br>栈顶两double型数&#20540;相加，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x64<br><br></td><br><td><br><br><strong>isub</strong><br><br></td><br><td><br><br>栈顶两int型数&#20540;相减，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x65<br><br></td><br><td><br><br><strong>lsub</strong><br><br></td><br><td><br><br>栈顶两long型数&#20540;相减，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x66<br><br></td><br><td><br><br><strong>fsub</strong><br><br></td><br><td><br><br>栈顶两float型数&#20540;相减，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x67<br><br></td><br><td><br><br><strong>dsub</strong><br><br></td><br><td><br><br>栈顶两double型数&#20540;相减，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x68<br><br></td><br><td><br><br><strong>imul</strong><br><br></td><br><td><br><br>栈顶两int型数&#20540;相乘，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x69<br><br></td><br><td><br><br><strong>lmul</strong><br><br></td><br><td><br><br>栈顶两long型数&#20540;相乘，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x6A<br><br></td><br><td><br><br><strong>fmul</strong><br><br></td><br><td><br><br>栈顶两float型数&#20540;相乘，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x6B<br><br></td><br><td><br><br><strong>dmul</strong><br><br></td><br><td><br><br>栈顶两double型数&#20540;相乘，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x6C<br><br></td><br><td><br><br><strong>idiv</strong><br><br></td><br><td><br><br>栈顶两int型数&#20540;相除，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x6D<br><br></td><br><td><br><br><strong>ldiv</strong><br><br></td><br><td><br><br>栈顶两long型数&#20540;相除，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x6E<br><br></td><br><td><br><br><strong>fdiv</strong><br><br></td><br><td><br><br>栈顶两float型数&#20540;相除，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x6F<br><br></td><br><td><br><br><strong>ddiv</strong><br><br></td><br><td><br><br>栈顶两double型数&#20540;相除，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x70<br><br></td><br><td><br><br><strong>irem</strong><br><br></td><br><td><br><br>栈顶两int型数&#20540;作取模运算，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x71<br><br></td><br><td><br><br><strong>lrem</strong><br><br></td><br><td><br><br>栈顶两long型数&#20540;作取模运算，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x72<br><br></td><br><td><br><br><strong>frem</strong><br><br></td><br><td><br><br>栈顶两float型数&#20540;作取模运算，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x73<br><br></td><br><td><br><br><strong>drem</strong><br><br></td><br><td><br><br>栈顶两double型数&#20540;作取模运算，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x74<br><br></td><br><td><br><br><strong>ineg</strong><br><br></td><br><td><br><br>栈顶int型数&#20540;取负，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x75<br><br></td><br><td><br><br><strong>lneg</strong><br><br></td><br><td><br><br>栈顶long型数&#20540;取负，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x76<br><br></td><br><td><br><br><strong>fneg</strong><br><br></td><br><td><br><br>栈顶float型数&#20540;取负，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x77<br><br></td><br><td><br><br><strong>dneg</strong><br><br></td><br><td><br><br>栈顶double型数&#20540;取负，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x78<br><br></td><br><td><br><br><strong>ishl</strong><br><br></td><br><td><br><br>int型数&#20540;左移指定位数，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x79<br><br></td><br><td><br><br><strong>lshl</strong><br><br></td><br><td><br><br>long型数&#20540;左移指定位数，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x7A<br><br></td><br><td><br><br><strong>ishr</strong><br><br></td><br><td><br><br>int型数&#20540;带符号右移指定位数，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x7B<br><br></td><br><td><br><br><strong>lshr</strong><br><br></td><br><td><br><br>long型数&#20540;带符号右移指定位数，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x7C<br><br></td><br><td><br><br><strong>iushr</strong><br><br></td><br><td><br><br>int型数&#20540;无符号右移指定位数，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x7D<br><br></td><br><td><br><br><strong>lushr</strong><br><br></td><br><td><br><br>long型数&#20540;无符号右移指定位数，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x7E<br><br></td><br><td><br><br><strong>iand</strong><br><br></td><br><td><br><br>栈顶两int型数&#20540;按位与，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x7F<br><br></td><br><td><br><br><strong>land</strong><br><br></td><br><td><br><br>栈顶两long型数&#20540;按位与，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x80<br><br></td><br><td><br><br><strong>ior</strong><br><br></td><br><td><br><br>栈顶两int型数&#20540;按位或，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x81<br><br></td><br><td><br><br><strong>lor</strong><br><br></td><br><td><br><br>栈顶两long型数&#20540;按位或，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x82<br><br></td><br><td><br><br><strong>ixor</strong><br><br></td><br><td><br><br>栈顶两int型数&#20540;按位异或，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x83<br><br></td><br><td><br><br><strong>lxor</strong><br><br></td><br><td><br><br>栈顶两long型数&#20540;按位异或，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x84<br><br></td><br><td><br><br><strong>iinc</strong><br><br></td><br><td><br><br>指定int型变量增加指定&#20540;<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x85<br><br></td><br><td><br><br><strong>i2l</strong><br><br></td><br><td><br><br>栈顶int&#20540;强转long&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x86<br><br></td><br><td><br><br><strong>i2f</strong><br><br></td><br><td><br><br>栈顶int&#20540;强转float&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x87<br><br></td><br><td><br><br><strong>i2d</strong><br><br></td><br><td><br><br>栈顶int&#20540;强转double&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x88<br><br></td><br><td><br><br><strong>l2i</strong><br><br></td><br><td><br><br>栈顶long&#20540;强转int&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x89<br><br></td><br><td><br><br><strong>l2f</strong><br><br></td><br><td><br><br>栈顶long&#20540;强转float&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x8A<br><br></td><br><td><br><br><strong>l2d</strong><br><br></td><br><td><br><br>栈顶long&#20540;强转double&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x8B<br><br></td><br><td><br><br><strong>f2i</strong><br><br></td><br><td><br><br>栈顶float&#20540;强转int&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x8C<br><br></td><br><td><br><br><strong>f2l</strong><br><br></td><br><td><br><br>栈顶float&#20540;强转long&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x8D<br><br></td><br><td><br><br><strong>f2d</strong><br><br></td><br><td><br><br>栈顶float&#20540;强转double&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x8E<br><br></td><br><td><br><br><strong>d2i</strong><br><br></td><br><td><br><br>栈顶double&#20540;强转int&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x8F<br><br></td><br><td><br><br><strong>d2l</strong><br><br></td><br><td><br><br>栈顶double&#20540;强转long&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x90<br><br></td><br><td><br><br><strong>d2f</strong><br><br></td><br><td><br><br>栈顶double&#20540;强转float&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x91<br><br></td><br><td><br><br><strong>i2b</strong><br><br></td><br><td><br><br>栈顶int&#20540;强转byte&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x92<br><br></td><br><td><br><br><strong>i2c</strong><br><br></td><br><td><br><br>栈顶int&#20540;强转char&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x93<br><br></td><br><td><br><br><strong>i2s</strong><br><br></td><br><td><br><br>栈顶int&#20540;强转short&#20540;，并且结果进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x94<br><br></td><br><td><br><br><strong>lcmp</strong><br><br></td><br><td><br><br>比较栈顶两long型数&#20540;大小，并且结果（1，0，-1）进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x95<br><br></td><br><td><br><br><strong>fcmpl</strong><br><br></td><br><td><br><br>比较栈顶两float型数&#20540;大小，并且结果（1，0，-1）进栈；当其中一个数&#20540;为NaN时， -1进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x96<br><br></td><br><td><br><br><strong>fcmpg</strong><br><br></td><br><td><br><br>比较栈顶两float型数&#20540;大小，并且结果（1，0，-1）进栈；当其中一个数&#20540;为NaN时，1进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x97<br><br></td><br><td><br><br><strong>dcmpl</strong><br><br></td><br><td><br><br>比较栈顶两double型数&#20540;大小，并且结果（1，0，-1）进栈；当其中一个数&#20540;为NaN时，-1进栈<br><br></td><br></tr><br><tr><br><td><br><br>0x98<br><br></td><br><td><br><br><strong>dcmpg</strong><br><br></td><br><td><br><br>比较栈顶两double型数&#20540;大小，并且结果（1，0，-1）进栈；当其中一个数&#20540;为NaN时，1进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0x99<br><br></td><br><td><br><br><strong>ifeq</strong><br><br></td><br><td><br><br>当栈顶int型数&#20540;等于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0x9A<br><br></td><br><td><br><br><strong>ifne</strong><br><br></td><br><td><br><br>当栈顶int型数&#20540;不等于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0x9B<br><br></td><br><td><br><br><strong>iflt</strong><br><br></td><br><td><br><br>当栈顶int型数&#20540;小于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0x9C<br><br></td><br><td><br><br><strong>ifge</strong><br><br></td><br><td><br><br>当栈顶int型数&#20540;大于等于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0x9D<br><br></td><br><td><br><br><strong>ifgt</strong><br><br></td><br><td><br><br>当栈顶int型数&#20540;大于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0x9E<br><br></td><br><td><br><br><strong>ifle</strong><br><br></td><br><td><br><br>当栈顶int型数&#20540;小于等于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0x9F<br><br></td><br><td><br><br><strong>if_icmpeq</strong><br><br></td><br><td><br><br>比较栈顶两int型数&#20540;大小，当结果等于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0xA0<br><br></td><br><td><br><br><strong>if_icmpne</strong><br><br></td><br><td><br><br>比较栈顶两int型数&#20540;大小，当结果不等于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0xA1<br><br></td><br><td><br><br><strong>if_icmplt</strong><br><br></td><br><td><br><br>比较栈顶两int型数&#20540;大小，当结果小于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0xA2<br><br></td><br><td><br><br><strong>if_icmpge</strong><br><br></td><br><td><br><br>比较栈顶两int型数&#20540;大小，当结果大于等于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0xA3<br><br></td><br><td><br><br><strong>if_icmpgt</strong><br><br></td><br><td><br><br>比较栈顶两int型数&#20540;大小，当结果大于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0xA4<br><br></td><br><td><br><br><strong>if_icmple</strong><br><br></td><br><td><br><br>比较栈顶两int型数&#20540;大小，当结果小于等于0时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0xA5<br><br></td><br><td><br><br><strong>if_acmpeq</strong><br><br></td><br><td><br><br>比较栈顶两引用型数&#20540;，当结果相等时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0xA6<br><br></td><br><td><br><br><strong>if_acmpne</strong><br><br></td><br><td><br><br>比较栈顶两引用型数&#20540;，当结果不相等时跳转<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xA7<br><br></td><br><td><br><br><strong>goto</strong><br><br></td><br><td><br><br>无条件跳转<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xA8<br><br></td><br><td><br><br><strong>jsr</strong><br><br></td><br><td><br><br>跳转至指定16位offset位置，并将jsr下一条指令地址压入栈顶<br><br></td><br></tr><br><tr><br><td><br><br>0xA9<br><br></td><br><td><br><br><strong>ret</strong><br><br></td><br><td><br><br>返回至局部变量指定的index的指令位置（通常与jsr、jsr_w联合使用）<br><br></td><br></tr><br><tr><br><td><br><br>0xAA<br><br></td><br><td><br><br><strong>tableswitch</strong><br><br></td><br><td><br><br>用于switch条件跳转，case&#20540;连续（可变长度指令）<br><br></td><br></tr><br><tr><br><td><br><br>0xAB<br><br></td><br><td><br><br><strong>lookupswitch</strong><br><br></td><br><td><br><br>用于switch条件跳转，case&#20540;不连续（可变长度指令）<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xAC<br><br></td><br><td><br><br><strong>ireturn</strong><br><br></td><br><td><br><br>当前方法返回int<br><br></td><br></tr><br><tr><br><td><br><br>0xAD<br><br></td><br><td><br><br><strong>lreturn</strong><br><br></td><br><td><br><br>当前方法返回long<br><br></td><br></tr><br><tr><br><td><br><br>0xAE<br><br></td><br><td><br><br><strong>freturn</strong><br><br></td><br><td><br><br>当前方法返回float<br><br></td><br></tr><br><tr><br><td><br><br>0xAF<br><br></td><br><td><br><br><strong>dreturn</strong><br><br></td><br><td><br><br>当前方法返回double<br><br></td><br></tr><br><tr><br><td><br><br>0xB0<br><br></td><br><td><br><br><strong>areturn</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：&nbsp; areturn<br><br>&nbsp;<br><br>功能描述：&nbsp; 从方法中返回一个对象的引用。<br><br>&nbsp;<br><br>抛出异常：&nbsp; 如果当前方法是<code>synchronized</code>方法，<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 并且当前线程不是改方法的锁的拥有者，<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 会抛出<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IllegalMonitorStateException。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br><table border="1" cellspacing="0" cellpadding="0"><br><tbody><br><tr><br><td><br><br>指令执行前<br><br></td><br><td><br><br>指令执行后<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈底<br><br></td><br></tr><br><tr><br><td><br><br>…<br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>objectref<br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈顶<br><br></td><br></tr><br></tbody><br></table><br><br>&nbsp;<br><br>objectref&nbsp; ：&nbsp; 被返回的对象引用。<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xB1<br><br></td><br><td><br><br><strong>return</strong><br><br></td><br><td><br><br>当前方法返回void<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xB2<br><br></td><br><td><br><br><strong>getstatic</strong><br><br></td><br><td><br><br>获取指定类的静态域，并将其&#20540;压入栈顶<br><br></td><br></tr><br><tr><br><td><br><br>0xB3<br><br></td><br><td><br><br><strong>putstatic</strong><br><br></td><br><td><br><br>为指定的类的静态域赋&#20540;<br><br></td><br></tr><br><tr><br><td><br><br>0xB4<br><br></td><br><td><br><br><strong>getfield</strong><br><br></td><br><td><br><br>获取指定类的实例域，并将其&#20540;压入栈顶<br><br></td><br></tr><br><tr><br><td><br><br>0xB5<br><br></td><br><td><br><br><strong>putfield</strong><br><br></td><br><td><br><br>为指定的类的实例域赋&#20540;<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xB6<br><br></td><br><td><br><br><strong>invokevirtual</strong><br><br></td><br><td><br><br>调用实例方法<br><br></td><br></tr><br><tr><br><td><br><br>0xB7<br><br></td><br><td><br><br><strong>invokespecial</strong><br><br></td><br><td><br><br>调用超类构造方法、实例初始化方法、私有方法<br><br></td><br></tr><br><tr><br><td><br><br>0xB8<br><br></td><br><td><br><br><strong>invokestatic</strong><br><br></td><br><td><br><br>调用静态方法<br><br></td><br></tr><br><tr><br><td><br><br>0xb9<br><br></td><br><td><br><br><strong>invokeinterface</strong><br><br></td><br><td><br><br>调用接口方法<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xBA<br><br></td><br><td><br><br>—<br><br></td><br><td><br><br>因为历史原因，该码点为未使用的保留码点<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xBB<br><br></td><br><td><br><br><strong>new</strong><br><br></td><br><td><br><br>创建一个对象，并且其引用进栈<br><br></td><br></tr><br><tr><br><td><br><br>0xBC<br><br></td><br><td><br><br><strong>newarray</strong><br><br></td><br><td><br><br>创建一个基本类型数组，并且其引用进栈<br><br></td><br></tr><br><tr><br><td><br><br>0xBD<br><br></td><br><td><br><br><strong>anewarray</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：&nbsp; anewarray index1 index2<br><br>&nbsp;<br><br>功能描述：&nbsp; 栈顶数&#20540;（count）作为数组长度，创建<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 一个引用 型数组。栈顶数&#20540;出栈，数组引<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 用进栈。<br><br>&nbsp;<br><br>抛出异常：&nbsp; 如果count小于0，会抛出<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NegativeArraySizeException<br><br>&nbsp;<br><br><table border="1" cellspacing="0" cellpadding="0"><br><tbody><br><tr><br><td><br><br>指令执行前<br><br></td><br><td><br><br>指令执行后<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈底<br><br></td><br></tr><br><tr><br><td><br><br>…<br><br></td><br><td><br><br>…<br><br></td><br></tr><br><tr><br><td><br><br>count<br><br></td><br><td><br><br>arrayref<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈顶<br><br></td><br></tr><br></tbody><br></table><br><br>&nbsp;<br><br>count&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ：&nbsp; int类型。<br><br>arrayref&nbsp;&nbsp; ：&nbsp; 对所创建的数组的引用。<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xBE<br><br></td><br><td><br><br><strong>arraylength</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：&nbsp; arraylength<br><br>&nbsp;<br><br>功能描述：&nbsp; 栈顶的数组引用（arrayref）出栈，该<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 数组的长度进栈。<br><br>&nbsp;<br><br>抛出异常：&nbsp; 如果arrayref的&#20540;为null，会抛出<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NullPointerException。<br><br>&nbsp;<br><br><table border="1" cellspacing="0" cellpadding="0"><br><tbody><br><tr><br><td><br><br>指令执行前<br><br></td><br><td><br><br>指令执行后<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈底<br><br></td><br></tr><br><tr><br><td><br><br>…<br><br></td><br><td><br><br>…<br><br></td><br></tr><br><tr><br><td><br><br>arrayref<br><br></td><br><td><br><br>length<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈顶<br><br></td><br></tr><br></tbody><br></table><br><br>&nbsp;<br><br>arrayref&nbsp;&nbsp; ：&nbsp; 数组引用<br><br>length&nbsp;&nbsp;&nbsp;&nbsp; ：&nbsp; 数组长度<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xBF<br><br></td><br><td><br><br><strong>athrow</strong><br><br></td><br><td><br><br>&nbsp;<br><br>指令&#26684;式：&nbsp; athrow<br><br>&nbsp;<br><br>功能描述：&nbsp; 将栈顶的数&#20540;作为异常或错误抛出<br><br>&nbsp;<br><br>抛出异常：&nbsp; 如果栈顶数&#20540;为null，则使用<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NullPointerException代替栈顶数<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#20540;抛出。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果方法是的，则有可能抛出<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IllegalMonitorStateException。<br><br>&nbsp;<br><br><table border="1" cellspacing="0" cellpadding="0"><br><tbody><br><tr><br><td><br><br>指令执行前<br><br></td><br><td><br><br>指令执行后<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈底<br><br></td><br></tr><br><tr><br><td><br><br>…<br><br></td><br><td><br><br>objectref<br><br></td><br></tr><br><tr><br><td><br><br>objectref<br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="2"><br><br>栈顶<br><br></td><br></tr><br></tbody><br></table><br><br>&nbsp;<br><br>objectref&nbsp; ：&nbsp; Throwable或其子类的实例的引用。<br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xC0<br><br></td><br><td><br><br><strong>checkcast</strong><br><br></td><br><td><br><br>类型转换检查，如果该检查未通过将会抛出ClassCastException异常<br><br></td><br></tr><br><tr><br><td><br><br>0xc1<br><br></td><br><td><br><br><strong>instanceof</strong><br><br></td><br><td><br><br>检查对象是否是指定的类的实例。如果是，1进栈；否则，0进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xC2<br><br></td><br><td><br><br><strong>monitorenter</strong><br><br></td><br><td><br><br>获得对象锁<br><br></td><br></tr><br><tr><br><td><br><br>0xC3<br><br></td><br><td><br><br><strong>monitorexit</strong><br><br></td><br><td><br><br>释放对象锁<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xC4<br><br></td><br><td><br><br><strong>wide</strong><br><br></td><br><td><br><br>用于修改其他指令的行为<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xC5<br><br></td><br><td><br><br><strong>multianewarray</strong><br><br></td><br><td><br><br>创建指定类型和维度的多维数组（执行该指令时，栈中必须包含各维度的长度&#20540;），并且其引用&#20540;进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xC6<br><br></td><br><td><br><br><strong>ifnull</strong><br><br></td><br><td><br><br>为null时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0xC7<br><br></td><br><td><br><br><strong>ifnonnull</strong><br><br></td><br><td><br><br>不为null时跳转<br><br></td><br></tr><br><tr><br><td><br><br>0xC8<br><br></td><br><td><br><br><strong>goto_w</strong><br><br></td><br><td><br><br>无条件跳转（宽索引）<br><br></td><br></tr><br><tr><br><td><br><br>0xC9<br><br></td><br><td><br><br><strong>jsr_w</strong><br><br></td><br><td><br><br>跳转至指定32位offset位置，并且jsr_w下一条指令地址进栈<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xCA<br><br></td><br><td><br><br><strong>breakpoint</strong><br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td colspan="3"><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xFE<br><br></td><br><td><br><br><strong>impdep1</strong><br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br><tr><br><td><br><br>0xFF<br><br></td><br><td><br><br><strong>impdep2</strong><br><br></td><br><td><br><br>&nbsp;<br><br></td><br></tr><br></tbody><br></table><br></div>
+
+<p></p></div><p></p>
+<div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div><br><div style="direction:ltr"><br><br></div>
+
+<pre><code>&lt;div&gt;
+    作者：zhangpan19910604 发表于2016/8/19 20:36:52 [原文链接](http://blog.csdn.net/zhangpan19910604/article/details/52254053)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：256 评论：1 [查看评论](http://blog.csdn.net/zhangpan19910604/article/details/52254053#comments)
+&lt;/div&gt;
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/29/原-java-Scanner-输入/" rel="next" title="[原]java Scanner 输入">
+                <i class="fa fa-chevron-left"></i> [原]java Scanner 输入
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/19/原-java-注解/" rel="prev" title="[原]java 注解">
+                [原]java 注解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="payne" />
+          <p class="site-author-name" itemprop="name">payne</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#jvm基本指令"><span class="nav-number">1.</span> <span class="nav-text">jvm基本指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、具体分析"><span class="nav-number">2.</span> <span class="nav-text">二、具体分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、全部Jvm指令"><span class="nav-number">3.</span> <span class="nav-text">三、全部Jvm指令</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">payne</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Payne Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="要求：3个线程，分别输出A、B、C。循环10次，给出三种方法，code如下 一、wait、notify public class PrintABC {    static int state = 0;    private static Object o = new Object();    public static void main(String[] args) {        Execu">
+<meta name="keywords">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[原]java并发编程：顺序输出A、B、C循环10次">
+<meta property="og:url" content="http://yoursite.com/2016/05/19/原-java并发编程：顺序输出A、B、C循环10次/index.html">
+<meta property="og:site_name" content="Payne Blog">
+<meta property="og:description" content="要求：3个线程，分别输出A、B、C。循环10次，给出三种方法，code如下 一、wait、notify public class PrintABC {    static int state = 0;    private static Object o = new Object();    public static void main(String[] args) {        Execu">
+<meta property="og:updated_time" content="2017-04-26T08:27:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[原]java并发编程：顺序输出A、B、C循环10次">
+<meta name="twitter:description" content="要求：3个线程，分别输出A、B、C。循环10次，给出三种方法，code如下 一、wait、notify public class PrintABC {    static int state = 0;    private static Object o = new Object();    public static void main(String[] args) {        Execu">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/05/19/原-java并发编程：顺序输出A、B、C循环10次/"/>
+
+
+
+
+
+  <title> [原]java并发编程：顺序输出A、B、C循环10次 | Payne Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Payne Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/19/原-java并发编程：顺序输出A、B、C循环10次/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="payne">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Payne Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                [原]java并发编程：顺序输出A、B、C循环10次
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-19T15:20:48+08:00">
+                2016-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><span style="font-size:18px">要求：3个线程，分别输出A、B、C。循环10次，给出三种方法，code如下</span></p>
+<p><span style="font-size:18px">一、wait、notify</span></p>
+<p><span style="font-size:18px"></span><pre code_snippet_id="1689333" snippet_file_name="blog_20160519_1_1654284" name="code" class="html">public class PrintABC {<br>    static int state = 0;<br>    private static Object o = new Object();<br>    public static void main(String[] args) {<br>        ExecutorService ser = Executors.newCachedThreadPool();<br>        ser.submit(new ThreadA());<br>        ser.submit(new ThreadB());<br>        ser.submit(new ThreadC());</pre></p>
+<pre><code>    ser.shutdown();
+}
+
+public static class ThreadA implements Runnable {
+
+    @Override
+    public void run() {
+
+            for(int i=0;i&amp;lt;10;i++){
+                synchronized (o) {
+                    while(state%3!=0){
+                        try {
+                            o.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    System.out.println(&amp;quot;A&amp;quot;);
+                    state++;
+                    o.notifyAll();
+                }
+
+        }
+    }
+
+}
+
+public static class ThreadB implements Runnable {
+    @Override
+    public void run() {
+        for(int i=0;i&amp;lt;10;i++){
+            synchronized (o) {
+                while(state%3!=1){
+                    try {
+                        o.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                System.out.println(&amp;quot;B&amp;quot;);
+                state++;
+                o.notifyAll();
+            }
+        }
+    }
+
+}
+
+public static class ThreadC implements Runnable {
+    @Override
+    public void run() {
+        for(int i=0;i&amp;lt;10;i++){
+            synchronized (o) {
+                while(state%3!=2){
+                    try {
+                        o.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                System.out.println(&amp;quot;C&amp;quot;);
+                state++;
+                o.notifyAll();
+            }
+        }
+    }
+
+}
+</code></pre><p>}二、lock、unlock</p>
+<p><span style="font-size:18px"></span><pre code_snippet_id="1689333" snippet_file_name="blog_20160519_2_4227795" name="code" class="html">public class PrintABC2 {<br>    static int state = 0;<br>    private static Lock lock = new ReentrantLock();<br>    public static void main(String[] args) {<br>        ExecutorService ser = Executors.newCachedThreadPool();<br>        ser.submit(new ThreadA());<br>        ser.submit(new ThreadB());<br>        ser.submit(new ThreadC());</pre></p>
+<pre><code>    ser.shutdown();
+}
+
+public static class ThreadA implements Runnable {
+
+    @Override
+    public void run() {
+
+            for(int i=0;i&amp;lt;10;){
+                lock.lock();
+                if(state%3==0){
+                    System.out.println(&amp;quot;A&amp;quot;);
+                    state++;
+                    i++;
+                }
+                lock.unlock();
+            }
+
+        }
+    }
+
+public static class ThreadB implements Runnable {
+    @Override
+    public void run() {
+        for(int i=0;i&amp;lt;10;){
+            lock.lock();
+            if(state%3==1){
+                System.out.println(&amp;quot;B&amp;quot;);
+                state++;
+                i++;
+            }
+            lock.unlock();
+        }
+    }
+
+}
+
+public static class ThreadC implements Runnable {
+    @Override
+    public void run() {
+        for(int i=0;i&amp;lt;10;){
+            lock.lock();
+            if(state%3==2){
+                System.out.println(&amp;quot;C&amp;quot;);
+                state++;
+                i++;
+            }
+            lock.unlock();
+        }
+    }
+
+}
+</code></pre><p>}</p>
+<p>三、信号量</p>
+<p><span style="font-size:18px"></span><pre code_snippet_id="1689333" snippet_file_name="blog_20160519_3_7989786" name="code" class="html">public class PrintABC3 {<br>    static int state = 0;<br>     private static Semaphore A = new Semaphore(1);<br>     private static Semaphore B = new Semaphore(1);<br>     private static Semaphore C = new Semaphore(1);<br>    public static void main(String[] args) {<br>        ExecutorService ser = Executors.newCachedThreadPool();<br>        try {<br>            B.acquire();<br>            C.acquire();<br>        } catch (InterruptedException e) {<br>            // TODO Auto-generated catch block<br>            e.printStackTrace();<br>        }</pre></p>
+<pre><code>    ser.submit(new ThreadA());
+    ser.submit(new ThreadB());
+    ser.submit(new ThreadC());
+
+    ser.shutdown();
+}
+      static class ThreadA extends Thread {
+
+        @Override
+         public void run() {
+             try {
+                 for (int i = 0; i &amp;lt; 10; i++) {
+                    A.acquire();
+                     System.out.print(&amp;quot;A&amp;quot;);
+                     sleep(2000);
+                     B.release();
+                 }
+             } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
+         }
+
+     }
+
+     static class ThreadB extends Thread {
+
+         @Override
+         public void run() {
+             try {
+                 for (int i = 0; i &amp;lt; 10; i++) {
+                    B.acquire();
+                     System.out.print(&amp;quot;B&amp;quot;);
+                     C.release();
+                 }
+             } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
+         }
+
+     }
+
+     static class ThreadC extends Thread {
+     @Override
+     public void run() {
+         try {
+             for (int i = 0; i &amp;lt; 10; i++) {
+                C.acquire();
+                 System.out.print(&amp;quot;C&amp;quot;);
+                 A.release();
+             }
+         } catch (InterruptedException e) {
+             e.printStackTrace();
+         }
+     }
+
+     }
+</code></pre><p>}<br></p>
+<p>结果如下：</p>
+<p><span style="font-size:18px"></span><pre code_snippet_id="1689333" snippet_file_name="blog_20160519_4_1228390" name="code" class="html">A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br></pre></p>
+<pre><code>&lt;div&gt;
+    作者：zhangpan19910604 发表于2016/5/19 15:20:48 [原文链接](http://blog.csdn.net/zhangpan19910604/article/details/51454087)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：360 评论：0 [查看评论](http://blog.csdn.net/zhangpan19910604/article/details/51454087#comments)
+&lt;/div&gt;
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/14/原-hadoop-cluster分布式安装/" rel="next" title="[原]hadoop cluster分布式安装">
+                <i class="fa fa-chevron-left"></i> [原]hadoop cluster分布式安装
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/17/原-JAVA并发编程：线程池Executors/" rel="prev" title="[原]JAVA并发编程：线程池Executors">
+                [原]JAVA并发编程：线程池Executors <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="payne" />
+          <p class="site-author-name" itemprop="name">payne</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">payne</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
