@@ -2285,7 +2285,7 @@ public void visit(TreeNode node){
     <link href="http://yoursite.com/2016/04/07/%E5%8E%9F-Spring-IOC/"/>
     <id>http://yoursite.com/2016/04/07/原-Spring-IOC/</id>
     <published>2016-04-07T10:11:04.000Z</published>
-    <updated>2017-04-27T09:01:25.000Z</updated>
+    <updated>2017-04-27T09:49:18.000Z</updated>
     
     <content type="html"><![CDATA[<p>下面主要讲解spring中IOC的DI几种配置方式</p>
 <p>一、</p>
@@ -2424,6 +2424,8 @@ public class AppBean {
     
     
       <category term="Testing" scheme="http://yoursite.com/tags/Testing/"/>
+    
+      <category term="Testing001" scheme="http://yoursite.com/tags/Testing001/"/>
     
   </entry>
   
