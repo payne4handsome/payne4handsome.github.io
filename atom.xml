@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-04-23T06:38:00.000Z</updated>
+  <updated>2017-04-26T08:27:24.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,33 +14,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="http://yoursite.com/2017/04/23/hello-world/"/>
-    <id>http://yoursite.com/2017/04/23/hello-world/</id>
-    <published>2017-04-23T06:38:00.000Z</published>
-    <updated>2017-04-23T06:38:00.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>[原]java Scanner 输入</title>
@@ -2444,6 +2417,80 @@ public class AppBean {
       &lt;p&gt;下面主要讲解spring中IOC的DI几种配置方式&lt;/p&gt;
 &lt;p&gt;一、&lt;/p&gt;
 &lt;pre code_snippet_id=&quot;1638051&quot; snippet_file_name=&quot;blog_20160407_1_6598311&quot; name=&quot;code&quot; class=&quot;htm
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>[原]java 自定义注解</title>
+    <link href="http://yoursite.com/2016/04/07/%E5%8E%9F-java-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3/"/>
+    <id>http://yoursite.com/2016/04/07/原-java-自定义注解/</id>
+    <published>2016-04-07T09:33:37.000Z</published>
+    <updated>2017-04-26T08:27:24.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><span style="color:rgb(51,51,51); font-family:Verdana,Arial,Helvetica,sans-serif; font-size:13.3333px; line-height:24px">元注解：</span></p>
+<p>　　元注解的作用就是负责注解其他注解。Java5.0定义了4个标准的meta-annotation类型，它们被用来提供对其它 annotation类型作说明。Java5.0定义的元注解：</p>
+<p>　　　　1.@Target,</p>
+<p>　　　　2.@Retention,</p>
+<p>　　　　3.@Documented,</p>
+<p>　　　　4.@Inherited</p>
+<p>　　这些类型和它们所支持的类在java.lang.annotation包中可以找到。下面我们看一下每个元注解的作用和相应分参数的使用说明。</p>
+<p><span style="margin:0px; padding:0px">@Target：</span></p>
+<p>　　　@Target说明了Annotation所修饰的对象范围：Annotation可被用于 packages、types（类、接口、枚举、Annotation类型）、类型成员（方法、构造方法、成员变量、枚举&#20540;）、方法参数和本地变量（如循环变量、catch参数）。在Annotation类型的声明中使用了target可更加明晰其修饰的目标。</p>
+<p><span style="margin:0px; padding:0px">　　作用：用于描述注解的使用范围（即：被描述的注解可以用在什么地方）</span></p>
+<p>　<span style="margin:0px; padding:0px">　取&#20540;(ElementType)有：</span></p>
+<p>　　　　1.CONSTRUCTOR:用于描述构造器</p>
+<p>　　　　2.FIELD:用于描述域</p>
+<p>　　　　3.LOCAL_VARIABLE:用于描述局部变量</p>
+<p>　　　　4.METHOD:用于描述方法</p>
+<p>　　　　5.PACKAGE:用于描述包</p>
+<p>　　　　6.PARAMETER:用于描述参数</p>
+<p>　　　　7.TYPE:用于描述类、接口(包括注解类型) 或enum声明</p>
+<p><span style="font-size:18px">实例：</span></p>
+<p><span style="font-size:18px"></span><pre code_snippet_id="1637997" snippet_file_name="blog_20160407_1_5118834" name="code" class="html">@Target(ElementType.TYPE)<br>@Retention(RetentionPolicy.RUNTIME)<br>@Documented<br>public @interface MyAnnotation {<br>    public String anthor();<br>    public String descripte();</pre></p>
+<p>}<br></p>
+<p><span style="font-size:18px">使用</span></p>
+<pre code_snippet_id="1637997" snippet_file_name="blog_20160407_2_8466903" name="code" class="html">@MyAnnotation(anthor=&quot;sunny&quot;,descripte=&quot;define annotation by myself&quot;)
+public class Demo {
+public static void main(String[] args) {
+    fun2();
+}
+public static void fun2(){
+    Class&lt;Demo&gt; c = Demo.class;
+    Annotation[] an = c.getAnnotations();
+
+    for(Annotation a : an){
+        if(a instanceof MyAnnotation){
+            MyAnnotation _a = (MyAnnotation)a;
+            System.out.println(_a.anthor());
+            System.out.println(_a.descripte());
+        }
+    }
+
+}
+public static void fun1(){
+    Class&lt;Demo&gt; c = Demo.class;
+    MyAnnotation my = (MyAnnotation)c.getAnnotation(MyAnnotation.class);
+    System.out.println(my.anthor());
+    System.out.println(my.descripte());
+}
+}
+</pre>
+
+<pre><code>&lt;div&gt;
+    作者：zhangpan19910604 发表于2016/4/7 17:33:37 [原文链接](http://blog.csdn.net/zhangpan19910604/article/details/51087679)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：99 评论：0 [查看评论](http://blog.csdn.net/zhangpan19910604/article/details/51087679#comments)
+&lt;/div&gt;
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;span style=&quot;color:rgb(51,51,51); font-family:Verdana,Arial,Helvetica,sans-serif; font-size:13.3333px; line-height:24px&quot;&gt;元注解：&lt;/span&gt;&lt;/p&gt;
+
     
     </summary>
     
