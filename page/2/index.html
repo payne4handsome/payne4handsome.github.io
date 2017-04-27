@@ -249,884 +249,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/19/原-java并发编程：顺序输出A、B、C循环10次/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="payne">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Payne Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/19/原-java并发编程：顺序输出A、B、C循环10次/" itemprop="url">
-                  [原]java并发编程：顺序输出A、B、C循环10次
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-19T15:20:48+08:00">
-                2016-05-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><span style="font-size:18px">要求：3个线程，分别输出A、B、C。循环10次，给出三种方法，code如下</span></p>
-<p><span style="font-size:18px">一、wait、notify</span></p>
-<p><span style="font-size:18px"></span><pre code_snippet_id="1689333" snippet_file_name="blog_20160519_1_1654284" name="code" class="html">public class PrintABC {<br>    static int state = 0;<br>    private static Object o = new Object();<br>    public static void main(String[] args) {<br>        ExecutorService ser = Executors.newCachedThreadPool();<br>        ser.submit(new ThreadA());<br>        ser.submit(new ThreadB());<br>        ser.submit(new ThreadC());</pre></p>
-<pre><code>    ser.shutdown();
-}
-
-public static class ThreadA implements Runnable {
-
-    @Override
-    public void run() {
-
-            for(int i=0;i&amp;lt;10;i++){
-                synchronized (o) {
-                    while(state%3!=0){
-                        try {
-                            o.wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    System.out.println(&amp;quot;A&amp;quot;);
-                    state++;
-                    o.notifyAll();
-                }
-
-        }
-    }
-
-}
-
-public static class ThreadB implements Runnable {
-    @Override
-    public void run() {
-        for(int i=0;i&amp;lt;10;i++){
-            synchronized (o) {
-                while(state%3!=1){
-                    try {
-                        o.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                System.out.println(&amp;quot;B&amp;quot;);
-                state++;
-                o.notifyAll();
-            }
-        }
-    }
-
-}
-
-public static class ThreadC implements Runnable {
-    @Override
-    public void run() {
-        for(int i=0;i&amp;lt;10;i++){
-            synchronized (o) {
-                while(state%3!=2){
-                    try {
-                        o.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                System.out.println(&amp;quot;C&amp;quot;);
-                state++;
-                o.notifyAll();
-            }
-        }
-    }
-
-}
-</code></pre><p>}二、lock、unlock</p>
-<p><span style="font-size:18px"></span><pre code_snippet_id="1689333" snippet_file_name="blog_20160519_2_4227795" name="code" class="html">public class PrintABC2 {<br>    static int state = 0;<br>    private static Lock lock = new ReentrantLock();<br>    public static void main(String[] args) {<br>        ExecutorService ser = Executors.newCachedThreadPool();<br>        ser.submit(new ThreadA());<br>        ser.submit(new ThreadB());<br>        ser.submit(new ThreadC());</pre></p>
-<pre><code>    ser.shutdown();
-}
-
-public static class ThreadA implements Runnable {
-
-    @Override
-    public void run() {
-
-            for(int i=0;i&amp;lt;10;){
-                lock.lock();
-                if(state%3==0){
-                    System.out.println(&amp;quot;A&amp;quot;);
-                    state++;
-                    i++;
-                }
-                lock.unlock();
-            }
-
-        }
-    }
-
-public static class ThreadB implements Runnable {
-    @Override
-    public void run() {
-        for(int i=0;i&amp;lt;10;){
-            lock.lock();
-            if(state%3==1){
-                System.out.println(&amp;quot;B&amp;quot;);
-                state++;
-                i++;
-            }
-            lock.unlock();
-        }
-    }
-
-}
-
-public static class ThreadC implements Runnable {
-    @Override
-    public void run() {
-        for(int i=0;i&amp;lt;10;){
-            lock.lock();
-            if(state%3==2){
-                System.out.println(&amp;quot;C&amp;quot;);
-                state++;
-                i++;
-            }
-            lock.unlock();
-        }
-    }
-
-}
-</code></pre><p>}</p>
-<p>三、信号量</p>
-<p><span style="font-size:18px"></span><pre code_snippet_id="1689333" snippet_file_name="blog_20160519_3_7989786" name="code" class="html">public class PrintABC3 {<br>    static int state = 0;<br>     private static Semaphore A = new Semaphore(1);<br>     private static Semaphore B = new Semaphore(1);<br>     private static Semaphore C = new Semaphore(1);<br>    public static void main(String[] args) {<br>        ExecutorService ser = Executors.newCachedThreadPool();<br>        try {<br>            B.acquire();<br>            C.acquire();<br>        } catch (InterruptedException e) {<br>            // TODO Auto-generated catch block<br>            e.printStackTrace();<br>        }</pre></p>
-<pre><code>    ser.submit(new ThreadA());
-    ser.submit(new ThreadB());
-    ser.submit(new ThreadC());
-
-    ser.shutdown();
-}
-      static class ThreadA extends Thread {
-
-        @Override
-         public void run() {
-             try {
-                 for (int i = 0; i &amp;lt; 10; i++) {
-                    A.acquire();
-                     System.out.print(&amp;quot;A&amp;quot;);
-                     sleep(2000);
-                     B.release();
-                 }
-             } catch (InterruptedException e) {
-                 e.printStackTrace();
-             }
-         }
-
-     }
-
-     static class ThreadB extends Thread {
-
-         @Override
-         public void run() {
-             try {
-                 for (int i = 0; i &amp;lt; 10; i++) {
-                    B.acquire();
-                     System.out.print(&amp;quot;B&amp;quot;);
-                     C.release();
-                 }
-             } catch (InterruptedException e) {
-                 e.printStackTrace();
-             }
-         }
-
-     }
-
-     static class ThreadC extends Thread {
-     @Override
-     public void run() {
-         try {
-             for (int i = 0; i &amp;lt; 10; i++) {
-                C.acquire();
-                 System.out.print(&amp;quot;C&amp;quot;);
-                 A.release();
-             }
-         } catch (InterruptedException e) {
-             e.printStackTrace();
-         }
-     }
-
-     }
-</code></pre><p>}<br></p>
-<p>结果如下：</p>
-<p><span style="font-size:18px"></span><pre code_snippet_id="1689333" snippet_file_name="blog_20160519_4_1228390" name="code" class="html">A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br>A<br>B<br>C<br></pre></p>
-<pre><code>&lt;div&gt;
-    作者：zhangpan19910604 发表于2016/5/19 15:20:48 [原文链接](http://blog.csdn.net/zhangpan19910604/article/details/51454087)
-&lt;/div&gt;
-&lt;div&gt;
-阅读：360 评论：0 [查看评论](http://blog.csdn.net/zhangpan19910604/article/details/51454087#comments)
-&lt;/div&gt;
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/17/原-JAVA并发编程：线程池Executors/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="payne">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Payne Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/17/原-JAVA并发编程：线程池Executors/" itemprop="url">
-                  [原]JAVA并发编程：线程池Executors
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-17T13:44:35+08:00">
-                2016-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><span style="font-size:18px"><span style="font-family:SimSun">Java中对线程池提供了很好的支持，有了线程池，我们就不需要自已再去创建线程。<span style="line-height:28px">如果并发的线程数量很多，并且每个线程都是执行一个时间很短的任务就结束了，频繁创建线程就会大大降低系统的效率，因为频繁创建线程和销毁线程需要时间。JAVA的线程池中的线程可以在执行完任务后，不销毁，继续执行其他的任务。所以了解Java的线程池对我们掌握并发编程是很有帮助的，下面我就从Executors这个多线程框架开始讲起，首先看一下Executors中主要的方法</span></span></span></p>
-<p><span style="font-size:18px"><span style="font-family:Verdana,Arial,Helvetica,sans-serif; line-height:28px"></span></span></p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_1_6805165" name="code" class="html"> public static ExecutorService newFixedThreadPool(int nThreads) {
-        return new ThreadPoolExecutor(nThreads, nThreads,
-                                      0L, TimeUnit.MILLISECONDS,
-                                      new LinkedBlockingQueue&lt;Runnable&gt;());
-    }
-    public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory threadFactory) {
-        return new ThreadPoolExecutor(nThreads, nThreads,
-                                      0L, TimeUnit.MILLISECONDS,
-                                      new LinkedBlockingQueue&lt;Runnable&gt;(),
-                                      threadFactory);
-    }
-
-    public static ExecutorService newSingleThreadExecutor() {
-        return new FinalizableDelegatedExecutorService
-            (new ThreadPoolExecutor(1, 1,
-                                    0L, TimeUnit.MILLISECONDS,
-                                    new LinkedBlockingQueue&lt;Runnable&gt;()));
-    }
-    public static ExecutorService newSingleThreadExecutor(ThreadFactory threadFactory) {
-        return new FinalizableDelegatedExecutorService
-            (new ThreadPoolExecutor(1, 1,
-                                    0L, TimeUnit.MILLISECONDS,
-                                    new LinkedBlockingQueue&lt;Runnable&gt;(),
-                                    threadFactory));
-    }
-
-    public static ExecutorService newCachedThreadPool() {
-        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                                      60L, TimeUnit.SECONDS,
-                                      new SynchronousQueue&lt;Runnable&gt;());
-    }
-    public static ExecutorService newCachedThreadPool(ThreadFactory threadFactory) {
-        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                                      60L, TimeUnit.SECONDS,
-                                      new SynchronousQueue&lt;Runnable&gt;(),
-                                      threadFactory);
-    }
-
-</pre>
-
-<p><span style="font-family:SimSun; font-size:18px">如果我们要Exectutors来创建线程池，基本离不开上面几个方法，我们可以看出上面几个方法中都用到了ThreadPoolExecutor这个类，且都返回ExecutorService对象。我们先看一下ExecutorService的主要方法。</span></p>
-<p><span style="font-size:18px"><span style="font-family:Verdana,Arial,Helvetica,sans-serif; line-height:28px"></span></span></p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_2_7088573" name="code" class="html">public interface ExecutorService extends Executor {
-    void shutdown();
-
-    List&lt;Runnable&gt; shutdownNow();
-
-    boolean isTerminated();
-
-    boolean awaitTermination(long timeout, TimeUnit unit)
-        throws InterruptedException;</pre><pre code_snippet_id="1686306" snippet_file_name="blog_20160517_3_4929765" name="code" class="html">    &lt;T&gt; Future&lt;T&gt; submit(Callable&lt;T&gt; task);
-
-    &lt;T&gt; Future&lt;T&gt; submit(Runnable task, T result);
-
-    Future&lt;?&gt; submit(Runnable task);
-}
-</pre><span style="font-family:SimSun; font-size:18px">shutdown()&nbsp;启动一次顺序关闭，执行以前提交的任务，但不接受新任务</span>
-
-<span style="line-height:28px"><span style="font-family:SimSun; font-size:18px">shutdownnow()试图停止所有正在执行的活动任务，暂停处理正在等待的任务，并返回等待执行的任务列表</span></span>
-
-<span style="line-height:28px"><span style="font-family:SimSun; font-size:18px">submit()用来提交任务。</span></span>
-
-<span style="line-height:28px"><span style="font-family:SimSun; font-size:18px"><span style="font-family:SimSun; font-size:18px">Executors一般如下使用</span></span></span>
-
-<span style="font-family:Verdana,Arial,Helvetica,sans-serif; line-height:28px"></span>
-
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_8_8354282" name="code" class="html" style="font-size: 13.3333px;">    ExecutorService service = Executors.newFixedThreadPool(1);
-        for(int i=0;i&lt;10;i++){
-            service.submit(new Task(i));
-        }
-        service.shutdown();</pre><span style="font-family:SimSun; font-size:18px">Exectors调用静态方法，利用ThreadPoolExecutor来创建线程池，然后submit提交任务，我们看一下submit的代码</span>
-
-<span style="font-family:Verdana,Arial,Helvetica,sans-serif; line-height:28px"></span>
-
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_9_6544139" name="code" class="html" style="font-size: 13.3333px;"> public Future&lt;?&gt; submit(Runnable task) {
-        if (task == null) throw new NullPointerException();
-        RunnableFuture&lt;Object&gt; ftask = newTaskFor(task, null);
-        execute(ftask);
-        return ftask;
-    }</pre>
-
-<h1 id="ThreaPoolExecutor实现原理深入分析"><a href="#ThreaPoolExecutor实现原理深入分析" class="headerlink" title="ThreaPoolExecutor实现原理深入分析"></a><span style="line-height:28px"><span style="font-family:SimSun; font-size:18px">ThreaPoolExecutor实现原理深入分析</span></span></h1><div><span style="line-height:28px"><span style="font-family:SimSun; font-size:18px">我们先来看一下Executors线程池框架用到几个主要的类（接口）这件的关系。</span></span></div><br><div><span style="line-height:28px"><span style="font-family:SimSun; font-size:18px"></span></span><br><br><span style="font-family:SimSun; font-size:18px">ThreadPoolExecutor、AbstractExecutorService（抽象类）、ExecutorService（接口）和Executor（接口）几个之间的关系如下。</span><br><br><span style="font-family:SimSun; font-size:18px">Executor是一个顶层接口，在它里面只声明了一个方法execute(Runnable)，返回&#20540;为void，参数为Runnable类型，从字面意思可以理解，就是用来执行传进去的任务的；</span><br><br><span style="font-family:SimSun; font-size:18px">然后ExecutorService接口继承了Executor接口，并声明了一些方法：submit、invokeAll、invokeAny以及shutDown等；</span><br><br><span style="font-family:SimSun; font-size:18px">抽象类AbstractExecutorService实现了ExecutorService接口，基本实现了ExecutorService中声明的所有方法；</span><br><br><span style="font-family:SimSun; font-size:18px">然后ThreadPoolExecutor继承了类AbstractExecutorService。</span><br><br><span style="font-family:SimSun; font-size:18px">在ThreadPoolExecutor类中有几个非常重要的方法：</span><br><br><div class="cnblogs_Highlighter sh-gutter" style="margin:0px; padding:0px; font-family:Verdana,Arial,Helvetica,sans-serif; font-size:14px; line-height:21px"><br><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word">execute()<br>submit()<br>shutdown()<br>shutdownNow()<br></pre><br></div>
-
-<p><span style="font-family:SimSun; font-size:18px">execute()方法实际上是Executor接口中声明的方法，在ThreadPoolExecutor进行了具体的实现，这个方法是ThreadPoolExecutor的核心方法，通过这个方法可以向线程池提交一个任务，交由线程池去执行。所以上面ExecutorService中submit()方法中调用的execute()方法是在ThreadPollExecutor中实现的。所以我们研究ThreadPoolExecutor这个类中首先从execute()这个方法开始，在开始之间先看一下ThreadPoolExecutor中的构造函数和一些主要的成员变量</span></p>
-<h2 id="ThreadPoolExecutor构造函数"><a href="#ThreadPoolExecutor构造函数" class="headerlink" title="ThreadPoolExecutor构造函数"></a><span style="line-height:28px"><span style="font-family:SimSun; font-size:18px"><span style="font-family:SimSun; font-size:18px; line-height:28px">ThreadPoolExecutor构造函数</span></span></span></h2><p></p></div><p></p>
-<p><span style="line-height:28px"><span style="font-family:SimSun; font-size:18px"><span style="line-height:28px">在</span><span style="line-height:28px">ThreadPoolExecutor类中提供了四个构造方法：</span></span></span></p>
-<p><span style="font-family:Verdana,Arial,Helvetica,sans-serif; line-height:28px"></span></p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_4_9531571" name="code" class="html" style="font-size: 14px;">public class ThreadPoolExecutor extends AbstractExecutorService {
-    .....
-    public ThreadPoolExecutor(int corePoolSize,int maximumPoolSize,long keepAliveTime,TimeUnit unit,
-            BlockingQueue&lt;Runnable&gt; workQueue);
-
-    public ThreadPoolExecutor(int corePoolSize,int maximumPoolSize,long keepAliveTime,TimeUnit unit,
-            BlockingQueue&lt;Runnable&gt; workQueue,ThreadFactory threadFactory);
-
-    public ThreadPoolExecutor(int corePoolSize,int maximumPoolSize,long keepAliveTime,TimeUnit unit,
-            BlockingQueue&lt;Runnable&gt; workQueue,RejectedExecutionHandler handler);
-
-    public ThreadPoolExecutor(int corePoolSize,int maximumPoolSize,long keepAliveTime,TimeUnit unit,
-        BlockingQueue&lt;Runnable&gt; workQueue,ThreadFactory threadFactory,RejectedExecutionHandler handler);
-    ...
-}</pre>
-
-<p><span style="font-family:SimSun; font-size:18px">从上面的代码可以得知，ThreadPoolExecutor继承了AbstractExecutorService类，并提供了四个构造器，事实上，通过观察每个构造器的源码具体实现，发现前面三个构造器都是调用的第四个构造器进行的初始化工作。</span></p>
-<p><span style="font-family:SimSun; font-size:18px">下面解释下一下构造器中各个参数的含义：</span></p>
-<ul>
-<li><span style="font-family:SimSun; font-size:18px">corePoolSize：核心池的大小，这个参数跟后面讲述的线程池的实现原理有非常大的关系。在创建了线程池后，默认情况下，线程池中并没有任何线程，而是等待有任务到来才创建线程去执行任务，除非调用了prestartAllCoreThreads()或者prestartCoreThread()方法，从这2个方法的名字就可以看出，是预创建线程的意思，即在没有任务到来之前就创建corePoolSize个线程或者一个线程。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中；</span></li>
-<li><span style="font-family:SimSun; font-size:18px">maximumPoolSize：线程池最大线程数，这个参数也是一个非常重要的参数，它表示在线程池中最多能创建多少个线程；</span></li>
-<li><span style="font-family:SimSun; font-size:18px">keepAliveTime：表示线程没有任务执行时最多保持多久时间会终止。默认情况下，只有当线程池中的线程数大于corePoolSize时，keepAliveTime才会起作用，直到线程池中的线程数不大于corePoolSize，即当线程池中的线程数大于corePoolSize时，如果一个线程空闲的时间达到keepAliveTime，则会终止，直到线程池中的线程数不超过corePoolSize。但是如果调用了allowCoreThreadTimeOut(boolean)方法，在线程池中的线程数不大于corePoolSize时，keepAliveTime参数也会起作用，直到线程池中的线程数为0；</span></li>
-<li><p><span style="font-family:SimSun; font-size:18px">unit：参数keepAliveTime的时间单位，有7种取&#20540;，在TimeUnit类中有7种静态属性：</span></p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_5_7721427" name="code" class="html">TimeUnit.DAYS;               //天
-TimeUnit.HOURS;             //小时
-TimeUnit.MINUTES;           //分钟
-TimeUnit.SECONDS;           //秒
-TimeUnit.MILLISECONDS;      //毫秒
-TimeUnit.MICROSECONDS;      //微妙
-TimeUnit.NANOSECONDS;       //纳秒</pre>
-</li>
-<li><p><span style="font-family:SimSun; font-size:18px">workQueue：一个阻塞队列，用来存储等待执行的任务，这个参数的选择也很重要，会对线程池的运行过程产生重大影响，一般来说，这里的阻塞队列有以下几种选择：</span></p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_6_1102518" name="code" class="html">ArrayBlockingQueue;
-LinkedBlockingQueue;
-SynchronousQueue;</pre>
-
-</li>
-</ul>
-<p><span style="font-family:SimSun; font-size:18px">　<span style="margin:0px; padding:0px">ArrayBlockingQueue和PriorityBlockingQueue使用较少，</span>一般使用LinkedBlockingQueue和Synchronous。线程池的排队策略与BlockingQueue有关。</span></p>
-<ul>
-<li><span style="font-family:SimSun; font-size:18px">threadFactory：线程工厂，主要用来创建线程；</span></li>
-<li><span style="font-family:SimSun; font-size:18px">handler：表示当拒绝处理任务时的策略，有以下四种取&#20540;：</span><br><pre code_snippet_id="1686306" snippet_file_name="blog_20160517_7_3752476" name="code" class="html">ThreadPoolExecutor.AbortPolicy:丢弃任务并抛出RejectedExecutionException异常。<br>ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。<br>ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）<br>ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务 </pre><span style="font-size:18px"></span></li>
-</ul>
-<p><span style="font-family:Verdana,Arial,Helvetica,sans-serif; line-height:28px"><span style="font-size:18px"></span></span></p>
-<p>##<br>ThreadPoolExecutor主要成员变量</p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_10_435109" name="code" class="html">private final BlockingQueue&lt;Runnable&gt; workQueue;              //任务缓存队列，用来存放等待执行的任务
-private final ReentrantLock mainLock = new ReentrantLock();   //线程池的主要状态锁，对线程池状态（比如线程池大小
-                                                              //、runState等）的改变都要使用这个锁
-private final HashSet&lt;Worker&gt; workers = new HashSet&lt;Worker&gt;();  //用来存放工作集
-
-private volatile long  keepAliveTime;    //线程存货时间    
-private volatile boolean allowCoreThreadTimeOut;   //是否允许为核心线程设置存活时间
-private volatile int   corePoolSize;     //核心池的大小（即线程池中的线程数目大于这个参数时，提交的任务会被放进任务缓存队列）
-private volatile int   maximumPoolSize;   //线程池最大能容忍的线程数
-
-private volatile int   poolSize;       //线程池中当前的线程数
-
-private volatile RejectedExecutionHandler handler; //任务拒绝策略
-
-private volatile ThreadFactory threadFactory;   //线程工厂，用来创建线程
-
-private int largestPoolSize;   //用来记录线程池中曾经出现过的最大线程数
-
-private long completedTaskCount;   //用来记录已经执行完毕的任务个数</pre>
-
-<h2 id="线程池状态"><a href="#线程池状态" class="headerlink" title="线程池状态"></a>线程池状态</h2><p><span style="font-family:SimSun; font-size:18px; line-height:2">在ThreadPoolExecutor中定义了一个volatile变量，另外定义了几个static final变量表示线程池的各个状态：</span></p>
-<div class="cnblogs_Highlighter sh-gutter" style="margin:0px; padding:0px; font-family:Verdana,Arial,Helvetica,sans-serif; font-size:14px; line-height:21px"><br><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word">volatile int runState;<br>static final int RUNNING    = 0;<br>static final int SHUTDOWN   = 1;<br>static final int STOP       = 2;<br>static final int TERMINATED = 3;<br></pre><br></div>
-
-<p><span style="font-family:SimSun; font-size:18px">runState表示当前线程池的状态，它是一个volatile变量用来保证线程之间的可见性；</span></p>
-<p><span style="font-family:SimSun; font-size:18px">下面的几个static final变量表示runState可能的几个取&#20540;。</span></p>
-<p><span style="font-family:SimSun; font-size:18px">当创建线程池后，初始时，线程池处于RUNNING状态；</span></p>
-<p><span style="font-family:SimSun; font-size:18px">如果调用了shutdown()方法，则线程池处于SHUTDOWN状态，此时线程池不能够接受新的任务，它会等待所有任务执行完毕；</span></p>
-<p><span style="font-family:SimSun; font-size:18px">如果调用了shutdownNow()方法，则线程池处于STOP状态，此时线程池不能接受新的任务，并且会去尝试终止正在执行的任务；</span></p>
-<p><span style="font-family:SimSun; font-size:18px">当线程池处于SHUTDOWN或STOP状态，并且所有工作线程已经销毁，任务缓存队列已经清空或执行结束后，线程池被设置为TERMINATED状态。</span></p>
-<h2 id="ThreadPoolExecutor实现原理"><a href="#ThreadPoolExecutor实现原理" class="headerlink" title="ThreadPoolExecutor实现原理"></a>ThreadPoolExecutor实现原理</h2><p><span style="font-size:18px">介绍完ThreadPoolExecutor的构函数、成员变量和线程状态，我们来介绍最核心的内容。上文已经介绍过当我们把任务用ExecutorService的submit提交后是调用的ThreadPoolExecutor的execute来执行的，我们</span><span style="font-family:SimSun; font-size:18px">来看一下execute的代码</span></p>
-<p><span style="font-family:Verdana,Arial,Helvetica,sans-serif; line-height:28px"><span style="font-size:18px"></span></span></p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_10_2782148" name="code" class="html"> public void execute(Runnable command) {
-        if (command == null)
-            throw new NullPointerException();
-        if (poolSize &gt;= corePoolSize || !addIfUnderCorePoolSize(command)) {
-            if (runState == RUNNING &amp;&amp; workQueue.offer(command)) {
-                if (runState != RUNNING || poolSize == 0)
-                    ensureQueuedTaskHandled(command);
-            }
-            else if (!addIfUnderMaximumPoolSize(command))
-                reject(command); // is shutdown or saturated
-        }
-    }</pre>
-
-<p><span style="font-family:SimSun; font-size:18px">我们开分析一下上面的代码，如果提交的任务command为null，则抛出空异常，</span></p>
-<p><span style="font-family:SimSun; font-size:18px"></span></p>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; font-size:14px; line-height:21px; background-color:rgb(255,255,255)">if (poolSize &gt;= corePoolSize || !addIfUnderCorePoolSize(command))</pre>
-
-<p><span style="font-family:Verdana,Arial,Helvetica,sans-serif; font-size:14px">&nbsp;</span>由于是或条件运算符，所以先计算前半部分的&#20540;，如果线程池中当前线程数不小于核心池大小，那么就会直接进入下面的if语句块了。</p>
-<p>如果线程池中当前线程数小于核心池大小，则接着执行后半部分，也就是执行</p>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)"><span style="font-family:SimSun">addIfUnderCorePoolSize(command)</span></pre>
-
-<p>如果执行完addIfUnderCorePoolSize这个方法返回false，则继续执行下面的if语句块，否则整个方法就直接执行完毕了。</p>
-<p><span style="line-height:28px">如果执行完addIfUnderCorePoolSize这个方法返回false，然后接着判断：</span></p>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)"></pre>
-
-<p><span style="font-family:SimSun; font-size:18px">if (runState == RUNNING &amp;&amp; workQueue.offer(command))</span></p>
-<p><span style="font-family:SimSun; font-size:18px"></span></p>
-<p><span style="font-family:SimSun; font-size:18px">如果当前线程池处于RUNNING状态，则将任务放入任务缓存队列；如果当前线程池不处于RUNNING状态或者任务放入缓存队列失败，则执行：</span></p>
-<div class="cnblogs_Highlighter sh-gutter" style="margin:0px; padding:0px; line-height:21px"><br><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-family:SimSun; font-size:18px">addIfUnderMaximumPoolSize(command)<br></span></pre><br></div>
-
-<p><span style="font-family:SimSun; font-size:18px">如果执行addIfUnderMaximumPoolSize方法失败，则执行reject()方法进行任务拒绝处理。<span style="line-height:2">回到前面：</span></span></p>
-<div class="cnblogs_Highlighter sh-gutter" style="margin:0px; padding:0px; line-height:21px"><br><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-family:SimSun; font-size:18px">if (runState == RUNNING &amp;&amp; workQueue.offer(command))<br></span></pre><br></div>
-
-<p><span style="font-family:SimSun; font-size:18px">&nbsp;这句的执行，如果说当前线程池处于RUNNING状态且将任务放入任务缓存队列成功，则继续进行判断：</span></p>
-<div class="cnblogs_Highlighter sh-gutter" style="margin:0px; padding:0px; line-height:21px"><br><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-family:SimSun; font-size:18px">if (runState != RUNNING || poolSize == 0)<br></span></pre><br></div>
-
-<p><span style="font-family:SimSun; font-size:18px">&nbsp;这句判断是为了防止在将此任务添加进任务缓存队列的同时其他线程突然调用shutdown或者shutdownNow方法关闭了线程池的一种应急措施。如果是这样就执行</span></p>
-<div class="cnblogs_Highlighter sh-gutter" style="margin:0px; padding:0px; line-height:21px"><br><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-family:SimSun; font-size:18px">ensureQueuedTaskHandled(command)<br></span></pre><br></div>
-
-<p><span style="font-family:SimSun; font-size:18px">进行应急处理，从名字可以看出是保证 添加到任务缓存队列中的任务得到处理。</span></p>
-<p><span style="font-family:SimSun; font-size:18px"><span style="line-height:28px">我们接着看2个关键方法的实现：addIfUnderCorePoolSize和addIfUnderMaximumPoolSize：</span></span></p>
-<p></p>
-<p><span style="font-family:SimSun; font-size:18px"></span></p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_12_5702007" name="code" class="html">private boolean addIfUnderCorePoolSize(Runnable firstTask) {
-    Thread t = null;
-    final ReentrantLock mainLock = this.mainLock;
-    mainLock.lock();
-    try {
-        if (poolSize &lt; corePoolSize &amp;&amp; runState == RUNNING)
-            t = addThread(firstTask);        //创建线程去执行firstTask任务    
-        } finally {
-        mainLock.unlock();
-    }
-    if (t == null)
-        return false;
-    t.start();
-    return true;
-}</pre>
-
-<p>这个是addIfUnderCorePoolSize方法的具体实现，从名字可以看出它的意图就是当低于核心吃大小时执行的方法。下面看其具体实现，首先获取到锁，因为这地方涉及到线程池状态的变化，先通过if语句判断当前线程池中的线程数目是否小于核心池大小，有朋友也许会有疑问：前面在execute()方法中不是已经判断过了吗，只有线程池当前线程数目小于核心池大小才会执行addIfUnderCorePoolSize方法的，为何这地方还要继续判断？原因很简单，前面的判断过程中并没有加锁，因此可能在execute方法判断的时候poolSize小于corePoolSize，而判断完之后，在其他线程中又向线程池提交了任务，就可能导致poolSize不小于corePoolSize了，所以需要在这个地方继续判断。然后接着判断线程池的状态是否为RUNNING，原因也很简单，因为有可能在其他线程中调用了shutdown或者shutdownNow方法。然后就是执行</p>
-<div class="cnblogs_Highlighter sh-gutter" style="margin:0px; padding:0px; line-height:21px"><br><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-family:SimSun">t = addThread(firstTask);<br></span></pre><br></div>
-
-<p>这个方法也非常关键，传进去的参数为提交的任务，返回&#20540;为Thread类型。然后接着在下面判断t是否为空，为空则表明创建线程失败（即poolSize&gt;=corePoolSize或者runState不等于RUNNING），否则调用t.start()方法启动线程。</p>
-<p>我们来看一下addThread方法的实现：</p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_13_9639504" name="code" class="html">private Thread addThread(Runnable firstTask) {
-    Worker w = new Worker(firstTask);
-    Thread t = threadFactory.newThread(w);  //创建一个线程，执行任务    
-    if (t != null) {
-        w.thread = t;            //将创建的线程的引用赋值为w的成员变量        
-        workers.add(w);
-        int nt = ++poolSize;     //当前线程数加1        
-        if (nt &gt; largestPoolSize)
-            largestPoolSize = nt;
-    }
-    return t;
-}</pre>
-
-<p><span style="line-height:28px">在addThread方法中，首先用提交的任务创建了一个Worker对象，然后调用线程工厂threadFactory创建了一个新的线程t，然后将线程t的引用赋&#20540;给了Worker对象的成员变量thread，接着通过workers.add(w)将Worker对象添加到工作集当中。</span></p>
-<p><span style="line-height:28px"><span style="font-family:SimSun; font-size:18px">下面我们看一下Worker类的实现：</span></span></p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_14_8352748" name="code" class="html">private final class Worker implements Runnable {
-    private final ReentrantLock runLock = new ReentrantLock();
-    private Runnable firstTask;
-    volatile long completedTasks;
-    Thread thread;
-    Worker(Runnable firstTask) {
-        this.firstTask = firstTask;
-    }
-    boolean isActive() {
-        return runLock.isLocked();
-    }
-    void interruptIfIdle() {
-        final ReentrantLock runLock = this.runLock;
-        if (runLock.tryLock()) {
-            try {
-        if (thread != Thread.currentThread())
-        thread.interrupt();
-            } finally {
-                runLock.unlock();
-            }
-        }
-    }
-    void interruptNow() {
-        thread.interrupt();
-    }
-
-    private void runTask(Runnable task) {
-        final ReentrantLock runLock = this.runLock;
-        runLock.lock();
-        try {
-            if (runState &lt; STOP &amp;&amp;
-                Thread.interrupted() &amp;&amp;
-                runState &gt;= STOP)
-            boolean ran = false;
-            beforeExecute(thread, task);   //beforeExecute方法是ThreadPoolExecutor类的一个方法，没有具体实现，用户可以根据
-            //自己需要重载这个方法和后面的afterExecute方法来进行一些统计信息，比如某个任务的执行时间等            
-            try {
-                task.run();
-                ran = true;
-                afterExecute(task, null);
-                ++completedTasks;
-            } catch (RuntimeException ex) {
-                if (!ran)
-                    afterExecute(task, ex);
-                throw ex;
-            }
-        } finally {
-            runLock.unlock();
-        }
-    }
-
-    public void run() {
-        try {
-            Runnable task = firstTask;
-            firstTask = null;
-            while (task != null || (task = getTask()) != null) {
-                runTask(task);
-                task = null;
-            }
-        } finally {
-            workerDone(this);   //当任务队列中没有任务时，进行清理工作        
-        }
-    }
-}</pre><span style="line-height:28px"><span style="font-family:SimSun; font-size:18px">既然Worker实现了Runnable接口，那么自然最核心的方法便是run()方法了：</span></span><pre code_snippet_id="1686306" snippet_file_name="blog_20160517_15_1002708" name="code" class="html">public void run() {
-    try {
-        Runnable task = firstTask;
-        firstTask = null;
-        while (task != null || (task = getTask()) != null) {
-            runTask(task);
-            task = null;
-        }
-    } finally {
-        workerDone(this);
-    }
-}</pre>
-
-<p><span style="font-family:SimSun; font-size:18px"><strong>这里意思是如果传递的task不为空，则立即执行，注意这里执行完了，并不是该线程就结束了，假如一开始的时候我们corePoolSize的大小为5，那么如果提交了5个任务，那么每个任务执行&nbsp;runTask(task)后并没有结束，而是每个任务都对调用task = getTask()，去队列中取任务，这也是ThreadPoolExecutor提升效率的关键地方</strong>。<span style="line-height:28px">getTask是ThreadPoolExecutor类中的方法，并不是Worker类中的方法，下面是getTask方法的实现：</span></span><pre code_snippet_id="1686306" snippet_file_name="blog_20160517_16_3096259" name="code" class="html">Runnable getTask() {<br>    for (;;) {<br>        try {<br>            int state = runState;<br>            if (state &gt; SHUTDOWN)<br>                return null;<br>            Runnable r;<br>            if (state == SHUTDOWN)  // Help drain queue<br>                r = workQueue.poll();<br>            else if (poolSize &gt; corePoolSize || allowCoreThreadTimeOut) //如果线程数大于核心池大小或者允许为核心池线程设置空闲时间，<br>                //则通过poll取任务，若等待一定的时间取不到任务，则返回null<br>                r = workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS);<br>            else<br>                r = workQueue.take();<br>            if (r != null)<br>                return r;<br>            if (workerCanExit()) {    //如果没取到任务，即r为null，则判断当前的worker是否可以退出<br>                if (runState &gt;= SHUTDOWN) // Wake up others<br>                    interruptIdleWorkers();   //中断处于空闲状态的worker<br>                return null;<br>            }<br>            // Else retry<br>        } catch (InterruptedException ie) {<br>            // On interruption, re-check runState<br>        }<br>    }<br>}</pre></p>
-<p><span style="font-family:SimSun; font-size:18px">在getTask中，先判断当前线程池状态，如果runState大于SHUTDOWN（即为STOP或者TERMINATED），则直接返回null。</span></p>
-<p><span style="font-family:SimSun; font-size:18px">如果runState为SHUTDOWN或者RUNNING，则从任务缓存队列取任务。</span></p>
-<p><span style="font-family:SimSun; font-size:18px">如果当前线程池的线程数大于核心池大小corePoolSize或者允许为核心池中的线程设置空闲存活时间，则调用poll(time,timeUnit)来取任务，这个方法会等待一定的时间，如果取不到任务就返回null。</span></p>
-<p><span style="font-family:SimSun; font-size:18px">然后判断取到的任务r是否为null，为null则通过调用workerCanExit()方法来判断当前worker是否可以退出，我们看一下workerCanExit()的实现：</span></p>
-<pre code_snippet_id="1686306" snippet_file_name="blog_20160517_17_3445706" name="code" class="html">private boolean workerCanExit() {
-    final ReentrantLock mainLock = this.mainLock;
-    mainLock.lock();
-    boolean canExit;
-    //如果runState大于等于STOP，或者任务缓存队列为空了
-    //或者  允许为核心池线程设置空闲存活时间并且线程池中的线程数目大于1
-    try {
-        canExit = runState &gt;= STOP ||
-            workQueue.isEmpty() ||
-            (allowCoreThreadTimeOut &amp;&amp;
-             poolSize &gt; Math.max(1, corePoolSize));
-    } finally {
-        mainLock.unlock();
-    }
-    return canExit;
-}</pre>
-
-<p><span style="line-height:28px"><span style="font-family:SimSun; font-size:18px">我们再看addIfUnderMaximumPoolSize方法的实现，这个方法的实现思想和addIfUnderCorePoolSize方法的实现思想非常相&#20284;，唯一的区别在于addIfUnderMaximumPoolSize方法是在线程池中的线程数达到了核心池大小并且往任务队列中添加任务失败的情况下执行的：</span></span></p>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)"><pre code_snippet_id="1686306" snippet_file_name="blog_20160517_18_6095664" name="code" class="html" style="font-size: 14px;">private boolean addIfUnderMaximumPoolSize(Runnable firstTask) {
-    Thread t = null;
-    final ReentrantLock mainLock = this.mainLock;
-    mainLock.lock();
-    try {
-        if (poolSize &lt; maximumPoolSize &amp;&amp; runState == RUNNING)
-            t = addThread(firstTask);
-    } finally {
-        mainLock.unlock();
-    }
-    if (t == null)
-        return false;
-    t.start();
-    return true;
-}</pre>
-
-<p><strong><span style="font-family:SimSun; font-size:18px">看到没有，其实它和addIfUnderCorePoolSize方法的实现基本一模一样，只是if语句判断条件中的poolSize &lt; maximumPoolSize不同而已。</span></strong></p>
-<p><strong><span style="font-family:SimSun; font-size:18px">　　到这里，大部分朋友应该对任务提交给线程池之后到被执行的整个过程有了一个基本的了解，下面总结一下：</span></strong></p>
-<p><strong><span style="font-family:SimSun; font-size:18px">　　1）首先，要清楚corePoolSize和maximumPoolSize的含义；</span></strong></p>
-<p><strong><span style="font-family:SimSun; font-size:18px">　　2）其次，要知道Worker是用来起到什么作用的；</span></strong></p>
-<p><strong><span style="font-family:SimSun; font-size:18px">　　3）要知道任务提交给线程池之后的处理策略，这里总结一下主要有4点：</span></strong></p>
-<ul>
-<li><strong><span style="font-family:SimSun; font-size:18px">如果当前线程池中的线程数目小于corePoolSize，则每来一个任务，就会创建一个线程去执行这个任务；</span></strong></li>
-<li><strong><span style="font-family:SimSun; font-size:18px">如果当前线程池中的线程数目&gt;=corePoolSize，则每来一个任务，会尝试将其添加到任务缓存队列当中，若添加成功，则该任务会等待空闲线程将其取出去执行；若添加失败（一般来说是任务缓存队列已满），则会尝试创建新的线程去执行这个任务（当corePoolSize小于<span style="line-height:21px; white-space:pre-wrap">maximumPoolSize时候才会创建新的线程</span>）；</span></strong></li>
-<li><strong><span style="font-family:SimSun; font-size:18px">如果当前线程池中的线程数目达到maximumPoolSize，则会采取任务拒绝策略进行处理；</span></strong></li>
-<li><strong><span style="font-family:SimSun; font-size:18px">如果线程池中的线程数量大于 corePoolSize时，如果某线程空闲时间超过keepAliveTime，线程将被终止，直至线程池中的线程数目不大于corePoolSize；如果允许为核心池中的线程设置存活时间，那么核心池中的线程空闲时间超过keepAliveTime，线程也会被终止。</span></strong><span style="font-family:SimSun; font-size:18px">我们在举个例子说明下，new ThreadPoolExecutor(5, 10, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue&lt;Runnable&gt;(10));加入我们创建了一个这样的线程池，请问，该线程池最小可以容纳多少线程？注意最小，我们可以假设线程在线程池中驻留的时间比较长。该例子中，</span></li></ul></pre><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)"><span style="font-family:SimSun; font-size:18px">corePoolSize = 5；maximumPoolSize = 10；阻塞队列的大小为10。假设我们提交的线程数为x。</span></pre>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)"><span style="font-family:SimSun; font-size:18px">1、当x&lt;=5时候，addIfUnderCorePoolSize函数将任务提交并执行，执行完任务后不结束（没有设置keepAliveTime），会一直从队列中取任务</span></pre>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)"><span style="font-family:SimSun; font-size:18px">2、当x&gt;5&lt;=15时候，任务被提交的到队列，等待执行，此时线程池中容纳的线程为5&#43;10=15；</span></pre>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)"><span style="font-family:SimSun; font-size:18px">3、当x&gt;15&lt;=20时候，因为在提交任务，队列已经满了提交不上，当此时的corePoolSize=5&lt;maximumPoolSize=10,所以此时我们还可以提交5个任务，那么总的提交的任务数为20个</span></pre>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)"><span style="font-family:SimSun; font-size:18px">4,、当x&gt;20时，会采取拒绝策略。</span></pre>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)">**<span style="font-family:SimSun; font-size:18px">一般化一下：corePoolSize=a,maximumPoolSize=b,队列大小为c,那么线程池的总容量可以最小为a&#43;c&#43;(b-a)=b&#43;c</span>**</pre>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px"><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)">**<span style="font-size:24px">
-</span>**</pre><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)">**<span style="font-size:24px">补充：</span>**</pre>
-
-
-
-<h2 id="任务缓存队列及排队策略"><a href="#任务缓存队列及排队策略" class="headerlink" title="任务缓存队列及排队策略"></a><span style="margin:0px; padding:0px; font-family:Verdana,Arial,Helvetica,sans-serif; line-height:28px"><span style="font-size:18px">任务缓存队列及排队策略</span></span></h2><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)">
-
-<span style="font-family:SimSun; font-size:18px">在前面我们多次提到了任务缓存队列，即workQueue，它用来存放等待执行的任务。</span>
-
-<span style="font-family:SimSun; font-size:18px">　　workQueue的类型为BlockingQueue&lt;Runnable&gt;，通常可以取下面三种类型：</span>
-
-<span style="font-family:SimSun; font-size:18px">　　1）ArrayBlockingQueue：基于数组的先进先出队列，此队列创建时必须指定大小；</span>
-
-<span style="font-family:SimSun; font-size:18px">　　2）LinkedBlockingQueue：基于链表的先进先出队列，如果创建时没有指定此队列大小，则默认为Integer.MAX_VALUE；</span>
-
-<span style="font-family:SimSun; font-size:18px">　　3）synchronousQueue：这个队列比较特殊，它不会保存提交的任务，而是将直接新建一个线程来执行新来的任务。</span>
-<pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; line-height:21px; padding:0px; white-space:pre-wrap; word-wrap:break-word; background-color:rgb(255,255,255)">
-
-## <span style="margin:0px; padding:0px; line-height:28px"><span style="font-family:SimSun; font-size:18px">任务拒绝策略</span></span>
-
-<span style="font-family:Verdana,Arial,Helvetica,sans-serif; font-size:14px">　</span><span style="font-family:SimSun; font-size:18px">　workQueue的类型为BlockingQueue&lt;Runnable&gt;，通常可以取下面四种类型：</span>
-
-<span style="font-family:SimSun; font-size:18px"></span><pre code_snippet_id="1686306" snippet_file_name="blog_20160517_7_3752476" name="code" class="html">ThreadPoolExecutor.AbortPolicy:丢弃任务并抛出RejectedExecutionException异常。 
-ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。 
-ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）
-ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务 </pre>
-</pre>
-
-<h2 id="线程池的关闭"><a href="#线程池的关闭" class="headerlink" title="线程池的关闭"></a><span style="margin:0px; padding:0px"><span style="font-family:SimSun; font-size:18px">线程池的关闭</span></span></h2><p><span style="font-family:SimSun; font-size:18px">　　ThreadPoolExecutor提供了两个方法，用于线程池的关闭，分别是shutdown()和shutdownNow()，其中：</span></p>
-<ul>
-<li><span style="font-family:SimSun; font-size:18px">shutdown()：不会立即终止线程池，而是要等所有任务缓存队列中的任务都执行完后才终止，但再也不会接受新的任务</span></li>
-<li><span style="font-family:SimSun; font-size:18px">shutdownNow()：立即终止线程池，并尝试打断正在执行的任务，并且清空任务缓存队列，返回尚未执行的任务</span></li>
-</ul>
-<h2 id="线程池容量的动态调整"><a href="#线程池容量的动态调整" class="headerlink" title="线程池容量的动态调整"></a><span style="margin:0px; padding:0px"><span style="font-family:SimSun; font-size:18px">线程池容量的动态调整</span></span></h2><p><span style="font-family:SimSun; font-size:18px">　　ThreadPoolExecutor提供了动态调整线程池容量大小的方法：setCorePoolSize()和setMaximumPoolSize()，</span></p>
-<ul>
-<li><span style="font-family:SimSun; font-size:18px">setCorePoolSize：设置核心池大小</span></li>
-<li><span style="font-family:SimSun; font-size:18px">setMaximumPoolSize：设置线程池最大能创建的线程数目大小</span></li>
-</ul>
-<p><span style="font-family:SimSun; font-size:18px">　　当上述参数从小变大时，ThreadPoolExecutor进行线程赋&#20540;，还可能立即创建新的线程来执行任务。</span><br><span style="font-family:SimSun; font-size:18px"><strong>例子：</strong></span><pre code_snippet_id="1686306" snippet_file_name="blog_20160517_19_4285521" name="code" class="html" style="font-size: 14px;">package com.sunny.thread.threadpool;</pre></p>
-<p>import java.util.concurrent.ArrayBlockingQueue;<br>import java.util.concurrent.ThreadPoolExecutor;<br>import java.util.concurrent.TimeUnit;</p>
-<p>public class Test {<br>     public static void main(String[] args) {<br>         ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 10, 200, TimeUnit.MILLISECONDS,<br>                 new ArrayBlockingQueue&lt;Runnable&gt;(5));<br>         Test t = new Test();<br>         for(int i=0;i&lt;15;i++){<br>             MyTask myTask = t.new MyTask(i);<br>             executor.execute(myTask);<br>             System.out.println(&quot;线程池中线程数目：&quot;+executor.getPoolSize()+&quot;，队列中等待执行的任务数目：&quot;+<br>             executor.getQueue().size()+&quot;，已执行玩别的任务数目：&quot;+executor.getCompletedTaskCount());<br>         }<br>         executor.shutdown();<br>     }<br>     class MyTask implements Runnable {<br>            private int taskNum;</p>
-<pre><code>    public MyTask(int num) {
-        this.taskNum = num;
-    }
-
-    @Override
-    public void run() {
-        System.out.println(&amp;quot;正在执行task &amp;quot;+taskNum);
-        try {
-            Thread.currentThread().sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println(&amp;quot;task &amp;quot;+taskNum+&amp;quot;执行完毕&amp;quot;);
-    }
-}
-</code></pre><p>}<br></p></pre><span style="font-size:14px">结果：</span></pre><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)"><span style="font-size:14px"></span><pre code_snippet_id="1686306" snippet_file_name="blog_20160517_20_3347429" name="code" class="html">正在执行task 0<br>线程池中线程数目：1，队列中等待执行的任务数目：0，已执行玩别的任务数目：0<br>线程池中线程数目：2，队列中等待执行的任务数目：0，已执行玩别的任务数目：0<br>正在执行task 1<br>线程池中线程数目：3，队列中等待执行的任务数目：0，已执行玩别的任务数目：0<br>正在执行task 2<br>线程池中线程数目：4，队列中等待执行的任务数目：0，已执行玩别的任务数目：0<br>正在执行task 3<br>线程池中线程数目：5，队列中等待执行的任务数目：0，已执行玩别的任务数目：0<br>线程池中线程数目：5，队列中等待执行的任务数目：1，已执行玩别的任务数目：0<br>线程池中线程数目：5，队列中等待执行的任务数目：2，已执行玩别的任务数目：0<br>正在执行task 4<br>线程池中线程数目：5，队列中等待执行的任务数目：3，已执行玩别的任务数目：0<br>线程池中线程数目：5，队列中等待执行的任务数目：4，已执行玩别的任务数目：0<br>线程池中线程数目：5，队列中等待执行的任务数目：5，已执行玩别的任务数目：0<br>线程池中线程数目：6，队列中等待执行的任务数目：5，已执行玩别的任务数目：0<br>正在执行task 10<br>线程池中线程数目：7，队列中等待执行的任务数目：5，已执行玩别的任务数目：0<br>正在执行task 11<br>线程池中线程数目：8，队列中等待执行的任务数目：5，已执行玩别的任务数目：0<br>正在执行task 12<br>线程池中线程数目：9，队列中等待执行的任务数目：5，已执行玩别的任务数目：0<br>线程池中线程数目：10，队列中等待执行的任务数目：5，已执行玩别的任务数目：0<br>正在执行task 13<br>正在执行task 14<br>task 0执行完毕<br>正在执行task 5<br>task 1执行完毕<br>正在执行task 6<br>task 3执行完毕<br>正在执行task 7<br>task 2执行完毕<br>正在执行task 8<br>task 10执行完毕<br>正在执行task 9<br>task 11执行完毕<br>task 12执行完毕<br>task 14执行完毕<br>task 4执行完毕<br>task 13执行完毕<br>task 6执行完毕<br>task 5执行完毕<br>task 7执行完毕<br>task 8执行完毕<br>task 9执行完毕</pre><p></p>
-<h2 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a><span style="font-size:14px">参考文章：</span></h2><p></p></pre><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px; background-color:rgb(255,255,255)"><span style="font-family:SimSun; font-size:14px; color:#330000"><a href="http://www.cnblogs.com/dolphin0520/p/3932921.html" target="_blank" rel="external">http://www.cnblogs.com/dolphin0520/p/3932921.html</a><br></span></pre><pre class="brush:java;gutter:true;" style="margin-top:0px; margin-bottom:0px; padding:0px; white-space:pre-wrap; word-wrap:break-word; line-height:21px"><p></p>
-<p><span style="font-family:SimSun; font-size:14px"><a href="http://ifeve.com/java-threadpool/" target="_blank" rel="external"><span style="color:#000000">http://ifeve.com/java-threadpool/</span></a></span></p>
-<p><span style="font-family:SimSun; font-size:14px"><a href="http://blog.163.com/among_1985/blog/static/275005232012618849266/" target="_blank" rel="external"><span style="color:#330000">http://blog.163.com/among_1985/blog/static/275005232012618849266/</span></a></span></p>
-<p><span style="font-family:SimSun; font-size:14px"><a href="http://developer.51cto.com/art/201203/321885.htm" target="_blank" rel="external">http://developer.51cto.com/art/201203/321885.htm</a></span></p>
-<p><span style="font-family:SimSun; font-size:14px"><a href="http://blog.csdn.net/java2000_wl/article/details/22097059" target="_blank" rel="external">http://blog.csdn.net/java2000_wl/article/details/22097059</a></span></p>
-<p><span style="font-family:SimSun; font-size:14px"><a href="http://blog.csdn.net/cutesource/article/details/6061229" target="_blank" rel="external">http://blog.csdn.net/cutesource/article/details/6061229</a></span></p>
-<p><span style="font-family:SimSun; font-size:14px"><a href="http://blog.csdn.net/xieyuooo/article/details/8718741" target="_blank" rel="external">http://blog.csdn.net/xieyuooo/article/details/8718741</a></span><br><span style="font-size:14px; background-color:rgb(255,255,255)"><br></span></p></pre><p></p>
-<p><span style="font-size:18px"><span style="font-family:Verdana,Arial,Helvetica,sans-serif; line-height:28px"></span></span></p>
-<pre><code>&lt;div&gt;
-    作者：zhangpan19910604 发表于2016/5/17 13:44:35 [原文链接](http://blog.csdn.net/zhangpan19910604/article/details/51434768)
-&lt;/div&gt;
-&lt;div&gt;
-阅读：94 评论：0 [查看评论](http://blog.csdn.net/zhangpan19910604/article/details/51434768#comments)
-&lt;/div&gt;
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/16/原-Java并发编程：线程间的协作wait-、notify-、notifyAll-和Condition/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3079,6 +2201,382 @@ public void visit(TreeNode node){
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/17/原-Exception-in-thread-quot-main-quot-java-util-ConcurrentModificationExceptions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="payne">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Payne Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/04/17/原-Exception-in-thread-quot-main-quot-java-util-ConcurrentModificationExceptions/" itemprop="url">
+                  [原]Exception in thread &quot;main&quot; java.util.ConcurrentModificationExceptions
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-17T14:40:57+08:00">
+                2016-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&nbsp; <span style="font-size:18px">用java的Map时候碰到这样一个错误Exception in thread &quot;main&quot; java.util.ConcurrentModificationException</span></p>
+<p><span style="font-size:18px">我在遍历Map（用迭代器）的时候删除了某些元素，然后调用迭代器是时候就触发了这个错误，我就看一下源码，原因是Map和Iterator中维持了这样一个遍历modcount，用来记录Map和Iterator中修改数据结构的次数，当你删除Map的时候Map中的modcount的次数会减少1，但Iterator的次数没有减少，一旦这两个modcount的次数不相等，就会报上面那个错误。</span></p>
+<p><span style="font-size:18px">解决办法是不要调用Map的remove()函数，调用Iterator中的迭代函数就可以了，Iterator中remove的声明如下</span></p>
+<p><span style="font-size:18px"></span></p>
+<table cellspacing="0" cellpadding="3" width="100%" summary="" border="1"><br><tbody><br><tr class="TableRowColor" bgcolor="white"><br><td valign="top" width="1%" align="right"><span size="-1" style=""><code>&amp;nbsp;void</code></span></td><br><td><code>**[remove]()**()</code><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;从迭代器指向的 collection 中移除迭代器返回的最后一个元素（可选操作）。</td><br></tr><br></tbody><br></table>
+
+<p><span style="font-size:18px"></span></p>
+<pre><code>&lt;div&gt;
+    作者：zhangpan19910604 发表于2016/4/17 14:40:57 [原文链接](http://blog.csdn.net/zhangpan19910604/article/details/51173191)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：199 评论：0 [查看评论](http://blog.csdn.net/zhangpan19910604/article/details/51173191#comments)
+&lt;/div&gt;
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/07/原-Spring-IOC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="payne">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Payne Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/04/07/原-Spring-IOC/" itemprop="url">
+                  [原]Spring IOC
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-07T18:11:04+08:00">
+                2016-04-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>下面主要讲解spring中IOC的DI几种配置方式</p>
+<p>一、</p>
+<pre code_snippet_id="1638051" snippet_file_name="blog_20160407_1_6598311" name="code" class="html">public class Student {
+    private String name;
+    private String sex;
+    public Student(){}
+    public Student(String name, String sex) {
+        this.name = name;
+        this.sex = sex;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getSex() {
+        return sex;
+    }
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+    @Override
+    public String toString() {
+        return &quot;Student [name=&quot; + name + &quot;, sex=&quot; + sex + &quot;]&quot;;
+    }
+    public Student student(){
+        return new Student(&quot;sunny&quot;, &quot;male&quot;);
+    }
+}</pre>
+
+<pre code_snippet_id="1638051" snippet_file_name="blog_20160407_2_3631925" name="code" class="html">public class StudentService {
+    private Student student;
+    public  void  getStudent(){
+        System.out.println(student.toString());
+    }
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+}</pre>
+
+<p>我们有一个简单的Student类和StudentService类，StudentService中只有一个成员变量student，我们主要讲解如何自动注入这个student这个变量</p>
+<p>最简单的我们在xml文件如下配置：</p>
+<pre code_snippet_id="1638051" snippet_file_name="blog_20160407_3_2933814" name="code" class="html">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
+    &lt;bean id=&quot;student&quot; class=&quot;com.sunny.spring.ioc.annotation.Student&quot;&gt;
+        &lt;property name=&quot;name&quot; value=&quot;tomcat&quot;/&gt;
+           &lt;property name=&quot;sex&quot; value=&quot;man&quot;/&gt;
+    &lt;/bean&gt;
+     &lt;bean id=&quot;studentService&quot; class=&quot;com.sunny.spring.ioc.annotation.StudentService&quot;&gt;
+         &lt;property name=&quot;student&quot; ref=&quot;student&quot;/&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt;</pre>
+
+<p>Test:: 发现我们可以输出Student的信息，我们并没有new Student</p>
+<pre code_snippet_id="1638051" snippet_file_name="blog_20160407_4_3871905" name="code" class="html">&lt;pre name=&quot;code&quot; class=&quot;html&quot;&gt;ApplicationContext appContenxt = new ClassPathXmlApplicationContext(new String[]{&quot;SpringIOC-Student.xml&quot;});
+        StudentService studentService = (StudentService)appContenxt.getBean(&quot;studentService&quot;);
+        studentService.getStudent();</pre>}
+<pre></pre>
+
+<p>二、注解方式、自动注入</p>
+<p>修改xml配置文件如下：&nbsp;&lt;context:annotation-config/&gt; 这个一定要加上，这个是启用注解</p>
+<pre code_snippet_id="1638051" snippet_file_name="blog_20160407_5_7633896" name="code" class="html">  &lt;context:annotation-config/&gt; 
+  &lt;bean id=&quot;student&quot; class=&quot;com.sunny.spring.ioc.annotation.Student&quot;&gt;
+        &lt;property name=&quot;name&quot; value=&quot;tomcat&quot;/&gt;
+           &lt;property name=&quot;sex&quot; value=&quot;man&quot;/&gt;
+    &lt;/bean&gt;
+     &lt;bean id=&quot;studentService&quot; class=&quot;com.sunny.spring.ioc.annotation.StudentService&quot;&gt;
+    &lt;/bean&gt;</pre>
+
+<p>修改StudentService如下</p>
+<pre code_snippet_id="1638051" snippet_file_name="blog_20160407_6_2475683" name="code" class="html">public class StudentService {
+    //@Autowired
+    private Student student;
+
+    public  void  getStudent(){
+        System.out.println(student.toString());
+    }
+    /*
+     * @Autowired 修饰函数时候，当调用getBean()获得实例的时候就会自动注入所需对象
+     */
+    @Autowired
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+}</pre>这里主要引入&nbsp;@Autowired 注解，@Autowired可以修饰变量，可以修饰函数（包括set函数和构造函数），现在再执行上面的测试代码，结果一样
+
+当然Spring官网还提供了其他的一些用来自动注入的注解，比如@Request等，我们一般就用@Autowired这个。
+
+三、
+
+修改配置文件如下
+
+<pre code_snippet_id="1638051" snippet_file_name="blog_20160407_7_5365621" name="code" class="html">&lt;!--spring可以自动去扫描base-pack下面或者子包下面的java文件，如果扫描到有@Component @Controller@Service等这些注解的类，则把这些类注册为bean --&gt;
+    &lt;context:component-scan base-package=&quot;com.sunny.spring.ioc.beanfactory&quot;/&gt;
+
+     &lt;bean id=&quot;studentService&quot; class=&quot;com.sunny.spring.ioc.annotation.StudentService&quot;&gt;
+    &lt;/bean&gt;</pre>
+
+<p>注意，这里我们删除了Bean student，我们用注解的方式来定义一个Bean，新建下面这个类如下：</p>
+<pre code_snippet_id="1638051" snippet_file_name="blog_20160407_8_2540939" name="code" class="html">@Component
+public class AppBean {
+    @Bean
+    public Student student(){//函数名student相当于id
+        return new Student(&quot;panza&quot;,&quot;male&quot;);
+    }
+}
+</pre>
+
+<p>我们在xml配置文件加入了配置context:component-scan base-package=&quot;com.sunny.spring.ioc.beanfactory&quot;/&gt;，那么Spring会在这个包下面扫描类，<pre code_snippet_id="1638051" snippet_file_name="blog_20160407_9_1319440" name="code" class="html">如果扫描到有@Component @Controller@Service等这些注解的类，则把这些类注册为bean（自动加载的Spring的容器，我们就可以直接调用了）</pre></p>
+<pre><code>&lt;div&gt;
+    作者：zhangpan19910604 发表于2016/4/7 18:11:04 [原文链接](http://blog.csdn.net/zhangpan19910604/article/details/51088092)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：69 评论：0 [查看评论](http://blog.csdn.net/zhangpan19910604/article/details/51088092#comments)
+&lt;/div&gt;
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
   </section>
 
   
@@ -3128,7 +2626,7 @@ public void visit(TreeNode node){
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
