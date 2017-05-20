@@ -98,7 +98,7 @@
 <meta property="og:description" content="第一次用Hexo搭建个人博客，原来用的CSDN的博客，但是嫌弃它不够简洁，有点花哨, 所以趁有时间就想自已搭建一个博客。既然是第一篇文章，有必要把Hexo搭建博客的过程写下来  安装 安装步骤如下： 1、安装Hexo需要先安装下面应用程序(根据自已的系统选择安装方式，window和mac系统直接官网下载安装 ，linux用户可以自带的安装程序安装)：  Node.js Git 2、运行如下命令">
 <meta property="og:image" content="http://yoursite.com/2017/04/27/Hexo搭建个人博客/start_page.png">
 <meta property="og:image" content="http://yoursite.com/2017/04/27/Hexo搭建个人博客/github_config.png">
-<meta property="og:updated_time" content="2017-05-20T05:51:02.000Z">
+<meta property="og:updated_time" content="2017-05-20T05:52:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo搭建个人博客">
 <meta name="twitter:description" content="第一次用Hexo搭建个人博客，原来用的CSDN的博客，但是嫌弃它不够简洁，有点花哨, 所以趁有时间就想自已搭建一个博客。既然是第一篇文章，有必要把Hexo搭建博客的过程写下来  安装 安装步骤如下： 1、安装Hexo需要先安装下面应用程序(根据自已的系统选择安装方式，window和mac系统直接官网下载安装 ，linux用户可以自带的安装程序安装)：  Node.js Git 2、运行如下命令">
@@ -442,21 +442,13 @@ Hexo 是你建立文件的名称，cd到Hexo的文件，执行如下命令：</l
 登录你的Github帐号，新建仓库，名为用户名.github.io固定写法，如payne4handsome.github.io 即下图中1所示：
 <img src="/2017/04/27/Hexo搭建个人博客/github_config.png" alt=""></p>
 <p>2、配置部署信息
-本地的Hexo的文件内容如下：<br>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">_config.yml    </div><div class="line">db.json </div><div class="line">node_modules </div><div class="line">package.json</div><div class="line">scaffolds</div><div class="line">source</div><div class="line">themes</div><div class="line">```  </div><div class="line">cd到Hexo的文件写，打开hexo的配置文件_config.xml，在配置文件的最后</div><div class="line">做下面的这样的修改（这样hexo d命令可以直接把写的文章部署到我们git仓库上）</div></pre></td></tr></table></figure></p>
-<p>deploy:
-type: git
-repository: https://github.com/payne4handsome/payne4handsome.github.io
-branch: master</p>
-<pre><code>
-
-
-
-
-npm un hexo-renderer-marked --save
-
-npm i hexo-renderer-markdown-it --save
-</code></pre>
+本地的Hexo的文件内容如下：</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">_config.yml    </div><div class="line">db.json </div><div class="line">node_modules </div><div class="line">package.json</div><div class="line">scaffolds</div><div class="line">source</div><div class="line">themes</div></pre></td></tr></table></figure></p>
+<p>cd到Hexo的文件写，打开hexo的配置文件_config.xml，在配置文件的最后
+做下面的这样的修改（这样hexo d命令可以直接把写的文章部署到我们git仓库上）</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type: git</div><div class="line">  repository: https://github.com/payne4handsome/payne4handsome.github.io</div><div class="line">  branch: master</div></pre></td></tr></table></figure></p>
+<p>npm un hexo-renderer-marked --save</p>
+<p>npm i hexo-renderer-markdown-it --save</p>
 
       
     </div>
