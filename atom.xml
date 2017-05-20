@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-20T05:47:40.000Z</updated>
+  <updated>2017-05-20T05:51:02.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/04/27/Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     <id>http://yoursite.com/2017/04/27/Hexo搭建个人博客/</id>
     <published>2017-04-27T14:59:31.000Z</published>
-    <updated>2017-05-20T05:47:40.000Z</updated>
+    <updated>2017-05-20T05:51:02.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>第一次用Hexo搭建个人博客，原来用的CSDN的博客，但是嫌弃它不够简洁，有点花哨,
@@ -54,25 +54,20 @@ Hexo 是你建立文件的名称，cd到Hexo的文件，执行如下命令：</l
 <img src="/2017/04/27/Hexo搭建个人博客/github_config.png" alt=""></p>
 <p>2、配置部署信息
 本地的Hexo的文件内容如下：<br>
-'''
-_config.yml<br>
-db.json
-node_modules
-package.json
-scaffolds
-source
-themes
-'''<br>
-cd到Hexo的文件写，打开hexo的配置文件_config.xml，在配置文件的最后
-做下面的这样的修改（这样hexo d命令可以直接把写的文章部署到我们git仓库上）<br>
-’’’
-deploy:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">_config.yml    </div><div class="line">db.json </div><div class="line">node_modules </div><div class="line">package.json</div><div class="line">scaffolds</div><div class="line">source</div><div class="line">themes</div><div class="line">```  </div><div class="line">cd到Hexo的文件写，打开hexo的配置文件_config.xml，在配置文件的最后</div><div class="line">做下面的这样的修改（这样hexo d命令可以直接把写的文章部署到我们git仓库上）</div></pre></td></tr></table></figure></p>
+<p>deploy:
 type: git
 repository: https://github.com/payne4handsome/payne4handsome.github.io
-branch: master
-’’’</p>
-<p>npm un hexo-renderer-marked --save</p>
-<p>npm i hexo-renderer-markdown-it --save</p>
+branch: master</p>
+<pre><code>
+
+
+
+
+npm un hexo-renderer-marked --save
+
+npm i hexo-renderer-markdown-it --save
+</code></pre>
 ]]></content>
     
     <summary type="html">
