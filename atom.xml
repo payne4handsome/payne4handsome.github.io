@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-20T05:41:14.000Z</updated>
+  <updated>2017-05-20T05:46:25.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/04/27/Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     <id>http://yoursite.com/2017/04/27/Hexo搭建个人博客/</id>
     <published>2017-04-27T14:59:31.000Z</published>
-    <updated>2017-05-20T05:41:14.000Z</updated>
+    <updated>2017-05-20T05:46:25.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>第一次用Hexo搭建个人博客，原来用的CSDN的博客，但是嫌弃它不够简洁，有点花哨,
@@ -39,11 +39,11 @@
 <h2>初始化</h2>
 <p>选择一个目录，执行如下命令：</p>
 <ul>
-<li>hexo init Hexo
+<li>hexo init Hexo<br>
 Hexo 是你建立文件的名称，cd到Hexo的文件，执行如下命令：</li>
-<li>npm install
+<li>npm install<br>
 执行如下命令，就可以开启hexo服务器了（可以在本地访问）：</li>
-<li>hexo s
+<li>hexo s<br>
 此时，在浏览器中打开网址http://localhost:4000,就能过看到如下页面
 <img src="/2017/04/27/Hexo搭建个人博客/start_page.png" alt=""></li>
 </ul>
@@ -53,7 +53,7 @@ Hexo 是你建立文件的名称，cd到Hexo的文件，执行如下命令：</l
 登录你的Github帐号，新建仓库，名为用户名.github.io固定写法，如payne4handsome.github.io 即下图中1所示：
 <img src="/2017/04/27/Hexo搭建个人博客/github_config.png" alt=""></p>
 <p>2、配置部署信息
-本地的Hexo的文件内容如下：
+本地的Hexo的文件内容如下：<br>
 '''
 _config.yml<br>
 db.json
@@ -62,9 +62,9 @@ package.json
 scaffolds
 source
 themes
-'''
+'''<br>
 cd到Hexo的文件写，打开hexo的配置文件_config.xml，在配置文件的最后
-做下面的这样的修改（这样hexo d命令可以直接把写的文章部署到我们git仓库上）
+做下面的这样的修改（这样hexo d命令可以直接把写的文章部署到我们git仓库上）<br>
 ’’’
 deploy:
 type: git
