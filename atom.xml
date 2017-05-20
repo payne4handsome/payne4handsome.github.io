@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-20T06:57:50.000Z</updated>
+  <updated>2017-05-20T07:02:55.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,45 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>markdown 基本语法</title>
+    <link href="http://yoursite.com/2017/05/20/markdown-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/"/>
+    <id>http://yoursite.com/2017/05/20/markdown-基本语法/</id>
+    <published>2017-05-20T07:00:45.000Z</published>
+    <updated>2017-05-20T07:02:55.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>** 1、分段： 两个回车
+2、换行 两个空格 + 回车
+3、标题 #~###### 井号的个数表示几级标题，即Markdown可以表示一级标题到六级标题
+4、引用 &gt;
+5、列表 *，+，-，1.，选其中之一，注意后面有个空格
+6、代码区块 四个空格开头
+7、链接 <a href="%E9%93%BE%E6%8E%A5%E5%9C%B0%E5%9D%80">文字</a>
+8、图片 <img src="/2017/05/20/markdown-基本语法/%E5%9B%BE%E7%89%87%E5%9C%B0%E5%9D%80" alt="图片说明">，图片地址可以是本地路劲，也可以是网络地址
+9、强调 <strong>文字</strong>，<strong>文字</strong>，<em>文字</em>，<em>文字</em>
+10、代码 <code>，</code>
+**</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;** 1、分段： 两个回车
+2、换行 两个空格 + 回车
+3、标题 #~###### 井号的个数表示几级标题，即Markdown可以表示一级标题到六级标题
+4、引用 &amp;gt;
+5、列表 *，+，-，1.，选其中之一，注意后面有个空格
+6、代码区块 四个空格开头
+7、链接 &lt;
+    
+    </summary>
+    
+      <category term="笔记" scheme="http://yoursite.com/categories/%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Markdown" scheme="http://yoursite.com/tags/Markdown/"/>
+    
+  </entry>
   
   <entry>
     <title>vim 常用快捷键</title>
