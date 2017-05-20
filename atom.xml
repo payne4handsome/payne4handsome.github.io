@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-20T06:38:10.000Z</updated>
+  <updated>2017-05-20T06:53:47.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/04/27/Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     <id>http://yoursite.com/2017/04/27/Hexo搭建个人博客/</id>
     <published>2017-04-27T14:59:31.000Z</published>
-    <updated>2017-05-20T06:38:10.000Z</updated>
+    <updated>2017-05-20T06:53:47.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>第一次用Hexo搭建个人博客，原来用的CSDN的博客，但是嫌弃它不够简洁，有点花哨,
@@ -57,45 +57,29 @@ Hexo 是你建立文件的名称，cd到Hexo的文件，执行如下命令：</l
 <p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">_config.yml    </div><div class="line">db.json </div><div class="line">node_modules </div><div class="line">package.json</div><div class="line">scaffolds</div><div class="line">source</div><div class="line">themes</div></pre></td></tr></table></figure></p>
 <p>cd到Hexo的文件写，打开hexo的配置文件_config.xml，在配置文件的最后
 做下面的这样的修改（这样hexo d命令可以直接把写的文章部署到我们git仓库上）<br>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">```</div></pre></td></tr></table></figure></p>
-<p>deploy:
-type: git
-repository: https://github.com/payne4handsome/payne4handsome.github.io
-branch: master
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">  </div><div class="line">## 写博客</div><div class="line"></div><div class="line">hexo命令的基本语法为：  </div><div class="line">hexo  &lt;command&gt;</div></pre></td></tr></table></figure></p>
-<p>Commands:
-clean     Removed generated files and cache.
-config    Get or set configurations.
-deploy    Deploy your website.
-generate  Generate static files.
-help      Get help on a command.
-init      Create a new Hexo folder.
-list      List the information of the site
-migrate   Migrate your site from other system to Hexo.
-new       Create a new post.
-publish   Moves a draft post from _drafts to _posts folder.
-render    Render files with renderer plugins.
-server    Start the server.
-version   Display version information.</p>
-<p>Global Options:
---config  Specify config file instead of using _config.yml
---cwd     Specify the CWD
---debug   Display all verbose messages in the terminal
---draft   Display draft posts
---safe    Disable all plugins and scripts
---silent  Hide output on console
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">比如我们要创建一篇新的博客：</div><div class="line">+ hexo new &apos;hello world&apos;  </div><div class="line">然后我们找到Hexo的目录下面的source/_posts目录下面的‘hello world’.md开始编辑（markdown语法）  </div><div class="line">+ hexo g(同hexo generate)  </div><div class="line">生产静态文件  </div><div class="line">+hexo d（同hexo deploy）  </div><div class="line">部署到github</div><div class="line"></div><div class="line">## 总结</div></pre></td></tr></table></figure></p>
-<p>hexo generate --watch //Hexo 能够监视文件变动并立即重新生成静态文件，在生成时会比对文件的 SHA1 checksum，只有变动的文件才会写入。
-hexo generate --deploy //和下面的命令一样
-hexo deploy --generate
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">上面的两个命令可以简写为：</div></pre></td></tr></table></figure></p>
-<p>hexo g -d
-hexo d -g
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## Questions</div><div class="line">一开始我用的hexo自动Markdown解析器，但是我在vim编辑文章时，如果我在vim中</div><div class="line">换行，那么显示的页面就会换行，这样排版会难看（每一行字数可能不一样），那</div><div class="line">么需要执行下面命令，安装新的Markdown解析器：</div></pre></td></tr></table></figure></p>
-<p>npm un hexo-renderer-marked --save
-npm i hexo-renderer-markdown-it --save</p>
-<pre><code>
-</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type: git</div><div class="line">  repository: https://github.com/payne4handsome/payne4handsome.github.io</div><div class="line">  branch: master</div></pre></td></tr></table></figure></p>
+<h2>写博客</h2>
+<p>hexo命令的基本语法为：<br>
+hexo  &lt;command&gt;</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">Commands:</div><div class="line">  clean     Removed generated files and cache.</div><div class="line">  config    Get or set configurations.</div><div class="line">  deploy    Deploy your website.</div><div class="line">  generate  Generate static files.</div><div class="line">  help      Get help on a command.</div><div class="line">  init      Create a new Hexo folder.</div><div class="line">  list      List the information of the site</div><div class="line">  migrate   Migrate your site from other system to Hexo.</div><div class="line">  new       Create a new post.</div><div class="line">  publish   Moves a draft post from _drafts to _posts folder.</div><div class="line">  render    Render files with renderer plugins.</div><div class="line">  server    Start the server.</div><div class="line">  version   Display version information.</div><div class="line"></div><div class="line">Global Options:</div><div class="line">  --config  Specify config file instead of using _config.yml</div><div class="line">  --cwd     Specify the CWD</div><div class="line">  --debug   Display all verbose messages in the terminal</div><div class="line">  --draft   Display draft posts</div><div class="line">  --safe    Disable all plugins and scripts</div><div class="line">  --silent  Hide output on console</div></pre></td></tr></table></figure></p>
+<p>比如我们要创建一篇新的博客：</p>
+<ul>
+<li>hexo new 'hello world'<br>
+然后我们找到Hexo的目录下面的source/_posts目录下面的‘hello world’.md开始编辑（markdown语法）</li>
+<li>hexo g(同hexo generate)<br>
+生产静态文件<br>
++hexo d（同hexo deploy）<br>
+部署到github</li>
+</ul>
+<h2>总结</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">hexo generate --watch //Hexo 能够监视文件变动并立即重新生成静态文件，在生成时会比对文件的 SHA1 checksum，只有变动的文件才会写入。</div><div class="line">hexo generate --deploy //和下面的命令一样</div><div class="line">hexo deploy --generate</div></pre></td></tr></table></figure></p>
+<p>上面的两个命令可以简写为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo g -d</div><div class="line">hexo d -g</div></pre></td></tr></table></figure></p>
+<h2>Questions</h2>
+<p>一开始我用的hexo自动Markdown解析器，但是我在vim编辑文章时，如果我在vim中
+换行，那么显示的页面就会换行，这样排版会难看（每一行字数可能不一样），那
+么需要执行下面命令，安装新的Markdown解析器：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm un hexo-renderer-marked --save</div><div class="line">npm i hexo-renderer-markdown-it --save</div></pre></td></tr></table></figure></p>
 ]]></content>
     
     <summary type="html">
