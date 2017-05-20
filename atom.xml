@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-20T07:15:36.000Z</updated>
+  <updated>2017-05-20T07:17:05.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,11 +20,11 @@
     <link href="http://yoursite.com/2017/05/20/markdown-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/"/>
     <id>http://yoursite.com/2017/05/20/markdown-基本语法/</id>
     <published>2017-05-20T07:00:45.000Z</published>
-    <updated>2017-05-20T07:15:36.000Z</updated>
+    <updated>2017-05-20T07:17:05.000Z</updated>
     
-    <content type="html"><![CDATA[<p>** 1、分段 ** 两个回车<br>
-** 2、换行 ** 两个空格 + 回车<br>
-** 3、标题 ** #~###### 井号的个数表示几级标题，即Markdown可以表示一级标题到六级标题<br>
+    <content type="html"><![CDATA[<p><strong>1、分段</strong> 两个回车<br>
+<strong>2、换行</strong> 两个空格 + 回车<br>
+<strong>3、标题</strong> #~###### 井号的个数表示几级标题，即Markdown可以表示一级标题到六级标题<br>
 ** 4、引用 ** &gt;<br>
 ** 5、列表 **  *，+，-，1.，选其中之一，注意后面有个空格<br>
 ** 6、代码区块 ** 四个空格开头<br>
@@ -36,11 +36,10 @@
     
     <summary type="html">
     
-      &lt;p&gt;** 1、分段 ** 两个回车&lt;br&gt;
-** 2、换行 ** 两个空格 + 回车&lt;br&gt;
-** 3、标题 ** #~###### 井号的个数表示几级标题，即Markdown可以表示一级标题到六级标题&lt;br&gt;
-** 4、引用 ** &amp;gt;&lt;br&gt;
-** 5、列表 **  *
+      &lt;p&gt;&lt;strong&gt;1、分段&lt;/strong&gt; 两个回车&lt;br&gt;
+&lt;strong&gt;2、换行&lt;/strong&gt; 两个空格 + 回车&lt;br&gt;
+&lt;strong&gt;3、标题&lt;/strong&gt; #~###### 井号的个数表示几级标题，即Markdown可以表示一级标题到六级标题&lt;br&gt;
+
     
     </summary>
     
