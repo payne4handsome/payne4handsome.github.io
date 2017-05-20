@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-20T06:53:47.000Z</updated>
+  <updated>2017-05-20T06:57:50.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,79 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>vim 常用快捷键</title>
+    <link href="http://yoursite.com/2017/05/20/vim-%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/"/>
+    <id>http://yoursite.com/2017/05/20/vim-常用快捷键/</id>
+    <published>2017-05-20T06:17:13.000Z</published>
+    <updated>2017-05-20T06:57:50.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2>移动</h2>
+<ul>
+<li>h 左移</li>
+<li>l 右移</li>
+<li>j 下移</li>
+<li>k 上移</li>
+<li>w 移动一个单词</li>
+<li>W 移动下一个单词开头，但忽略一些标点</li>
+<li>e 前移一个单词，光标停在下一个单词末尾</li>
+<li>E 移动到下一个单词末尾，如果词尾有标点，则移动到标点</li>
+<li>0 移动到行首</li>
+<li>$ 移动到行尾</li>
+<li>gg 移动最前面</li>
+<li>shift+g 移动到最后面</li>
+</ul>
+<h2>翻屏</h2>
+<ul>
+<li>crtl+f 下翻一屏</li>
+<li>crtl+b 上翻一屏</li>
+<li>zz 移动到屏幕最中央</li>
+</ul>
+<h2>复制、粘贴、删除</h2>
+<ul>
+<li>y 复制一行</li>
+<li>:m,ny 复制m到n行</li>
+<li>d 删除一行</li>
+<li>:m,nd 剪切m到n行</li>
+<li>p 粘贴</li>
+</ul>
+<h2>打开多个文件</h2>
+<ul>
+<li>:sp file  水平打开多个文件</li>
+<li>:vsp file 垂直打开多个文件</li>
+<li>ctrl+w 双击快速切换窗口</li>
+<li>ctrl+w+j/k 快速上下切换</li>
+<li>u 撤销</li>
+<li>ctrl+r 反向撤销</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2&gt;移动&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;h 左移&lt;/li&gt;
+&lt;li&gt;l 右移&lt;/li&gt;
+&lt;li&gt;j 下移&lt;/li&gt;
+&lt;li&gt;k 上移&lt;/li&gt;
+&lt;li&gt;w 移动一个单词&lt;/li&gt;
+&lt;li&gt;W 移动下一个单词开头，但忽略一些标点&lt;/li&gt;
+&lt;li&gt;e 前移一个单词，光标停在下一个
+    
+    </summary>
+    
+      <category term="笔记" scheme="http://yoursite.com/categories/%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="vim" scheme="http://yoursite.com/tags/vim/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Hexo搭建个人博客</title>
     <link href="http://yoursite.com/2017/04/27/Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     <id>http://yoursite.com/2017/04/27/Hexo搭建个人博客/</id>
     <published>2017-04-27T14:59:31.000Z</published>
-    <updated>2017-05-20T06:53:47.000Z</updated>
+    <updated>2017-05-20T06:56:51.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>第一次用Hexo搭建个人博客，原来用的CSDN的博客，但是嫌弃它不够简洁，有点花哨,
@@ -56,8 +124,8 @@ Hexo 是你建立文件的名称，cd到Hexo的文件，执行如下命令：</l
 本地的Hexo的文件内容如下：</p>
 <p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">_config.yml    </div><div class="line">db.json </div><div class="line">node_modules </div><div class="line">package.json</div><div class="line">scaffolds</div><div class="line">source</div><div class="line">themes</div></pre></td></tr></table></figure></p>
 <p>cd到Hexo的文件写，打开hexo的配置文件_config.xml，在配置文件的最后
-做下面的这样的修改（这样hexo d命令可以直接把写的文章部署到我们git仓库上）<br>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type: git</div><div class="line">  repository: https://github.com/payne4handsome/payne4handsome.github.io</div><div class="line">  branch: master</div></pre></td></tr></table></figure></p>
+做下面的这样的修改（这样hexo d命令可以直接把写的文章部署到我们git仓库上）</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type: git</div><div class="line">  repository: https://github.com/payne4handsome/payne4handsome.github.io</div><div class="line">  branch: master</div></pre></td></tr></table></figure></p>
 <h2>写博客</h2>
 <p>hexo命令的基本语法为：<br>
 hexo  &lt;command&gt;</p>
@@ -66,7 +134,7 @@ hexo  &lt;command&gt;</p>
 <ul>
 <li>hexo new 'hello world'<br>
 然后我们找到Hexo的目录下面的source/_posts目录下面的‘hello world’.md开始编辑（markdown语法）</li>
-<li>hexo g(同hexo generate)<br>
+<li>hexo g (同hexo generate)<br>
 生产静态文件<br>
 +hexo d（同hexo deploy）<br>
 部署到github</li>
