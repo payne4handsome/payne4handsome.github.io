@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-21T02:24:30.000Z</updated>
+  <updated>2017-05-21T02:53:53.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,45 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>git学习笔记</title>
+    <link href="http://yoursite.com/2017/05/21/git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <id>http://yoursite.com/2017/05/21/git学习笔记/</id>
+    <published>2017-05-21T02:47:51.000Z</published>
+    <updated>2017-05-21T02:53:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2>首先配置自已的git</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git config --global user.name &quot;John Doe&quot;</div><div class="line">$ git config --global user.email johndoe@example.com</div></pre></td></tr></table></figure></p>
+<h2>常用命令</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">git commit --amend 撤销最近一次的修改</div><div class="line">git fetch [remote-name] 从远程仓库中抓取数据</div><div class="line">git push [remote-name] [branch-name] 将数据推送到远程的某个分支</div><div class="line">git remote add [shortname] [url]  //远程添加一个分支</div><div class="line">git remote show [remote-name] </div><div class="line">git tag -a v1.4 -m &apos;my version 1.4&apos; 打标签</div><div class="line">git show v1.4 显示v1.4这个标签的xinx</div><div class="line">git tag 查看已经打了哪些标签</div></pre></td></tr></table></figure></p>
+<h2>建立新的分支</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">git branch pan //新建分支pan</div><div class="line">git checkout pan  //切到pan分支 此时HEAD指向的是pan  master指向的是建立分支之前的commit指针</div><div class="line">git checkout -b pan //新建并切换到分支pan</div><div class="line">git merge pan </div><div class="line">git branch -d pan //当某个分支问题解决了以后，就可以删除这个分支了</div><div class="line">git merge master //在某个分支上将master中的内容合并过来</div><div class="line"></div><div class="line">git branch --merged//查看已经合并的分支</div><div class="line">git branch --no-merged //查看没有合并的分支</div><div class="line"></div><div class="line">git mergetool//调用解决合并冲突的工具</div><div class="line"></div><div class="line">git fetch origin //来同步远程服务器上的数据到本地</div><div class="line"></div><div class="line">git push (远程仓库名) (分支名) //推送本地分支，这个是推送到远程的同名分支</div><div class="line">git push origin serverfix:awesomebranc//推送到远程的其他的分支</div></pre></td></tr></table></figure></p>
+<h2>删除远程分支develop:</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git push origin --delete develop</div><div class="line">git branch -a  查看所有的分支，包括本地和远程的</div><div class="line">git branch -r   查看远程分支</div></pre></td></tr></table></figure></p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git fetch origin dev-pan取回远程的某个分支，所取回的更新，在本地主机上要用&quot;远程主机名/分支名&quot;的形式读取。比如origin主机的master，就要用origin/master读取。</div><div class="line">git merge origin/dev-pan 在某个分支上把刚才取回的运程分支合并到现在的某个分支</div></pre></td></tr></table></figure></p>
+<h2>建立裸仓,两种方法</h2>
+<h3>将本地的导出为裸仓</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">git clone --bare my_project my_project.git  //my_project这个仓已经存在了</div><div class="line">scp -r my_project.git user@git.example.com:/opt/git //将裸仓移到服务器上</div><div class="line">git init --bare --shared //如果对服务器上裸仓没有权限 此命令用于获得权限</div><div class="line">git clone root@120.24.72.202:/home/my_project/my_project.git  //将裸仓中的内容复制出来</div></pre></td></tr></table></figure></p>
+<h3>直接建立裸仓（里面无内容）</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">cd /opt/git</div><div class="line">    $ mkdir project.git</div><div class="line">    $ cd project.git</div><div class="line">    $ git --bare init</div><div class="line"> $ cd myproject</div><div class="line">    $ git init</div><div class="line">    $ git add .</div><div class="line">    $ git commit -m &apos;initial commit&apos;</div><div class="line">    $ git remote add origin git@gitserver:/opt/git/project.git</div><div class="line">    $ git push origin master</div></pre></td></tr></table></figure></p>
+<p>其他人的克隆和推送也一样变得很简单：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git clone git@gitserver:/opt/git/project.git</div><div class="line">$ vim README</div><div class="line">$ git commit -am &apos;fix for the README file&apos;</div><div class="line">$ git push origin master</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2&gt;首先配置自已的git&lt;/h2&gt;
+&lt;p&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;
+    
+    </summary>
+    
+      <category term="笔记" scheme="http://yoursite.com/categories/%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="git" scheme="http://yoursite.com/tags/git/"/>
+    
+  </entry>
   
   <entry>
     <title>hexo设置主题、配置</title>
