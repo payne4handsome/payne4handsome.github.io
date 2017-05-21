@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-20T07:53:00.000Z</updated>
+  <updated>2017-05-21T02:24:30.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,44 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>hexo设置主题、配置</title>
+    <link href="http://yoursite.com/2017/05/20/hexo%E8%AE%BE%E7%BD%AE%E4%B8%BB%E9%A2%98%E3%80%81%E9%85%8D%E7%BD%AE/"/>
+    <id>http://yoursite.com/2017/05/20/hexo设置主题、配置/</id>
+    <published>2017-05-20T08:24:00.000Z</published>
+    <updated>2017-05-21T02:24:30.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2>Next主题只显示摘要</h2>
+<p>在首页，如果把每一篇文章的全部内容都显示出来的比较难看，所以可以配置让nexT主题只显示
+文章标题和一部分摘，在nexT的配置文件_config.xml中，找到auto_excert:如下修改,false改为
+true即可：</p>
+<p>‘’’
+auto_excerpt:
+enable: true
+length: 150
+’’’</p>
+<h2><a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="external">Hexo官网教程</a></h2>
+<h2><a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="external">NexT教程</a></h2>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2&gt;Next主题只显示摘要&lt;/h2&gt;
+&lt;p&gt;在首页，如果把每一篇文章的全部内容都显示出来的比较难看，所以可以配置让nexT主题只显示
+文章标题和一部分摘，在nexT的配置文件_config.xml中，找到auto_excert:如下修改,false改为
+true即可：&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Tutorial" scheme="http://yoursite.com/categories/Tutorial/"/>
+    
+    
+      <category term="Hexo" scheme="http://yoursite.com/tags/Hexo/"/>
+    
+      <category term="NexT" scheme="http://yoursite.com/tags/NexT/"/>
+    
+  </entry>
   
   <entry>
     <title>markdown 基本语法</title>
