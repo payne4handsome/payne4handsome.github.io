@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[SpingMvc学习笔记]]></title>
+    <url>%2F2017%2F05%2F25%2FSpingMvc%E5%AD%A6%E4%B9%A0%E6%9D%82%E8%AE%B0%2F</url>
+    <content type="text"><![CDATA[本文主要记录一些比较的零散的东西 一 1234567891011&lt;servlet&gt; &lt;servlet-name&gt;springMVC&lt;/servlet-name&gt; &lt;servlet-class&gt; org.springframework.web.servlet.DispatcherServlet &lt;/servlet-class&gt; &lt;init-param&gt; &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt; &lt;param-value&gt;classpath:springMVC-servlet.xml&lt;/param-value&gt; &lt;/init-param&gt; &lt;load-on-startup&gt;1&lt;/load-on-startup&gt; &lt;/servlet&gt; 这里的classpath路径指的是EB-INF/classes的目录 二 通过spring注解创建的Bean，默认是单例模式 如果需要多例模式用如下方式： 1234567@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)public class HelloService &#123;&#125;或者@Scope(&quot;prototype&quot;)public class HelloService &#123;&#125;]]></content>
+  </entry>
+  <entry>
+    <title><![CDATA[解决eclipse无法创建Web Module 3.0的问题]]></title>
+    <url>%2F2017%2F05%2F24%2F%E8%A7%A3%E5%86%B3eclipse%E6%97%A0%E6%B3%95%E5%88%9B%E5%BB%BAWeb-Module-3-0%E7%9A%84%E9%97%AE%E9%A2%98%2F</url>
+    <content type="text"><![CDATA[Eclipse 新建Maven工程选择maven-archetype-webapp新建dynamic web工程创建的工程版本比较低 在Eclipse中把项目修改为web Moudule3.0或者更高的版本时，会有如下问题： Can not change version of project facet Dynamic web Moudule to 3.0 需要项目目录.setting目录的org.eclipse.wst.common.project.facet.core.xml文件 把该文件中的jst.web属性修改为3.0，然后在Eclipse中刷新工程就好]]></content>
+      <categories>
+        <category>Eclipse</category>
+      </categories>
+      <tags>
+        <tag>Question</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[linux 文件系统笔记]]></title>
+    <url>%2F2017%2F05%2F21%2Flinux-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%AC%94%E8%AE%B0%2F</url>
+    <content type="text"><![CDATA[用户管理 useradd wang#添加用户wang 会自动创建用户组 adduser wang#会创建目录，组信息，useradd不会创建用户目录 tail -l /etc/passwd #查看wang用户的账户信息 tail -l /etc/group #查看用户组的账户信息 tail -l /etc/shadow #查看加密后的用户账号和密码信息 usermod #修改用户账号信息 userdel #删除用户账号 userdel -r 则一并删除用户目录 passwd wang #更改wang这个用户的密码 addgroup hadoop #创建用户组 文件目录的权限管理 ll 查得的权限的第一位 -表示文件 d表示目录 --- --- --- 分别对应的是文件所有者、同组用户、其他用户的权限 更改文件（目录）权限 chmod chmod 格式 字符方式 chmod [userType] [signal] [type] [filename] userType u(宿主) g（同组）o（其他用户）a(所有用户) signal + - = type r w x 数字方式 0 无权限 1 执行权限 2 写权限 4 读权限 （注意没有3） chmod 764 test.txt 表示此文件1.宿主有读写执行权限2.同组用户有读和写权限3.其他用户只要读权限 文件查找 find . -name 'sql' 按名字查找sql的文件 Vim编辑器 grep查询文本中包含的字符串 grep -n main demo1.c #查询demo.c中的是否有main字符串，并显示行号 软连接与硬链接 ll -i(linux中，每个文件都有一个索引节点号，改名了显示index) 硬链接：硬连接指通过索引节点来进行连接。在Linux的文件系统中，保存在磁盘分区中的文件不管是什么类型都给它分配一个编号， 称为索引节点号(Inode Index)。在Linux中，多个文件名指向同一索引节点是存在的。一般这种连接就是硬连接。硬连接的作用是 允许一个文件拥有多个有效路径名，这样用户就可以建立硬连接到重要文件，以防止“误删”的功能。其原因如上所述，因为对应该目录 的索引节点有一个以上的连接。只删除一个连接并不影响索引节点本身和其它的连接，只有当最后一个连接被删除后， 文件的数据块及目录的连接才会被释放。也就是说，文件真正删除的条件是与之相关的所有硬连接文件均被删除。 软连接：另外一种连接称之为符号连接（Symbolic Link），也叫软连接。软链接文件有类似于Windows的快捷方式。它实际上是一个 特殊的文件。在符号连接中，文件实际上是一个文本文件，其中包含的有另一文件的位置信息。 例子： touch f1(新建文件f1) ln f1 f2(linux默认是建立硬链接，表示f2指向f1的硬链接，f1 与 f2 索引节点号相同，及时删除f1,f2还是可用的) ln -s f1 f2(f2指向f1的软连接，节点索引号不同，删除f2可以，删除f1时则不能访问f2) 七、查看系统安装了那些包 dpkg -l|drep xx //xx我包名 ubuntu rpm -qa|grep xx //centos 下查看安装那些包 适用于包安装 不适于编译安装]]></content>
+      <categories>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>linux基本命令</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[git学习笔记]]></title>
     <url>%2F2017%2F05%2F21%2Fgit%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%2F</url>
     <content type="text"><![CDATA[首先配置自已的git 12$ git config --global user.name &quot;John Doe&quot;$ git config --global user.email johndoe@example.com 常用命令 12345678git commit --amend 撤销最近一次的修改git fetch [remote-name] 从远程仓库中抓取数据git push [remote-name] [branch-name] 将数据推送到远程的某个分支git remote add [shortname] [url] //远程添加一个分支git remote show [remote-name] git tag -a v1.4 -m &apos;my version 1.4&apos; 打标签git show v1.4 显示v1.4这个标签的xinxgit tag 查看已经打了哪些标签 建立新的分支 12345678910111213141516git branch pan //新建分支pangit checkout pan //切到pan分支 此时HEAD指向的是pan master指向的是建立分支之前的commit指针git checkout -b pan //新建并切换到分支pangit merge pan git branch -d pan //当某个分支问题解决了以后，就可以删除这个分支了git merge master //在某个分支上将master中的内容合并过来git branch --merged//查看已经合并的分支git branch --no-merged //查看没有合并的分支git mergetool//调用解决合并冲突的工具git fetch origin //来同步远程服务器上的数据到本地git push (远程仓库名) (分支名) //推送本地分支，这个是推送到远程的同名分支git push origin serverfix:awesomebranc//推送到远程的其他的分支 建立新的分支 123456git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;## example git push origin payne:payne //如果远程分支名不存在，则创建分支git pull &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;## example git pull origin next:master //取回origin主机的next分支，与本地的master分支合并 删除远程分支develop: 123git push origin --delete developgit branch -a 查看所有的分支，包括本地和远程的git branch -r 查看远程分支 12git fetch origin dev-pan取回远程的某个分支，所取回的更新，在本地主机上要用&quot;远程主机名/分支名&quot;的形式读取。比如origin主机的master，就要用origin/master读取。git merge origin/dev-pan 在某个分支上把刚才取回的运程分支合并到现在的某个分支 建立裸仓,两种方法 将本地的导出为裸仓 1234git clone --bare my_project my_project.git //my_project这个仓已经存在了scp -r my_project.git user@git.example.com:/opt/git //将裸仓移到服务器上git init --bare --shared //如果对服务器上裸仓没有权限 此命令用于获得权限git clone root@120.24.72.202:/home/my_project/my_project.git //将裸仓中的内容复制出来 直接建立裸仓（里面无内容） 12345678910cd /opt/git $ mkdir project.git $ cd project.git $ git --bare init $ cd myproject $ git init $ git add . $ git commit -m &apos;initial commit&apos; $ git remote add origin git@gitserver:/opt/git/project.git $ git push origin master 其他人的克隆和推送也一样变得很简单： 1234$ git clone git@gitserver:/opt/git/project.git$ vim README$ git commit -am &apos;fix for the README file&apos;$ git push origin master]]></content>

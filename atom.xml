@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-21T07:39:56.000Z</updated>
+  <updated>2017-05-28T07:48:10.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,150 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SpingMvc学习笔记</title>
+    <link href="http://yoursite.com/2017/05/25/SpingMvc%E5%AD%A6%E4%B9%A0%E6%9D%82%E8%AE%B0/"/>
+    <id>http://yoursite.com/2017/05/25/SpingMvc学习杂记/</id>
+    <published>2017-05-25T09:17:08.000Z</published>
+    <updated>2017-05-28T07:48:10.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>本文主要记录一些比较的零散的东西</p>
+</blockquote>
+<ul>
+<li>一
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;servlet&gt;</div><div class="line">    &lt;servlet-name&gt;springMVC&lt;/servlet-name&gt;</div><div class="line">    &lt;servlet-class&gt;</div><div class="line">       org.springframework.web.servlet.DispatcherServlet</div><div class="line">    &lt;/servlet-class&gt;</div><div class="line">    &lt;init-param&gt;</div><div class="line">   	&lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</div><div class="line">   	&lt;param-value&gt;classpath:springMVC-servlet.xml&lt;/param-value&gt;</div><div class="line">   &lt;/init-param&gt;</div><div class="line">   &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</div><div class="line"> &lt;/servlet&gt;</div></pre></td></tr></table></figure></li>
+</ul>
+<p>这里的classpath路径指的是EB-INF/classes的目录</p>
+<ul>
+<li>二
+通过spring注解创建的Bean，默认是单例模式<br>
+如果需要多例模式用如下方式：</li>
+</ul>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)</div><div class="line">public class HelloService &#123;</div><div class="line">&#125;</div><div class="line">或者</div><div class="line">@Scope(&quot;prototype&quot;)</div><div class="line">public class HelloService &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;本文主要记录一些比较的零散的东西&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;一
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>解决eclipse无法创建Web Module 3.0的问题</title>
+    <link href="http://yoursite.com/2017/05/24/%E8%A7%A3%E5%86%B3eclipse%E6%97%A0%E6%B3%95%E5%88%9B%E5%BB%BAWeb-Module-3-0%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+    <id>http://yoursite.com/2017/05/24/解决eclipse无法创建Web-Module-3-0的问题/</id>
+    <published>2017-05-24T05:12:02.000Z</published>
+    <updated>2017-05-28T07:48:10.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>Eclipse 新建Maven工程选择maven-archetype-webapp新建dynamic web工程创建的工程版本比较低</p>
+</blockquote>
+<p>在Eclipse中把项目修改为web Moudule3.0或者更高的版本时，会有如下问题：<br>
+<strong>Can not change version of project facet Dynamic web Moudule to 3.0</strong><br>
+需要项目目录.setting目录的org.eclipse.wst.common.project.facet.core.xml文件
+把该文件中的jst.web属性修改为3.0，然后在Eclipse中刷新工程就好</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;Eclipse 新建Maven工程选择maven-archetype-webapp新建dynamic web工程创建的工程版本比较低&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在Eclipse中把项目修改为web Moudule3.0或者更高的版本
+    
+    </summary>
+    
+      <category term="Eclipse" scheme="http://yoursite.com/categories/Eclipse/"/>
+    
+    
+      <category term="Question" scheme="http://yoursite.com/tags/Question/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>linux 文件系统笔记</title>
+    <link href="http://yoursite.com/2017/05/21/linux-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%AC%94%E8%AE%B0/"/>
+    <id>http://yoursite.com/2017/05/21/linux-文件系统笔记/</id>
+    <published>2017-05-21T08:14:57.000Z</published>
+    <updated>2017-05-21T09:36:48.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2>用户管理</h2>
+<pre><code>useradd wang#添加用户wang   会自动创建用户组
+adduser wang#会创建目录，组信息，useradd不会创建用户目录
+tail -l /etc/passwd #查看wang用户的账户信息
+tail -l /etc/group #查看用户组的账户信息
+tail -l /etc/shadow #查看加密后的用户账号和密码信息
+usermod #修改用户账号信息
+userdel #删除用户账号 userdel -r 则一并删除用户目录
+passwd wang #更改wang这个用户的密码
+addgroup hadoop  #创建用户组
+</code></pre>
+<h2>文件目录的权限管理</h2>
+<pre><code>ll 查得的权限的第一位 -表示文件 d表示目录
+--- --- --- 分别对应的是文件所有者、同组用户、其他用户的权限
+更改文件（目录）权限 chmod
+chmod 格式
+字符方式
+chmod [userType] [signal] [type] [filename]
+userType u(宿主) g（同组）o（其他用户）a(所有用户)
+signal + - =
+type  r w x
+数字方式
+0 无权限 1 执行权限 2 写权限 4 读权限 （注意没有3）
+chmod 764 test.txt 表示此文件1.宿主有读写执行权限2.同组用户有读和写权限3.其他用户只要读权限
+</code></pre>
+<h2>文件查找</h2>
+<pre><code>find . -name 'sql' 按名字查找sql的文件
+</code></pre>
+<h2>Vim编辑器</h2>
+<h2>grep查询文本中包含的字符串</h2>
+<pre><code>grep -n main demo1.c #查询demo.c中的是否有main字符串，并显示行号
+</code></pre>
+<h2>软连接与硬链接</h2>
+<pre><code>ll -i(linux中，每个文件都有一个索引节点号，改名了显示index)
+硬链接：硬连接指通过索引节点来进行连接。在Linux的文件系统中，保存在磁盘分区中的文件不管是什么类型都给它分配一个编号，
+	称为索引节点号(Inode Index)。在Linux中，多个文件名指向同一索引节点是存在的。一般这种连接就是硬连接。硬连接的作用是
+	允许一个文件拥有多个有效路径名，这样用户就可以建立硬连接到重要文件，以防止“误删”的功能。其原因如上所述，因为对应该目录
+	的索引节点有一个以上的连接。只删除一个连接并不影响索引节点本身和其它的连接，只有当最后一个连接被删除后，
+	文件的数据块及目录的连接才会被释放。也就是说，文件真正删除的条件是与之相关的所有硬连接文件均被删除。
+软连接：另外一种连接称之为符号连接（Symbolic Link），也叫软连接。软链接文件有类似于Windows的快捷方式。它实际上是一个
+	特殊的文件。在符号连接中，文件实际上是一个文本文件，其中包含的有另一文件的位置信息。
+例子：
+touch f1(新建文件f1)
+ln f1 f2(linux默认是建立硬链接，表示f2指向f1的硬链接，f1 与 f2 索引节点号相同，及时删除f1,f2还是可用的)
+ln -s f1 f2(f2指向f1的软连接，节点索引号不同，删除f2可以，删除f1时则不能访问f2)
+</code></pre>
+<p>七、查看系统安装了那些包
+	dpkg -l|drep xx     //xx我包名 ubuntu
+	rpm -qa|grep xx //centos 下查看安装那些包  适用于包安装 不适于编译安装</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2&gt;用户管理&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;useradd wang#添加用户wang   会自动创建用户组
+adduser wang#会创建目录，组信息，useradd不会创建用户目录
+tail -l /etc/passwd #查看wang用户的账户信息
+tail -l 
+    
+    </summary>
+    
+      <category term="笔记" scheme="http://yoursite.com/categories/%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="linux基本命令" scheme="http://yoursite.com/tags/linux%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/"/>
+    
+  </entry>
   
   <entry>
     <title>git学习笔记</title>
