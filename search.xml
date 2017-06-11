@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[java 泛型]]></title>
+    <url>%2F2017%2F06%2F11%2Fjava-%E6%B3%9B%E5%9E%8B%2F</url>
+    <content type="text"><![CDATA[很多朋友对Java的泛型不是很理解，很多文章写的已不是很清楚，这篇博客对java泛型进行 一个总结。 泛型的转换： ‘‘‘ List&lt;Number&gt; foo1 = new ArrayList&lt;Integer&gt;();//illegal ’’’ 很多朋友会写出上面的代码，但会报如下错误：Type mismatch: cannot convert from ArrayList&lt;Integer&gt; to List&lt;Number&gt;尽管Interge是Number的子类，但是ArrayList&lt;Integer&gt;不是List&lt;Number&gt;的子类，所以报错。下图可以很好解释这个问题。]]></content>
+      <categories>
+        <category>j2SE</category>
+      </categories>
+      <tags>
+        <tag>泛型</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Redis 教程]]></title>
     <url>%2F2017%2F06%2F01%2FRedis-%E6%95%99%E7%A8%8B%2F</url>
     <content type="text"><![CDATA[Redis 与其他 key - value 缓存产品有以下三个特点： Redis支持数据的持久化，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用。 Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。 Redis支持数据的备份，即master-slave模式的数据备份。 Redis优势 性能极高 – Redis能读的速度是110000次/s,写的速度是81000次/s 。 丰富的数据类型 – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。 原子 – Redis的所有操作都是原子性的，同时Redis还支持对几个操作全并后的原子性执行。 丰富的特性 – Redis还支持 publish/subscribe, 通知, key 过期等等特性。 安装 windows : 下载地址：https://github.com/MSOpenTech/redis/releases 自行选择安装 linux : 下载地址：http://redis.io/download 自行编译安装 开启服务 在安装目录运行 redis-server.exe redis.windows.conf 开启控制台 redis-cli.exe -h 127.0.0.1 -p 6379 然后就可以在控制台输入了，例子： set myKey hello_world get myKey 此时控制将输出 hello_world Redis配置 Redis的配置文件linux环境下为redis.conf, Windows环境下为redis.windows.conf 在命令模型下： 获得配置信息命令 CONFIG GET * //显示所有的配置信息 设置配置信息命令： CONFIG SET Redis支持的数据类型 Redis支持五种数据类型：string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。 Example： String类型 string类型是二进制安全的。意思是redis的string可以包含任何数据。比如jpg图片或者序列化的对象 。 string类型是Redis最基本的数据类型，一个键最大能存储512MB。 基本命令： set name payne get name 控制台输出“payne” Hash类型 Redis hash 是一个键名对集合。 Redis hash是一个string类型的field和value的映射表，hash特别适合用于存储对象。 HMSET user:1 username payne password payne 基本命令 hmset hset hgetall hget 123456789127.0.0.1:6379&gt; HMSET user:1 username runoob password runoob points 200OK127.0.0.1:6379&gt; HGETALL user:11) &quot;username&quot;2) &quot;runoob&quot;3) &quot;password&quot;4) &quot;runoob&quot;5) &quot;points&quot;6) &quot;200&quot; List类型 Redis 列表是简单的字符串列表，按照插入顺序排序。你可以添加一个元素到列表的头部（左边）或者尾部（右边）。 12345678910redis 127.0.0.1:6379&gt; lpush runoob redis(integer) 1redis 127.0.0.1:6379&gt; lpush runoob mongodb(integer) 2redis 127.0.0.1:6379&gt; lpush runoob rabitmq(integer) 3redis 127.0.0.1:6379&gt; lrange runoob 0 101) &quot;rabitmq&quot;2) &quot;mongodb&quot;3) &quot;redis&quot; Set 类型 Redis的Set是string类型的无序集合。 集合是通过哈希表实现的，所以添加，删除，查找的复杂度都是O(1) 123456789101112redis 127.0.0.1:6379&gt; sadd runoob redis(integer) 1redis 127.0.0.1:6379&gt; sadd runoob mongodb(integer) 1redis 127.0.0.1:6379&gt; sadd runoob rabitmq(integer) 1redis 127.0.0.1:6379&gt; sadd runoob rabitmq(integer) 0redis 127.0.0.1:6379&gt; smembers runoob1) &quot;rabitmq&quot;2) &quot;mongodb&quot;3) &quot;redis&quot; zset类型（有序集合） Redis zset 和 set 一样也是string类型元素的集合,且不允许重复的成员。 不同的是每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。 zset的成员是唯一的,但分数(score)却可以重复。 123456789101112redis 127.0.0.1:6379&gt; zadd runoob 0 redis(integer) 1redis 127.0.0.1:6379&gt; zadd runoob 0 mongodb(integer) 1redis 127.0.0.1:6379&gt; zadd runoob 0 rabitmq(integer) 1redis 127.0.0.1:6379&gt; zadd runoob 0 rabitmq(integer) 0redis 127.0.0.1:6379&gt; ZRANGEBYSCORE runoob 0 10001) &quot;redis&quot;2) &quot;mongodb&quot;3) &quot;rabitmq&quot; Redis 帮助 在命令行模型下输入help &lt;command&gt;]]></content>
@@ -28,22 +39,6 @@
     <content type="text"><![CDATA[本文主要记录一些比较的零散的东西 一 1234567891011&lt;servlet&gt; &lt;servlet-name&gt;springMVC&lt;/servlet-name&gt; &lt;servlet-class&gt; org.springframework.web.servlet.DispatcherServlet &lt;/servlet-class&gt; &lt;init-param&gt; &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt; &lt;param-value&gt;classpath:springMVC-servlet.xml&lt;/param-value&gt; &lt;/init-param&gt; &lt;load-on-startup&gt;1&lt;/load-on-startup&gt; &lt;/servlet&gt; 这里的classpath路径指的是EB-INF/classes的目录 二 通过spring注解创建的Bean，默认是单例模式 如果需要多例模式用如下方式： 1234567@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)public class HelloService &#123;&#125;或者@Scope(&quot;prototype&quot;)public class HelloService &#123;&#125;]]></content>
   </entry>
   <entry>
-    <title><![CDATA[SpingMvc学习笔记]]></title>
-    <url>%2F2017%2F05%2F25%2FSpingMvc%E5%AD%A6%E4%B9%A0%E6%9D%82%E8%AE%B0%2F</url>
-    <content type="text"><![CDATA[本文主要记录一些比较的零散的东西 一 1234567891011&lt;servlet&gt; &lt;servlet-name&gt;springMVC&lt;/servlet-name&gt; &lt;servlet-class&gt; org.springframework.web.servlet.DispatcherServlet &lt;/servlet-class&gt; &lt;init-param&gt; &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt; &lt;param-value&gt;classpath:springMVC-servlet.xml&lt;/param-value&gt; &lt;/init-param&gt; &lt;load-on-startup&gt;1&lt;/load-on-startup&gt; &lt;/servlet&gt; 这里的classpath路径指的是EB-INF/classes的目录 二 通过spring注解创建的Bean，默认是单例模式 如果需要多例模式用如下方式： 1234567@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)public class HelloService &#123;&#125;或者@Scope(&quot;prototype&quot;)public class HelloService &#123;&#125;]]></content>
-  </entry>
-  <entry>
-    <title><![CDATA[解决eclipse无法创建Web Module 3.0的问题]]></title>
-    <url>%2F2017%2F05%2F24%2F%E8%A7%A3%E5%86%B3eclipse%E6%97%A0%E6%B3%95%E5%88%9B%E5%BB%BAWeb-Module-3-0%E7%9A%84%E9%97%AE%E9%A2%98%2F</url>
-    <content type="text"><![CDATA[Eclipse 新建Maven工程选择maven-archetype-webapp新建dynamic web工程创建的工程版本比较低 在Eclipse中把项目修改为web Moudule3.0或者更高的版本时，会有如下问题： Can not change version of project facet Dynamic web Moudule to 3.0 需要项目目录.setting目录的org.eclipse.wst.common.project.facet.core.xml文件 把该文件中的jst.web属性修改为3.0，然后在Eclipse中刷新工程就好]]></content>
-      <categories>
-        <category>Eclipse</category>
-      </categories>
-      <tags>
-        <tag>Question</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[解决eclipse无法创建Web Module 3.0的问题]]></title>
     <url>%2F2017%2F05%2F24%2F%E8%A7%A3%E5%86%B3eclipse%E6%97%A0%E6%B3%95%E5%88%9B%E5%BB%BAWeb-Module-3-0%E7%9A%84%E9%97%AE%E9%A2%98%2F</url>
     <content type="text"><![CDATA[Eclipse 新建Maven工程选择maven-archetype-webapp新建dynamic web工程创建的工程版本比较低 在Eclipse中把项目修改为web Moudule3.0或者更高的版本时，会有如下问题： Can not change version of project facet Dynamic web Moudule to 3.0 需要项目目录.setting目录的org.eclipse.wst.common.project.facet.core.xml文件 把该文件中的jst.web属性修改为3.0，然后在Eclipse中刷新工程就好]]></content>
@@ -63,28 +58,6 @@
       </categories>
       <tags>
         <tag>linux基本命令</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[linux 文件系统笔记]]></title>
-    <url>%2F2017%2F05%2F21%2Flinux-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%AC%94%E8%AE%B0%2F</url>
-    <content type="text"><![CDATA[用户管理 useradd wang#添加用户wang 会自动创建用户组 adduser wang#会创建目录，组信息，useradd不会创建用户目录 tail -l /etc/passwd #查看wang用户的账户信息 tail -l /etc/group #查看用户组的账户信息 tail -l /etc/shadow #查看加密后的用户账号和密码信息 usermod #修改用户账号信息 userdel #删除用户账号 userdel -r 则一并删除用户目录 passwd wang #更改wang这个用户的密码 addgroup hadoop #创建用户组 文件目录的权限管理 ll 查得的权限的第一位 -表示文件 d表示目录 --- --- --- 分别对应的是文件所有者、同组用户、其他用户的权限 更改文件（目录）权限 chmod chmod 格式 字符方式 chmod [userType] [signal] [type] [filename] userType u(宿主) g（同组）o（其他用户）a(所有用户) signal + - = type r w x 数字方式 0 无权限 1 执行权限 2 写权限 4 读权限 （注意没有3） chmod 764 test.txt 表示此文件1.宿主有读写执行权限2.同组用户有读和写权限3.其他用户只要读权限 文件查找 find . -name 'sql' 按名字查找sql的文件 Vim编辑器 grep查询文本中包含的字符串 grep -n main demo1.c #查询demo.c中的是否有main字符串，并显示行号 软连接与硬链接 ll -i(linux中，每个文件都有一个索引节点号，改名了显示index) 硬链接：硬连接指通过索引节点来进行连接。在Linux的文件系统中，保存在磁盘分区中的文件不管是什么类型都给它分配一个编号， 称为索引节点号(Inode Index)。在Linux中，多个文件名指向同一索引节点是存在的。一般这种连接就是硬连接。硬连接的作用是 允许一个文件拥有多个有效路径名，这样用户就可以建立硬连接到重要文件，以防止“误删”的功能。其原因如上所述，因为对应该目录 的索引节点有一个以上的连接。只删除一个连接并不影响索引节点本身和其它的连接，只有当最后一个连接被删除后， 文件的数据块及目录的连接才会被释放。也就是说，文件真正删除的条件是与之相关的所有硬连接文件均被删除。 软连接：另外一种连接称之为符号连接（Symbolic Link），也叫软连接。软链接文件有类似于Windows的快捷方式。它实际上是一个 特殊的文件。在符号连接中，文件实际上是一个文本文件，其中包含的有另一文件的位置信息。 例子： touch f1(新建文件f1) ln f1 f2(linux默认是建立硬链接，表示f2指向f1的硬链接，f1 与 f2 索引节点号相同，及时删除f1,f2还是可用的) ln -s f1 f2(f2指向f1的软连接，节点索引号不同，删除f2可以，删除f1时则不能访问f2) 七、查看系统安装了那些包 dpkg -l|drep xx //xx我包名 ubuntu rpm -qa|grep xx //centos 下查看安装那些包 适用于包安装 不适于编译安装]]></content>
-      <categories>
-        <category>笔记</category>
-      </categories>
-      <tags>
-        <tag>linux基本命令</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[git学习笔记]]></title>
-    <url>%2F2017%2F05%2F21%2Fgit%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%2F</url>
-    <content type="text"><![CDATA[首先配置自已的git 12$ git config --global user.name &quot;John Doe&quot;$ git config --global user.email johndoe@example.com 常用命令 12345678git commit --amend 撤销最近一次的修改git fetch [remote-name] 从远程仓库中抓取数据git push [remote-name] [branch-name] 将数据推送到远程的某个分支git remote add [shortname] [url] //远程添加一个分支git remote show [remote-name] git tag -a v1.4 -m &apos;my version 1.4&apos; 打标签git show v1.4 显示v1.4这个标签的xinxgit tag 查看已经打了哪些标签 建立新的分支 12345678910111213141516git branch pan //新建分支pangit checkout pan //切到pan分支 此时HEAD指向的是pan master指向的是建立分支之前的commit指针git checkout -b pan //新建并切换到分支pangit merge pan git branch -d pan //当某个分支问题解决了以后，就可以删除这个分支了git merge master //在某个分支上将master中的内容合并过来git branch --merged//查看已经合并的分支git branch --no-merged //查看没有合并的分支git mergetool//调用解决合并冲突的工具git fetch origin //来同步远程服务器上的数据到本地git push (远程仓库名) (分支名) //推送本地分支，这个是推送到远程的同名分支git push origin serverfix:awesomebranc//推送到远程的其他的分支 建立新的分支 123456git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;## example git push origin payne:payne //如果远程分支名不存在，则创建分支git pull &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;## example git pull origin next:master //取回origin主机的next分支，与本地的master分支合并 删除远程分支develop: 123git push origin --delete developgit branch -a 查看所有的分支，包括本地和远程的git branch -r 查看远程分支 12git fetch origin dev-pan取回远程的某个分支，所取回的更新，在本地主机上要用&quot;远程主机名/分支名&quot;的形式读取。比如origin主机的master，就要用origin/master读取。git merge origin/dev-pan 在某个分支上把刚才取回的运程分支合并到现在的某个分支 建立裸仓,两种方法 将本地的导出为裸仓 1234git clone --bare my_project my_project.git //my_project这个仓已经存在了scp -r my_project.git user@git.example.com:/opt/git //将裸仓移到服务器上git init --bare --shared //如果对服务器上裸仓没有权限 此命令用于获得权限git clone root@120.24.72.202:/home/my_project/my_project.git //将裸仓中的内容复制出来 直接建立裸仓（里面无内容） 12345678910cd /opt/git $ mkdir project.git $ cd project.git $ git --bare init $ cd myproject $ git init $ git add . $ git commit -m &apos;initial commit&apos; $ git remote add origin git@gitserver:/opt/git/project.git $ git push origin master 其他人的克隆和推送也一样变得很简单： 1234$ git clone git@gitserver:/opt/git/project.git$ vim README$ git commit -am &apos;fix for the README file&apos;$ git push origin master]]></content>
-      <categories>
-        <category>笔记</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -111,29 +84,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[hexo设置主题、配置]]></title>
-    <url>%2F2017%2F05%2F20%2Fhexo%E8%AE%BE%E7%BD%AE%E4%B8%BB%E9%A2%98%E3%80%81%E9%85%8D%E7%BD%AE%2F</url>
-    <content type="text"><![CDATA[Next主题只显示摘要 在首页，如果把每一篇文章的全部内容都显示出来的比较难看，所以可以配置让nexT主题只显示 文章标题和一部分摘，在nexT的配置文件_config.xml中，找到auto_excert:如下修改,false改为 true即可： ‘’’ auto_excerpt: enable: true length: 150 ’’’ Hexo官网教程 NexT教程]]></content>
-      <categories>
-        <category>Tutorial</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
-        <tag>NexT</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[markdown 基本语法]]></title>
-    <url>%2F2017%2F05%2F20%2Fmarkdown-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%2F</url>
-    <content type="text"><![CDATA[1、分段 两个回车 2、换行 两个空格 + 回车 3、标题 #~###### 井号的个数表示几级标题，即Markdown可以表示一级标题到六级标题 4、引用 &gt; 5、列表 *，+，-，1.，选其中之一，注意后面有个空格 6、代码区块 四个空格开头 7、链接 [文字](链接地址) 8、图片 ![图片说明](图片地址)，图片地址可以是本地路劲，也可以是网络地址 9、强调 **文字**，文字，文字，文字 //标记于文本之间不要空格 10、代码 ```代码``` //Tab上面的那个键 11、强调带+背景色 `文字` 12、自动连接 &lt;www.baidu.com&gt; 13、转移 \ 使得markdown自带标记失效 ##Markdown详细教程]]></content>
-      <categories>
-        <category>笔记</category>
-      </categories>
-      <tags>
-        <tag>Markdown</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[markdown 基本语法]]></title>
     <url>%2F2017%2F05%2F20%2Fmarkdown-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%2F</url>
     <content type="text"><![CDATA[1、分段 两个回车 2、换行 两个空格 + 回车 3、标题 #~###### 井号的个数表示几级标题，即Markdown可以表示一级标题到六级标题 4、引用 &gt; 5、列表 *，+，-，1.，选其中之一，注意后面有个空格 6、代码区块 四个空格开头 7、链接 [文字](链接地址) 8、图片 ![图片说明](图片地址)，图片地址可以是本地路劲，也可以是网络地址 9、强调 **文字**，文字，文字，文字 //标记于文本之间不要空格 10、代码 ```代码``` //Tab上面的那个键 11、强调带+背景色 `文字` 12、自动连接 &lt;www.baidu.com&gt; 13、转移 \ 使得markdown自带标记失效 ##Markdown详细教程]]></content>
@@ -153,28 +103,6 @@
       </categories>
       <tags>
         <tag>vim</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[vim 常用快捷键]]></title>
-    <url>%2F2017%2F05%2F20%2Fvim-%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE%2F</url>
-    <content type="text"><![CDATA[移动 h 左移 l 右移 j 下移 k 上移 w 移动一个单词 W 移动下一个单词开头，但忽略一些标点 e 前移一个单词，光标停在下一个单词末尾 E 移动到下一个单词末尾，如果词尾有标点，则移动到标点 0 移动到行首 $ 移动到行尾 gg 移动最前面 shift+g 移动到最后面 翻屏 crtl+f 下翻一屏 crtl+b 上翻一屏 zz 移动到屏幕最中央 复制、粘贴、删除 y 复制一行 :m,ny 复制m到n行 d 删除一行 :m,nd 剪切m到n行 p 粘贴 打开多个文件 :sp file 水平打开多个文件 :vsp file 垂直打开多个文件 ctrl+w 双击快速切换窗口 ctrl+w+j/k 快速上下切换 u 撤销 ctrl+r 反向撤销]]></content>
-      <categories>
-        <category>笔记</category>
-      </categories>
-      <tags>
-        <tag>vim</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Hexo搭建个人博客]]></title>
-    <url>%2F2017%2F04%2F27%2FHexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%2F</url>
-    <content type="text"><![CDATA[第一次用Hexo搭建个人博客，原来用的CSDN的博客，但是嫌弃它不够简洁，有点花哨, 所以趁有时间就想自已搭建一个博客。既然是第一篇文章，有必要把Hexo搭建博客的过程写下来 安装 安装步骤如下： 1、安装Hexo需要先安装下面应用程序(根据自已的系统选择安装方式，window和mac系统直接官网下载安装 ，linux用户可以自带的安装程序安装)： Node.js Git 2、运行如下命令 npm install -g hexo-cli 初始化 选择一个目录，执行如下命令： hexo init Hexo Hexo 是你建立文件的名称，cd到Hexo的文件，执行如下命令： npm install 执行如下命令，就可以开启hexo服务器了（可以在本地访问）： hexo s 此时，在浏览器中打开网址http://localhost:4000,就能过看到如下页面 本地设置好了以后，接下来开始设置用github来访问我们的博客 设置GitHub 1、创建仓库 登录你的Github帐号，新建仓库，名为用户名.github.io固定写法，如payne4handsome.github.io 即下图中1所示： 2、配置部署信息 本地的Hexo的文件内容如下： 1234567_config.yml db.json node_modules package.jsonscaffoldssourcethemes cd到Hexo的文件写，打开hexo的配置文件_config.xml，在配置文件的最后 做下面的这样的修改（这样hexo d命令可以直接把写的文章部署到我们git仓库上） 1234deploy: type: git repository: https://github.com/payne4handsome/payne4handsome.github.io branch: master 写博客 hexo命令的基本语法为： hexo &lt;command&gt; 12345678910111213141516171819202122Commands: clean Removed generated files and cache. config Get or set configurations. deploy Deploy your website. generate Generate static files. help Get help on a command. init Create a new Hexo folder. list List the information of the site migrate Migrate your site from other system to Hexo. new Create a new post. publish Moves a draft post from _drafts to _posts folder. render Render files with renderer plugins. server Start the server. version Display version information.Global Options: --config Specify config file instead of using _config.yml --cwd Specify the CWD --debug Display all verbose messages in the terminal --draft Display draft posts --safe Disable all plugins and scripts --silent Hide output on console 比如我们要创建一篇新的博客： hexo new 'hello world' 然后我们找到Hexo的目录下面的source/_posts目录下面的‘hello world’.md开始编辑（markdown语法） hexo g (同hexo generate) 生产静态文件 +hexo d（同hexo deploy） 部署到github 总结 123hexo generate --watch //Hexo 能够监视文件变动并立即重新生成静态文件，在生成时会比对文件的 SHA1 checksum，只有变动的文件才会写入。hexo generate --deploy //和下面的命令一样hexo deploy --generate 上面的两个命令可以简写为： 12hexo g -dhexo d -g Questions 一开始我用的hexo自动Markdown解析器，但是我在vim编辑文章时，如果我在vim中 换行，那么显示的页面就会换行，这样排版会难看（每一行字数可能不一样），那 么需要执行下面命令，安装新的Markdown解析器： 12npm un hexo-renderer-marked --savenpm i hexo-renderer-markdown-it --save]]></content>
-      <categories>
-        <category>Tutorial</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
