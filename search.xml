@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[SpringMVC深入解析]]></title>
+    <url>%2F2017%2F05%2F28%2FSpringMVC%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90%2F</url>
+    <content type="text"></content>
+      <categories>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>springMVC</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[SpingMvc学习笔记]]></title>
     <url>%2F2017%2F05%2F25%2FSpingMvc%E5%AD%A6%E4%B9%A0%E6%9D%82%E8%AE%B0%2F</url>
     <content type="text"><![CDATA[本文主要记录一些比较的零散的东西 一 1234567891011&lt;servlet&gt; &lt;servlet-name&gt;springMVC&lt;/servlet-name&gt; &lt;servlet-class&gt; org.springframework.web.servlet.DispatcherServlet &lt;/servlet-class&gt; &lt;init-param&gt; &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt; &lt;param-value&gt;classpath:springMVC-servlet.xml&lt;/param-value&gt; &lt;/init-param&gt; &lt;load-on-startup&gt;1&lt;/load-on-startup&gt; &lt;/servlet&gt; 这里的classpath路径指的是EB-INF/classes的目录 二 通过spring注解创建的Bean，默认是单例模式 如果需要多例模式用如下方式： 1234567@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)public class HelloService &#123;&#125;或者@Scope(&quot;prototype&quot;)public class HelloService &#123;&#125;]]></content>
