@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-11T08:02:16.000Z</updated>
+  <updated>2017-06-12T14:14:17.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,80 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>JAVA NIO</title>
+    <link href="http://yoursite.com/2017/06/11/JAVA-NIO/"/>
+    <id>http://yoursite.com/2017/06/11/JAVA-NIO/</id>
+    <published>2017-06-11T10:43:01.000Z</published>
+    <updated>2017-06-12T14:14:17.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>Java NIO(New IO)是一个可以替代标准Java IO API的IO API（从Java 1.4开始)，Java NIO提供了与标准IO不同的IO工作方式。
+与标准IO的不同：</p>
+</blockquote>
+<ul>
+<li><strong>Java NIO: Channels and Buffers（通道和缓冲区）</strong></li>
+<li><strong>Java NIO: Non-blocking IO（非阻塞IO）</strong></li>
+<li><strong>Java NIO: Selectors（选择器)</strong>
+Java NIO引入了选择器的概念，选择器用于监听多个通道的事件（比如：连接打开，数据到达）。因此，单个的线程可以监听多个数据通道。</li>
+</ul>
+<h1>Java NIO概述</h1>
+<p>Java NIO 由以下几个核心部分组成：</p>
+<ul>
+<li>Channels</li>
+<li>Buffers</li>
+<li>Selectors</li>
+</ul>
+<h2>Channel与Buffer</h2>
+<p>Java的NIO从Channel开始，Channel向buffer中读，向buffer中写。<br>
+Channel和Buffer有好几种类型。下面是JAVA NIO中的一些主要Channel的实现：</p>
+<ul>
+<li>FileChannel 从文件中读写数据。</li>
+<li>DatagramChannel 能通过UDP读写网络中的数据。</li>
+<li>SocketChannel 能通过TCP读写网络中的数据。</li>
+<li>ServerSocketChannel 可以监听新进来的TCP连接，像Web服务器那样。对每一个新进来的连接都会创建一个SocketChannel。
+这些通道涵盖了UDP 和 TCP 网络IO，以及文件IO</li>
+</ul>
+<h2>Java NIO里关键的Buffer实现</h2>
+<ul>
+<li>ByteBuffer</li>
+<li>CharBuffer</li>
+<li>DoubleBuffer</li>
+<li>FloatBuffer</li>
+<li>IntBuffer</li>
+<li>LongBuffer</li>
+<li>ShortBuffer
+这些Buffer覆盖了你能通过IO发送的基本数据类型：byte, short, int, long, float, double 和 char。</li>
+</ul>
+<h2>Selector</h2>
+<p>Selector允许单线程处理多个 Channel。如果你的应用打开了多个连接（通道），但每个连接的流量都很低，使用Selector就会很方便。</p>
+<h1>Channel</h1>
+<p>Java NIO的通道类似流，但又有些不同：</p>
+<ul>
+<li>既可以从通道中读取数据，又可以写数据到通道。但流的读写通常是单向的。</li>
+<li>通道可以异步地读写。</li>
+<li>通道中的数据总是要先读到一个Buffer，或者总是要从一个Buffer中写入。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;Java NIO(New IO)是一个可以替代标准Java IO API的IO API（从Java 1.4开始)，Java NIO提供了与标准IO不同的IO工作方式。
+与标准IO的不同：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;st
+    
+    </summary>
+    
+      <category term="J2SE" scheme="http://yoursite.com/categories/J2SE/"/>
+    
+    
+      <category term="NIO" scheme="http://yoursite.com/tags/NIO/"/>
+    
+  </entry>
   
   <entry>
     <title>java 泛型</title>
@@ -432,7 +506,7 @@ true即可：&lt;/p&gt;
     <link href="http://yoursite.com/2017/05/20/markdown-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/"/>
     <id>http://yoursite.com/2017/05/20/markdown-基本语法/</id>
     <published>2017-05-20T07:00:45.000Z</published>
-    <updated>2017-05-20T07:53:00.000Z</updated>
+    <updated>2017-07-22T06:32:40.000Z</updated>
     
     <content type="html"><![CDATA[<p><strong>1、分段</strong> 	两个回车<br>
 <strong>2、换行</strong> 	两个空格 + 回车<br>
@@ -470,7 +544,7 @@ true即可：&lt;/p&gt;
     <link href="http://yoursite.com/2017/05/20/vim-%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/"/>
     <id>http://yoursite.com/2017/05/20/vim-常用快捷键/</id>
     <published>2017-05-20T06:17:13.000Z</published>
-    <updated>2017-05-20T06:57:50.000Z</updated>
+    <updated>2017-07-22T07:53:22.000Z</updated>
     
     <content type="html"><![CDATA[<h2>移动</h2>
 <ul>
