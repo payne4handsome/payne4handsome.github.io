@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="springMVC," />
+  <meta name="keywords" content="Mybatis," />
 
 
 
@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="本文试着从源码的角度去解析springMVC框架  springMVC controller">
-<meta name="keywords" content="springMVC">
+<meta name="description" content="这篇博文记录一下Mybatis的学习情况  [Mybatis官方教程]（http://www.mybatis.org/mybatis-3/zh/index.html） Mybatsi配置文件 configuration xml 该文件主要配置Mybatis的一些核心配置，包括数据源、事务、mapper 配置文件的路径、别名等配置信息，官方教程列出了详细的配置信息，这里不在赘述，下面是我的配置文">
+<meta name="keywords" content="Mybatis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SpringMVC深入解析">
-<meta property="og:url" content="http://yoursite.com/2017/05/28/SpringMVC深入解析/index.html">
+<meta property="og:title" content="Mybatis 学习笔记一">
+<meta property="og:url" content="http://yoursite.com/2017/08/19/Mybatis-学习笔记/index.html">
 <meta property="og:site_name" content="Payne Blog">
-<meta property="og:description" content="本文试着从源码的角度去解析springMVC框架  springMVC controller">
-<meta property="og:updated_time" content="2017-06-11T07:12:25.000Z">
+<meta property="og:description" content="这篇博文记录一下Mybatis的学习情况  [Mybatis官方教程]（http://www.mybatis.org/mybatis-3/zh/index.html） Mybatsi配置文件 configuration xml 该文件主要配置Mybatis的一些核心配置，包括数据源、事务、mapper 配置文件的路径、别名等配置信息，官方教程列出了详细的配置信息，这里不在赘述，下面是我的配置文">
+<meta property="og:updated_time" content="2017-08-19T07:44:02.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SpringMVC深入解析">
-<meta name="twitter:description" content="本文试着从源码的角度去解析springMVC框架  springMVC controller">
+<meta name="twitter:title" content="Mybatis 学习笔记一">
+<meta name="twitter:description" content="这篇博文记录一下Mybatis的学习情况  [Mybatis官方教程]（http://www.mybatis.org/mybatis-3/zh/index.html） Mybatsi配置文件 configuration xml 该文件主要配置Mybatis的一些核心配置，包括数据源、事务、mapper 配置文件的路径、别名等配置信息，官方教程列出了详细的配置信息，这里不在赘述，下面是我的配置文">
 
 
 
@@ -127,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/05/28/SpringMVC深入解析/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/19/Mybatis-学习笔记/"/>
 
 
 
 
 
-  <title> SpringMVC深入解析 | Payne Blog </title>
+  <title> Mybatis 学习笔记一 | Payne Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -326,7 +326,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/28/SpringMVC深入解析/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/19/Mybatis-学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="payne">
@@ -347,7 +347,7 @@
             
             
               
-                SpringMVC深入解析
+                Mybatis 学习笔记一
               
             
           </h1>
@@ -362,8 +362,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-28T15:53:43+08:00">
-                2017-05-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-19T15:11:37+08:00">
+                2017-08-19
               </time>
             
 
@@ -385,8 +385,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">笔记</span>
+                  <a href="/categories/MyBatis/" itemprop="url" rel="index">
+                    <span itemprop="name">MyBatis</span>
                   </a>
                 </span>
 
@@ -403,9 +403,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/05/28/SpringMVC深入解析/#comments" itemprop="discussionUrl">
+                <a href="/2017/08/19/Mybatis-学习笔记/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/05/28/SpringMVC深入解析/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2017/08/19/Mybatis-学习笔记/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -413,7 +413,7 @@
 
           
           
-             <span id="/2017/05/28/SpringMVC深入解析/" class="leancloud_visitors" data-flag-title="SpringMVC深入解析">
+             <span id="/2017/08/19/Mybatis-学习笔记/" class="leancloud_visitors" data-flag-title="Mybatis 学习笔记一">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -443,9 +443,29 @@
 
       
         <blockquote>
-<p>本文试着从源码的角度去解析springMVC框架</p>
+<p>这篇博文记录一下Mybatis的学习情况</p>
 </blockquote>
-<h2>springMVC controller</h2>
+<p>[Mybatis官方教程]（http://www.mybatis.org/mybatis-3/zh/index.html）</p>
+<h2>Mybatsi配置文件</h2>
+<h3>configuration xml</h3>
+<p>该文件主要配置Mybatis的一些核心配置，包括数据源、事务、mapper 配置文件的路径、别名等配置信息，官方教程列出了详细的配置信息，这里不在赘述，下面是我的配置文件，仅供参考</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">	&lt;properties resource=&quot;database.properties&quot;&gt;&lt;/properties&gt;</div><div class="line">	&lt;settings&gt;</div><div class="line">		&lt;setting name=&quot;cacheEnabled&quot; value=&quot;true&quot; /&gt;</div><div class="line">	&lt;/settings&gt;</div><div class="line">	&lt;typeAliases&gt;</div><div class="line">		&lt;typeAlias type=&quot;com.payne.entity.User&quot; alias=&quot;User&quot; /&gt;</div><div class="line">		&lt;typeAlias type=&quot;com.payne.entity.Board&quot; alias=&quot;Board&quot; /&gt;</div><div class="line">		&lt;typeAlias type=&quot;com.payne.entity.Topic&quot; alias=&quot;Topic&quot; /&gt;</div><div class="line">		&lt;typeAlias type=&quot;com.payne.entity.Reply&quot; alias=&quot;Reply&quot; /&gt;</div><div class="line">	&lt;/typeAliases&gt;</div><div class="line">	&lt;environments default=&quot;development&quot;&gt;</div><div class="line">		&lt;environment id=&quot;development&quot;&gt;</div><div class="line">			&lt;transactionManager type=&quot;JDBC&quot; /&gt;</div><div class="line">			&lt;dataSource type=&quot;POOLED&quot;&gt;</div><div class="line">				&lt;property name=&quot;driver&quot; value=&quot;$&#123;driver&#125;&quot; /&gt;</div><div class="line">				&lt;property name=&quot;url&quot; value=&quot;$&#123;url&#125;&quot; /&gt;</div><div class="line">				&lt;property name=&quot;username&quot; value=&quot;$&#123;username&#125;&quot; /&gt;</div><div class="line">				&lt;property name=&quot;password&quot; value=&quot;$&#123;password&#125;&quot; /&gt;</div><div class="line">			&lt;/dataSource&gt;</div><div class="line">		&lt;/environment&gt;</div><div class="line">	&lt;/environments&gt;</div><div class="line">	&lt;mappers&gt;</div><div class="line">		&lt;mapper resource=&quot;userMapper.xml&quot; /&gt;</div><div class="line">		&lt;mapper resource=&quot;userMapper2.xml&quot; /&gt;</div><div class="line">		&lt;mapper resource=&quot;topicMapper.xml&quot; /&gt;</div><div class="line">		&lt;mapper resource=&quot;topicMapper2.xml&quot; /&gt;</div><div class="line">		&lt;mapper resource=&quot;topicMapper3.xml&quot; /&gt;</div><div class="line">	&lt;/mappers&gt;</div><div class="line"></div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure></p>
+<h3>mapper配置文件</h3>
+<p>Mybatis主要是主要用来放置我们sql语句的地方，下面是我的两个mapper，一个对应用户表，一个对应话题表，可以查看一个用户发表了那些话题</p>
+<p>userMapper.xml
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">&lt;mapper namespace=&quot;userMapper&quot;&gt;</div><div class="line">	&lt;sql id=&quot;selectAllUsers&quot;&gt;</div><div class="line">		select *  from user</div><div class="line">	&lt;/sql&gt;</div><div class="line">	&lt;select id=&quot;selectOneUser&quot; parameterType=&quot;map&quot; resultType=&quot;User&quot;&gt;</div><div class="line">		select * from user where uId = #&#123;id&#125; and uName = #&#123;name&#125;</div><div class="line">	&lt;/select&gt;</div><div class="line">	&lt;select id=&quot;selectUserByUId&quot; parameterType=&quot;int&quot; resultType=&quot;hashmap&quot;&gt;</div><div class="line">		&lt;include refid=&quot;selectAllUsers&quot;&gt;&lt;/include&gt;</div><div class="line">		where uId = #&#123;id&#125;</div><div class="line">	&lt;/select&gt;</div><div class="line">	&lt;select id=&quot;selectAllUsers&quot; resultType=&quot;User&quot;&gt;</div><div class="line">		&lt;include refid=&quot;selectAllUsers&quot;&gt;&lt;/include&gt;</div><div class="line">	&lt;/select&gt;</div><div class="line"></div><div class="line">	&lt;select id=&quot;selectAllTopic&quot; resultType=&quot;Topic&quot;&gt;</div><div class="line">		select * from topic</div><div class="line">	&lt;/select&gt;</div><div class="line">	&lt;select id=&quot;selectTopicsByUId&quot; resultMap=&quot;resultUsers&quot;&gt;</div><div class="line">		select</div><div class="line">		u.uId as userId</div><div class="line">		,u.uName as userName</div><div class="line">		,uPass as userPass</div><div class="line">		,u.head as userHead</div><div class="line">		,u.regTime as userRegTime</div><div class="line">		,u.gender as userGender</div><div class="line">		,t.topicId as topicId</div><div class="line">		,t.title as topicTitle</div><div class="line">		,t.content as topicContent</div><div class="line">		,t.publishTime as</div><div class="line">		topicPublishTime</div><div class="line">		,t.modifyTime as topicModifyTime</div><div class="line">		from user u left join</div><div class="line">		topic t on u.uId = t.uId where u.uId = #&#123;id&#125;</div><div class="line">	&lt;/select&gt;</div><div class="line">	&lt;resultMap id=&quot;resultUsers&quot; type=&quot;User&quot; &gt;</div><div class="line">		&lt;id property=&quot;uid&quot; column=&quot;userId&quot; /&gt;</div><div class="line">		&lt;result property=&quot;uname&quot; column=&quot;userName&quot; /&gt;</div><div class="line">		&lt;result property=&quot;upass&quot; column=&quot;userPass&quot; /&gt;</div><div class="line">		&lt;result property=&quot;head&quot; column=&quot;userHead&quot; /&gt;</div><div class="line">		&lt;result property=&quot;regTime&quot; column=&quot;userRegTime&quot; /&gt;</div><div class="line">		&lt;result property=&quot;gender&quot; column=&quot;userGender&quot; /&gt;</div><div class="line">		&lt;collection property=&quot;topics&quot; javaType=&quot;ArrayList&quot; ofType=&quot;Topic&quot; resultMap=&quot;topicMapper.resultTopic&quot;&gt;</div><div class="line">			</div><div class="line">		&lt;/collection&gt;</div><div class="line">	&lt;/resultMap&gt;</div><div class="line">	&lt;resultMap type=&quot;User&quot; id=&quot;resultUser&quot;&gt;</div><div class="line">		&lt;id property=&quot;uid&quot; column=&quot;userId&quot; /&gt;</div><div class="line">		&lt;result property=&quot;uname&quot; column=&quot;userName&quot; /&gt;</div><div class="line">		&lt;result property=&quot;upass&quot; column=&quot;userPass&quot; /&gt;</div><div class="line">		&lt;result property=&quot;head&quot; column=&quot;userHead&quot; /&gt;</div><div class="line">		&lt;result property=&quot;regTime&quot; column=&quot;userRegTime&quot; /&gt;</div><div class="line">		&lt;result property=&quot;gender&quot; column=&quot;userGender&quot; /&gt;</div><div class="line">	&lt;/resultMap&gt;</div><div class="line">&lt;/mapper&gt;</div></pre></td></tr></table></figure></p>
+<p>topicMapper.xml</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">&lt;mapper namespace=&quot;topicMapper&quot;&gt;</div><div class="line"></div><div class="line">  &lt;select id=&quot;selectAllTopic&quot;  resultType=&quot;Topic&quot;&gt;</div><div class="line">    select * from topic</div><div class="line">  &lt;/select&gt;</div><div class="line">  &lt;select id=&quot;selectAllTopicsByUid&quot;  resultMap=&quot;resultTopics&quot;&gt;</div><div class="line">    select </div><div class="line">    u.uId as userId</div><div class="line">    ,u.uName as userName</div><div class="line">    ,uPass as userPass</div><div class="line">    ,u.head as userHead</div><div class="line">    ,u.regTime as userRegTime</div><div class="line">    ,u.gender as userGender</div><div class="line">    ,t.topicId as topicId</div><div class="line">    ,t.title as topicTitle</div><div class="line">    ,t.content as topicContent</div><div class="line">    ,t.publishTime as topicPublishTime</div><div class="line">    ,t.modifyTime as topicModifyTime</div><div class="line">     from topic t left join user u on u.uId = t.uId</div><div class="line">  &lt;/select&gt;</div><div class="line">  &lt;resultMap id=&quot;resultTopics&quot; type=&quot;Topic&quot;&gt;</div><div class="line">    &lt;id property=&quot;topicId&quot; column=&quot;topicId&quot;/&gt;</div><div class="line"> 	&lt;result property=&quot;title&quot; column=&quot;topicTitle&quot;/&gt;</div><div class="line"> 	&lt;result property=&quot;content&quot; column=&quot;topicContent&quot;/&gt;</div><div class="line"> 	&lt;result property=&quot;publishTime&quot; column=&quot;topicPublishTime&quot;/&gt;</div><div class="line"> 	&lt;result property=&quot;modifyTime&quot; column=&quot;topicModifyTime&quot;/&gt;</div><div class="line">  	</div><div class="line">	&lt;collection property=&quot;user&quot; javaType=&quot;User&quot;&gt;</div><div class="line">		&lt;id property=&quot;uid&quot; column=&quot;userId&quot;/&gt;</div><div class="line">	  	&lt;result property=&quot;uname&quot; column=&quot;userName&quot;/&gt;</div><div class="line">	  	&lt;result property=&quot;upass&quot; column=&quot;userPass&quot;/&gt;</div><div class="line">	  	&lt;result property=&quot;head&quot; column=&quot;userHead&quot;/&gt;</div><div class="line">	  	&lt;result property=&quot;regTime&quot; column=&quot;userRegTime&quot;/&gt;</div><div class="line">	  	&lt;result property=&quot;gender&quot; column=&quot;userGender&quot;/&gt;</div><div class="line">	&lt;/collection&gt;</div><div class="line">  &lt;/resultMap&gt;</div><div class="line">  &lt;resultMap type=&quot;Topic&quot; id=&quot;resultTopic&quot;&gt;</div><div class="line">  		&lt;id property=&quot;topicId&quot; column=&quot;topicId&quot; /&gt;</div><div class="line">		&lt;result property=&quot;title&quot; column=&quot;topicTitle&quot; /&gt;</div><div class="line">		&lt;result property=&quot;content&quot; column=&quot;topicContent&quot; /&gt;</div><div class="line">		&lt;result property=&quot;publishTime&quot; column=&quot;topicPublishTime&quot; /&gt;</div><div class="line">		&lt;result property=&quot;modifyTime&quot; column=&quot;topicModifyTime&quot; /&gt;</div><div class="line">  &lt;/resultMap&gt;</div><div class="line">&lt;/mapper&gt;</div></pre></td></tr></table></figure></p>
+<p>一对一用association标记，多对一、一对多用collection标记</p>
+<h2>获得sqlSessionFactory</h2>
+<p>Mybatis执行sql语句的核心类是sqlSessionFactory，通过如下方式获得sqlSessionFactory
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">InputStream inputStream = null;</div><div class="line">		inputStream = Resources.getResourceAsStream(resourceFile);</div><div class="line">		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);</div></pre></td></tr></table></figure></p>
+<h2>参数</h2>
+<p>Mybatis给Mapper中的sql语句传递参数, 单个参数直接传递，多个参数可以用索引、类、Map等方式传递</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;User&gt; users = sqlSession.selectList(&quot;userMapper.selectTopicsByUId&quot;,1);</div></pre></td></tr></table></figure></p>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">      Map&lt;String, Object&gt; mapParams = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">mapParams.put(<span class="string">"id"</span>, <span class="number">1</span>);</div><div class="line">Map&lt;String,Map&lt;String,String&gt;&gt; map = sqlSession.selectMap(<span class="string">"userMapper.selectUserByUId"</span>, mapParams,<span class="string">"uName"</span>);</div><div class="line">System.out.println(map);</div></pre></td></tr></table></figure></p>
+<h2>其他</h2>
+<p>Mybatis 核心的东西保护ResultMap、动态sql，参见官网</p>
 
       
     </div>
@@ -475,7 +495,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/springMVC/" rel="tag"># springMVC</a>
+            <a href="/tags/Mybatis/" rel="tag"># Mybatis</a>
           
         </div>
       
@@ -488,18 +508,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/01/Redis-教程/" rel="next" title="Redis 教程">
-                <i class="fa fa-chevron-left"></i> Redis 教程
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/25/SpingMvc学习杂记/" rel="prev" title="SpingMvc学习笔记">
-                SpingMvc学习笔记 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/06/11/JAVA-NIO/" rel="prev" title="JAVA NIO">
+                JAVA NIO <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -654,7 +670,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">springMVC controller</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">Mybatsi配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.</span> <span class="nav-text">configuration xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.2.</span> <span class="nav-text">mapper配置文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">获得sqlSessionFactory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">其他</span></a></li></ol></div>
             
 
           </div>
@@ -798,9 +814,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2017/05/28/SpringMVC深入解析/';
-          this.page.identifier = '2017/05/28/SpringMVC深入解析/';
-          this.page.title = 'SpringMVC深入解析';
+          this.page.url = 'http://yoursite.com/2017/08/19/Mybatis-学习笔记/';
+          this.page.identifier = '2017/08/19/Mybatis-学习笔记/';
+          this.page.title = 'Mybatis 学习笔记一';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://payne4handsome.disqus.com/embed.js';

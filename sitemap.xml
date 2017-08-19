@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2017/08/19/Mybatis-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    
+    <lastmod>2017-08-19T07:44:02.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2017/05/20/vim-%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</loc>
     
     <lastmod>2017-07-22T07:53:22.000Z</lastmod>
@@ -44,14 +51,14 @@
   </url>
   
   <url>
-    <loc>http://yoursite.com/2017/05/24/%E8%A7%A3%E5%86%B3eclipse%E6%97%A0%E6%B3%95%E5%88%9B%E5%BB%BAWeb-Module-3-0%E7%9A%84%E9%97%AE%E9%A2%98/</loc>
+    <loc>http://yoursite.com/2017/05/25/SpingMvc%E5%AD%A6%E4%B9%A0%E6%9D%82%E8%AE%B0/</loc>
     
     <lastmod>2017-05-28T07:48:10.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite.com/2017/05/25/SpingMvc%E5%AD%A6%E4%B9%A0%E6%9D%82%E8%AE%B0/</loc>
+    <loc>http://yoursite.com/2017/05/24/%E8%A7%A3%E5%86%B3eclipse%E6%97%A0%E6%B3%95%E5%88%9B%E5%BB%BAWeb-Module-3-0%E7%9A%84%E9%97%AE%E9%A2%98/</loc>
     
     <lastmod>2017-05-28T07:48:10.000Z</lastmod>
     
