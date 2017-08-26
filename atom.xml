@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-26T08:52:12.000Z</updated>
+  <updated>2017-08-26T09:40:13.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,55 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Docker 基本概念以及安装</title>
+    <link href="http://yoursite.com/2017/08/26/Docker-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%BB%A5%E5%8F%8A%E5%AE%89%E8%A3%85/"/>
+    <id>http://yoursite.com/2017/08/26/Docker-基本概念以及安装/</id>
+    <published>2017-08-26T08:53:55.000Z</published>
+    <updated>2017-08-26T09:40:13.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2>Docker基本概念</h2>
+<h3>Docker镜像</h3>
+<p>Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。
+因为镜像包含操作系统完整的 root 文件系统，其体积往往是庞大的，因此在 Docker 设计时，就充分利用 Union FS 的技术，将其设计为分层存储的架构。所以严格来说，镜像并非是像一个 ISO 那样的打包文件，镜像只是一个虚拟的概念，其实际体现并非由一个文件组成，而是由一组文件系统组成，或者说，由多层文件系统联合组成。</p>
+<h3>Docker 容器</h3>
+<p>镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。
+容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。因此容器可以拥有自己的 root 文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。
+**按照 Docker 最佳实践的要求，容器不应该向其存储层内写入任何数据，容器存储层要保持无状态化。所有的文件写入操作，都应该使用 数据卷（Volume）、或者绑定宿主目录，在这些位置的读写会跳过容器存储层，直接对宿主(或网络存储)发生读写，其性能和稳定性更高。</p>
+<p>数据卷的生存周期独立于容器，容器消亡，数据卷不会消亡。因此，使用数据卷后，容器可以随意删除、重新 run，数据却不会丢失。**</p>
+<h3>Docker Registry</h3>
+<p>docker Registry上一个服务：如果需要在其它服务器上使用镜像，我们就需要一个集中的存储、分发镜像的服务 。<br>
+一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；每个标签对应一个镜像。<br>
+通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 &lt;仓库名&gt;:&lt;标签&gt; 的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 latest 作为默认标签。</p>
+<h2>mac系统安装Docker</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew cask install docker</div></pre></td></tr></table></figure></p>
+<p>前提的安装homebrew， 当然也可以去官网上直接下载安装，方法比较简单。</p>
+<p>可以通过如下命令查看安装的信息
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker info</div><div class="line">docker --version</div><div class="line">docker-compose --version</div><div class="line">docker-machine --version</div></pre></td></tr></table></figure></p>
+<p>我们先试着安装一下nginx服务，就下面一行简单的命令就可以搞定
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -p 80:80 --name webserver nginx</div></pre></td></tr></table></figure></p>
+<p>要停止 Nginx 服务器并删除执行下面的命令：</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker stop webserver</div><div class="line">docker rm webserver</div></pre></td></tr></table></figure></p>
+<h2>镜像加速器</h2>
+<p>如果在国内使用docker下载镜像可能或很慢，那么我就需要配置镜像加速器，如果选用阿里的镜像加速器的可以参考下面的地址
+<a href="https://cr.console.aliyun.com/#/accelerator" target="_blank" rel="external">阿里镜像加速器</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2&gt;Docker基本概念&lt;/h2&gt;
+&lt;h3&gt;Docker镜像&lt;/h3&gt;
+&lt;p&gt;Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构
+    
+    </summary>
+    
+      <category term="Docker" scheme="http://yoursite.com/categories/Docker/"/>
+    
+    
+      <category term="Docker概念及安装" scheme="http://yoursite.com/tags/Docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
   
   <entry>
     <title>Dokcer 简介</title>
