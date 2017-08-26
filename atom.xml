@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-19T10:31:12.000Z</updated>
+  <updated>2017-08-26T08:52:12.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,80 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Dokcer 简介</title>
+    <link href="http://yoursite.com/2017/08/26/Dokcer-%E7%AE%80%E4%BB%8B/"/>
+    <id>http://yoursite.com/2017/08/26/Dokcer-简介/</id>
+    <published>2017-08-26T07:33:00.000Z</published>
+    <updated>2017-08-26T08:52:12.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>Docker 2013年开源，加入Linux 基金会. Docker使用Google公司推出的GO 语言进行开发实现， 基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS 等技术，对进程进行封装隔离，<strong>属于操作系统层面的虚拟化技术</strong>。Docker 在容器的基础上，进行了进一步的封装，从文件系统、网络互联到进程隔离等等，极大的简化了容器的创建和维护。使得 Docker 技术比虚拟机技术更为轻便、快捷。</p>
+</blockquote>
+<p>传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。因此容器要比传统虚拟机更为轻便。</p>
+<p>下图比较了传统虚拟化技术和Docker技术的区别<br>
+<img src="/2017/08/26/Dokcer-简介/1.png" alt="传统虚拟化技术">
+<img src="/2017/08/26/Dokcer-简介/2.png" alt="Docker技术"></p>
+<h2>Docker的优点</h2>
+<ol>
+<li><strong>更高效的利用系统资源</strong>
+Docker不需要对硬件资源进行虚拟化，所以节省操作的系统的开销</li>
+<li><strong>更快速的启动时间</strong>
+传统的虚拟机技术启动应用服务往往需要数分钟，而 Docker 容器应用，由于直接运行于宿主内核，无需启动完整的操作系统，因此可以做到秒级、甚至毫秒级的启动时间。大大的节约了开发、测试、部署的时间。</li>
+<li><strong>一致的运行环境</strong>
+开发过程中一个常见的问题是环境一致性问题。由于开发环境、测试环境、生产环境不一致，导致有些 bug 并未在开发过程中被发现。而 Docker 的镜像提供了除内核外完整的运行时环境，确保了应用运行环境一致性，从而不会再出现 “这段代码在我机器上没问题啊” 这类问题。</li>
+<li><strong>持续交付和部署</strong></li>
+<li><strong>更轻松的迁移</strong></li>
+<li><strong>更轻松的维护和扩展</strong></li>
+<li><strong>对比传统虚拟机总结</strong></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th style="text-align:right">容器</th>
+<th style="text-align:center">虚拟机</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>启动</td>
+<td style="text-align:right">秒级</td>
+<td style="text-align:center">分钟级</td>
+</tr>
+<tr>
+<td>硬盘使用</td>
+<td style="text-align:right">MB</td>
+<td style="text-align:center">GB</td>
+</tr>
+<tr>
+<td>性能</td>
+<td style="text-align:right">接近原生</td>
+<td style="text-align:center">弱于</td>
+</tr>
+<tr>
+<td>系统支持</td>
+<td style="text-align:right">单个系统接近上千个容器</td>
+<td style="text-align:center">一般几十个</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;Docker 2013年开源，加入Linux 基金会. Docker使用Google公司推出的GO 语言进行开发实现， 基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS 等技术，对进程进行封装隔离，&lt;str
+    
+    </summary>
+    
+      <category term="Docker" scheme="http://yoursite.com/categories/Docker/"/>
+    
+    
+      <category term="Docker" scheme="http://yoursite.com/tags/Docker/"/>
+    
+  </entry>
   
   <entry>
     <title>关于java Integer的一个小问题</title>

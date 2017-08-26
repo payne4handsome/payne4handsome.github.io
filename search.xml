@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Dokcer 简介]]></title>
+    <url>%2F2017%2F08%2F26%2FDokcer-%E7%AE%80%E4%BB%8B%2F</url>
+    <content type="text"><![CDATA[Docker 2013年开源，加入Linux 基金会. Docker使用Google公司推出的GO 语言进行开发实现， 基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。Docker 在容器的基础上，进行了进一步的封装，从文件系统、网络互联到进程隔离等等，极大的简化了容器的创建和维护。使得 Docker 技术比虚拟机技术更为轻便、快捷。 传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。因此容器要比传统虚拟机更为轻便。 下图比较了传统虚拟化技术和Docker技术的区别 Docker的优点 更高效的利用系统资源 Docker不需要对硬件资源进行虚拟化，所以节省操作的系统的开销 更快速的启动时间 传统的虚拟机技术启动应用服务往往需要数分钟，而 Docker 容器应用，由于直接运行于宿主内核，无需启动完整的操作系统，因此可以做到秒级、甚至毫秒级的启动时间。大大的节约了开发、测试、部署的时间。 一致的运行环境 开发过程中一个常见的问题是环境一致性问题。由于开发环境、测试环境、生产环境不一致，导致有些 bug 并未在开发过程中被发现。而 Docker 的镜像提供了除内核外完整的运行时环境，确保了应用运行环境一致性，从而不会再出现 “这段代码在我机器上没问题啊” 这类问题。 持续交付和部署 更轻松的迁移 更轻松的维护和扩展 对比传统虚拟机总结 特性 容器 虚拟机 启动 秒级 分钟级 硬盘使用 MB GB 性能 接近原生 弱于 系统支持 单个系统接近上千个容器 一般几十个]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[关于java Integer的一个小问题]]></title>
     <url>%2F2017%2F08%2F19%2F%E5%85%B3%E4%BA%8Ejava-Integer%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E9%97%AE%E9%A2%98%2F</url>
     <content type="text"><![CDATA[下面这段代码片段的输出是什么？ 12345Integer i1 = 127,i2 = 127,i3=128,i4=128; System.out.println(i1==i2); System.out.println(i1.equals(i2)); System.out.println(i3==i4); System.out.println(i3.equals(i4)); 答案如下 1234truefalsetruetrue 为什么是这样呢？首先equals方法我们是可以理解的，应为比较的值嘛，所以i1和i2都是等的，但是java中的“==”是比较的地址，为什么i1和i2是等的，i3和i4又是不等的呢？我们通过反编译程序把上面代码的字节码反编译一下，看看得到是什么 Integer i1 = Integer.valueOf(127);Integer i2 = Integer.valueOf(127);Integer i3 = Integer.valueOf(128);Integer i4 = Integer.valueOf(128); System.out.println(i1 == i2); System.out.println(i1.equals(i2)); System.out.println(i3 == i4); System.out.println(i3.equals(i4)); 我们在看看valueOf的源码 public static Integer valueOf(int i) { if (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high) return IntegerCache.cache[i + (-IntegerCache.low)]; return new Integer(i); } 我们可以看到如果i的值是&gt;=-128并且是&lt;=127的（low，high分别是-128和127），那么java久就从一个缓冲里面读取数据，这就可以解释我们上面存在的问题呢。其实这么缓存是指也是可以通过jvm参数进行修改的]]></content>
