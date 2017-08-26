@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-26T09:40:13.000Z</updated>
+  <updated>2017-08-26T09:47:31.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,24 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Docker镜像</title>
+    <link href="http://yoursite.com/2017/08/26/Docker%E9%95%9C%E5%83%8F/"/>
+    <id>http://yoursite.com/2017/08/26/Docker镜像/</id>
+    <published>2017-08-26T09:47:02.000Z</published>
+    <updated>2017-08-26T09:47:31.000Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+      <category term="Docker" scheme="http://yoursite.com/categories/Docker/"/>
+    
+    
+      <category term="Docker 镜像" scheme="http://yoursite.com/tags/Docker-%E9%95%9C%E5%83%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>Docker 基本概念以及安装</title>

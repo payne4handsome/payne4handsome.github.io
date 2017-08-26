@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Docker概念及安装," />
+  <meta name="keywords" content="Docker 镜像," />
 
 
 
@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="Docker基本概念 Docker镜像 Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。 因为镜像包含操作系统完整的 root 文件系统，其体积往往是庞大的，因此在 Docker 设计时，就充分利用 Union FS 的技术，将其">
-<meta name="keywords" content="Docker概念及安装">
+<meta name="description" content="Talk is cheap, show me the code.">
+<meta name="keywords" content="Docker 镜像">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Docker 基本概念以及安装">
-<meta property="og:url" content="http://yoursite.com/2017/08/26/Docker-基本概念以及安装/index.html">
+<meta property="og:title" content="Docker镜像">
+<meta property="og:url" content="http://yoursite.com/2017/08/26/Docker镜像/index.html">
 <meta property="og:site_name" content="Payne Blog">
-<meta property="og:description" content="Docker基本概念 Docker镜像 Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。 因为镜像包含操作系统完整的 root 文件系统，其体积往往是庞大的，因此在 Docker 设计时，就充分利用 Union FS 的技术，将其">
-<meta property="og:updated_time" content="2017-08-26T09:40:13.000Z">
+<meta property="og:description" content="Talk is cheap, show me the code.">
+<meta property="og:updated_time" content="2017-08-26T09:47:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Docker 基本概念以及安装">
-<meta name="twitter:description" content="Docker基本概念 Docker镜像 Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。 因为镜像包含操作系统完整的 root 文件系统，其体积往往是庞大的，因此在 Docker 设计时，就充分利用 Union FS 的技术，将其">
+<meta name="twitter:title" content="Docker镜像">
+<meta name="twitter:description" content="Talk is cheap, show me the code.">
 
 
 
@@ -127,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/08/26/Docker-基本概念以及安装/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/26/Docker镜像/"/>
 
 
 
 
 
-  <title> Docker 基本概念以及安装 | Payne Blog </title>
+  <title> Docker镜像 | Payne Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -326,7 +326,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/26/Docker-基本概念以及安装/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/26/Docker镜像/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="payne">
@@ -347,7 +347,7 @@
             
             
               
-                Docker 基本概念以及安装
+                Docker镜像
               
             
           </h1>
@@ -362,7 +362,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-26T16:53:55+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-26T17:47:02+08:00">
                 2017-08-26
               </time>
             
@@ -403,9 +403,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/08/26/Docker-基本概念以及安装/#comments" itemprop="discussionUrl">
+                <a href="/2017/08/26/Docker镜像/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/08/26/Docker-基本概念以及安装/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2017/08/26/Docker镜像/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -413,7 +413,7 @@
 
           
           
-             <span id="/2017/08/26/Docker-基本概念以及安装/" class="leancloud_visitors" data-flag-title="Docker 基本概念以及安装">
+             <span id="/2017/08/26/Docker镜像/" class="leancloud_visitors" data-flag-title="Docker镜像">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -442,32 +442,7 @@
       
 
       
-        <h2>Docker基本概念</h2>
-<h3>Docker镜像</h3>
-<p>Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。
-因为镜像包含操作系统完整的 root 文件系统，其体积往往是庞大的，因此在 Docker 设计时，就充分利用 Union FS 的技术，将其设计为分层存储的架构。所以严格来说，镜像并非是像一个 ISO 那样的打包文件，镜像只是一个虚拟的概念，其实际体现并非由一个文件组成，而是由一组文件系统组成，或者说，由多层文件系统联合组成。</p>
-<h3>Docker 容器</h3>
-<p>镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。
-容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。因此容器可以拥有自己的 root 文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。
-**按照 Docker 最佳实践的要求，容器不应该向其存储层内写入任何数据，容器存储层要保持无状态化。所有的文件写入操作，都应该使用 数据卷（Volume）、或者绑定宿主目录，在这些位置的读写会跳过容器存储层，直接对宿主(或网络存储)发生读写，其性能和稳定性更高。</p>
-<p>数据卷的生存周期独立于容器，容器消亡，数据卷不会消亡。因此，使用数据卷后，容器可以随意删除、重新 run，数据却不会丢失。**</p>
-<h3>Docker Registry</h3>
-<p>docker Registry上一个服务：如果需要在其它服务器上使用镜像，我们就需要一个集中的存储、分发镜像的服务 。<br>
-一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；每个标签对应一个镜像。<br>
-通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 &lt;仓库名&gt;:&lt;标签&gt; 的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 latest 作为默认标签。</p>
-<h2>mac系统安装Docker</h2>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew cask install docker</div></pre></td></tr></table></figure></p>
-<p>前提的安装homebrew， 当然也可以去官网上直接下载安装，方法比较简单。</p>
-<p>可以通过如下命令查看安装的信息
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker info</div><div class="line">docker --version</div><div class="line">docker-compose --version</div><div class="line">docker-machine --version</div></pre></td></tr></table></figure></p>
-<p>我们先试着安装一下nginx服务，就下面一行简单的命令就可以搞定
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -p 80:80 --name webserver nginx</div></pre></td></tr></table></figure></p>
-<p>要停止 Nginx 服务器并删除执行下面的命令：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker stop webserver</div><div class="line">docker rm webserver</div></pre></td></tr></table></figure></p>
-<h2>镜像加速器</h2>
-<p>如果在国内使用docker下载镜像可能或很慢，那么我就需要配置镜像加速器，如果选用阿里的镜像加速器的可以参考下面的地址
-<a href="https://cr.console.aliyun.com/#/accelerator" target="_blank" rel="external">阿里镜像加速器</a></p>
-
+        
       
     </div>
 
@@ -496,7 +471,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Docker概念及安装/" rel="tag"># Docker概念及安装</a>
+            <a href="/tags/Docker-镜像/" rel="tag"># Docker 镜像</a>
           
         </div>
       
@@ -509,18 +484,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/26/Docker镜像/" rel="next" title="Docker镜像">
-                <i class="fa fa-chevron-left"></i> Docker镜像
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/08/26/Dokcer-简介/" rel="prev" title="Dokcer 简介">
-                Dokcer 简介 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/08/26/Docker-基本概念以及安装/" rel="prev" title="Docker 基本概念以及安装">
+                Docker 基本概念以及安装 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -575,17 +546,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/head.JPG"
@@ -665,22 +627,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">Docker基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.</span> <span class="nav-text">Docker镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.2.</span> <span class="nav-text">Docker 容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.3.</span> <span class="nav-text">Docker Registry</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">mac系统安装Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">镜像加速器</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -819,9 +765,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2017/08/26/Docker-基本概念以及安装/';
-          this.page.identifier = '2017/08/26/Docker-基本概念以及安装/';
-          this.page.title = 'Docker 基本概念以及安装';
+          this.page.url = 'http://yoursite.com/2017/08/26/Docker镜像/';
+          this.page.identifier = '2017/08/26/Docker镜像/';
+          this.page.title = 'Docker镜像';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://payne4handsome.disqus.com/embed.js';
