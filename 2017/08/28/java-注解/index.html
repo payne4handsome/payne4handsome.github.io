@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="本文介绍java中的注解，第一部分给出注解的基础介绍，第二部给出一个注解的应用实例。  Java注解分为2个部分  自定义注解 元注解  一、注解介绍 1、Java 注解语法 123456789101112Modifiers @interface AnnotationName&amp;#123;element1 declaration;element2 declaration;&amp;#125;```  每一">
+<meta name="description" content="本文介绍java中的注解，第一部分给出注解的基础介绍，第二部给出一个注解的应用实例。  Java注解分为2个部分  自定义注解 元注解  一、注解介绍 1、Java 注解语法 1234Modifiers @interface AnnotationName&amp;#123;element1 declaration;element2 declaration;&amp;#125; 每一个元素的语法如下： 123ty">
 <meta name="keywords" content="java注解">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java 注解">
 <meta property="og:url" content="http://yoursite.com/2017/08/28/java-注解/index.html">
 <meta property="og:site_name" content="Payne Blog">
-<meta property="og:description" content="本文介绍java中的注解，第一部分给出注解的基础介绍，第二部给出一个注解的应用实例。  Java注解分为2个部分  自定义注解 元注解  一、注解介绍 1、Java 注解语法 123456789101112Modifiers @interface AnnotationName&amp;#123;element1 declaration;element2 declaration;&amp;#125;```  每一">
-<meta property="og:updated_time" content="2017-08-27T16:30:51.000Z">
+<meta property="og:description" content="本文介绍java中的注解，第一部分给出注解的基础介绍，第二部给出一个注解的应用实例。  Java注解分为2个部分  自定义注解 元注解  一、注解介绍 1、Java 注解语法 1234Modifiers @interface AnnotationName&amp;#123;element1 declaration;element2 declaration;&amp;#125; 每一个元素的语法如下： 123ty">
+<meta property="og:updated_time" content="2017-08-27T16:31:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java 注解">
-<meta name="twitter:description" content="本文介绍java中的注解，第一部分给出注解的基础介绍，第二部给出一个注解的应用实例。  Java注解分为2个部分  自定义注解 元注解  一、注解介绍 1、Java 注解语法 123456789101112Modifiers @interface AnnotationName&amp;#123;element1 declaration;element2 declaration;&amp;#125;```  每一">
+<meta name="twitter:description" content="本文介绍java中的注解，第一部分给出注解的基础介绍，第二部给出一个注解的应用实例。  Java注解分为2个部分  自定义注解 元注解  一、注解介绍 1、Java 注解语法 1234Modifiers @interface AnnotationName&amp;#123;element1 declaration;element2 declaration;&amp;#125; 每一个元素的语法如下： 123ty">
 
 
 
@@ -452,7 +452,9 @@
 </ul>
 <h2>一、注解介绍</h2>
 <p>1、Java 注解语法</p>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Modifiers <span class="meta">@interface</span> AnnotationName&#123;</div><div class="line">element1 declaration;</div><div class="line">element2 declaration;</div><div class="line">&#125;</div><div class="line">```  </div><div class="line"></div><div class="line">每一个元素的语法如下：  </div><div class="line"></div><div class="line">```<span class="function">java</span></div><div class="line">type <span class="title">elementName</span><span class="params">()</span>;</div><div class="line"><span class="function">or</span></div><div class="line">type <span class="title">elementName</span><span class="params">()</span> <span class="keyword">default</span> value;</div></pre></td></tr></table></figure></p>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Modifiers <span class="meta">@interface</span> AnnotationName&#123;</div><div class="line">element1 declaration;</div><div class="line">element2 declaration;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>每一个元素的语法如下：</p>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function">type <span class="title">elementName</span><span class="params">()</span></span>;</div><div class="line"><span class="function">or</span></div><div class="line">type <span class="title">elementName</span><span class="params">()</span> <span class="keyword">default</span> value;</div></pre></td></tr></table></figure></p>
 <p>2、举例</p>
 <p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BugReport&#123;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">level</span><span class="params">()</span> <span class="keyword">default</span> 1</span>;</div><div class="line"><span class="keyword">public</span> String description;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>3、元注解</p>
