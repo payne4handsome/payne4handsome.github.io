@@ -92,7 +92,7 @@
 <meta name="description" content="Talk is cheap, show me the code.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Payne Blog">
-<meta property="og:url" content="http://yoursite.com/categories/J2SE/index.html">
+<meta property="og:url" content="http://yoursite.com/categories/j2SE/index.html">
 <meta property="og:site_name" content="Payne Blog">
 <meta property="og:description" content="Talk is cheap, show me the code.">
 <meta name="twitter:card" content="summary">
@@ -125,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/J2SE/"/>
+  <link rel="canonical" href="http://yoursite.com/categories/j2SE/"/>
 
 
 
 
 
-  <title> 分类: J2SE | Payne Blog </title>
+  <title> 分类: j2SE | Payne Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -317,7 +317,7 @@
   <section id="posts" class="posts-collapse">
     <div class="collection-title">
       <h2 >
-        J2SE
+        j2SE
         <small>分类</small>
       </h2>
     </div>
@@ -330,37 +330,9 @@
 
       <h1 class="post-title">
         
-            <a class="post-title-link" href="/2017/08/28/java-注解/" itemprop="url">
+            <a class="post-title-link" href="/2017/06/11/java-泛型/" itemprop="url">
               
-                <span itemprop="name">java 注解</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-28T00:16:38+08:00"
-              content="2017-08-28" >
-          08-28
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/06/11/JAVA-NIO/" itemprop="url">
-              
-                <span itemprop="name">JAVA NIO</span>
+                <span itemprop="name">java 泛型</span>
               
             </a>
         
@@ -368,7 +340,7 @@
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2017-06-11T18:43:01+08:00"
+              datetime="2017-06-11T15:41:00+08:00"
               content="2017-06-11" >
           06-11
         </time>
@@ -869,6 +841,40 @@
               success: function(newcounter) {
                 var $element = $(document.getElementById(url));
                 $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
+isitors-count').text(newcounter.get('time'));
               },
               error: function(newcounter, error) {
                 console.log('Failed to create');
