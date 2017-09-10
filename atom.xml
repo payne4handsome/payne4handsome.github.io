@@ -99,6 +99,31 @@ java中定义的四种元注解</p>
   </entry>
   
   <entry>
+    <title>minio笔记</title>
+    <link href="http://yoursite.com/2017/08/27/minio-%E7%AC%94%E8%AE%B0/"/>
+    <id>http://yoursite.com/2017/08/27/minio-笔记/</id>
+    <published>2017-08-27T06:48:33.000Z</published>
+    <updated>2017-09-10T06:57:41.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Minio 常用命令</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># mac 安装minio</span></div><div class="line">brew install minio/stable/minio</div><div class="line"><span class="comment"># 启动minio server</span></div><div class="line">minio server ~/Photos</div><div class="line"><span class="comment"># 安装minio client</span></div><div class="line">brew install minio/stable/mc</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Minio 常用命令&lt;/p&gt;
+&lt;p&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;di
+    
+    </summary>
+    
+      <category term="Minio" scheme="http://yoursite.com/categories/Minio/"/>
+    
+    
+      <category term="Minio安装" scheme="http://yoursite.com/tags/Minio%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Docker镜像</title>
     <link href="http://yoursite.com/2017/08/26/Docker%E9%95%9C%E5%83%8F/"/>
     <id>http://yoursite.com/2017/08/26/Docker镜像/</id>
