@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Transformer on Pan'Log</title><link>https://payne4handsome.github.io/tags/transformer/</link><description>Recent content in Transformer on Pan'Log</description><image><title>Pan'Log</title><url>https://payne4handsome.github.io/papermod-cover.png</url><link>https://payne4handsome.github.io/papermod-cover.png</link></image><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sat, 17 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://payne4handsome.github.io/tags/transformer/index.xml" rel="self" type="application/rss+xml"/><item><title>Transformer in pytorch</title><link>https://payne4handsome.github.io/posts/machine-learning/transformer-in-pytorch/</link><pubDate>Sat, 17 Sep 2022 00:00:00 +0000</pubDate><guid>https://payne4handsome.github.io/posts/machine-learning/transformer-in-pytorch/</guid><description>一 Transformer overview 本文结合pytorch源码以尽可能简洁的方式把Transformer的工作流程讲解以及原理讲解清楚。全文分为三个部分
+Transformer架构：这个模块的详细说明 pytorch中Transformer的api解读 实际运用：虽然Transformer的api使用大大简化了打码量，但是还有需要自已实现一些代码的 Transformer架构 Transformer结构如下： ![image.png](/Transformer in pytorch/8596800-4764969fee815f44.png) Transformer的经典应用场景就是机器翻译。 整体分为Encoder、Decoder两大部分，具体实现细分为六块。
+输入编码、位置编码
+Encoder、Decoder都需要将输入字符进行编码送入网络训练。
+Input Embeding:将一个字符（或者汉字）进行编码，比如“我爱中国”四个汉字编码后会变成（4，d_model）的矩阵，Transformer中d_model等于512，那么输入就变成（4，512）的矩阵，为了方便叙述，后面都用（4，512）来当成模型的输入。
+positional encoding:在Q、K、V的计算过程中，输入单词的位置信息会丢失掉。所以需要额外用一个位置编码来表示输入单词的顺序。编码公式如下
+$PE_{pos,2i}=sin(pos/1000^{2i/d_{model}})$
+$PE_{pos,2i+1}=cos(pos/1000^{2i/d_{model}})$
+其中，pos:表示第几个单词，2i,2i+1表示Input Embeding编码维度（512）的偶数位、奇数位。 论文中作者也试过将positional encoding变成可以学习的，但是发现效果差不多；而且使用硬位置编码就不用考虑在推断环节中句子的实际长度超过训练环节中使用的位置编码长度的问题；为什么使用sin、cos呢？可以有效的考虑句中单词的相对位置信息
+多头注意力机制（Multi-Head Attention）
+多头注意力机制是Transformer的核心，属于Self-Attention（自注意力）。注意只要是可以注意到自身特征的注意力机制就叫Self-Attention，并不是只有Transformer有。 示意图如下
+![image.png](/Transformer in pytorch/8596800-993737ea7c1e190a.png)
+Multi-Head Attention的输入的Q、K、V就是输入的（4,512）维矩阵，Q=K=V。然后用全连接层对Q、K、V做一个变换，多头就是指的这里将输入映射到多个空间。公式描述如下：
+$MultiHead(Q,K,V)=Concat(head_1, head_2,&amp;hellip;, head_n)W^o$
+其中 $head_i=Attention(QW^Q_i, KW^K_i, VW^V_i)$
+其中 $Attention(Q,K,V)=softmax(\frac{QK^T}{\sqrt{d_k}})V$
+其中$W^Q_i\in R^{d_{model}*d_k}, W^K_i\in R^{d_{model}*d_k}, W^V_i\in R^{d_{model}d_v}, W^o\in R^{hd_vd_{model}}$, 论文中h=8, $d_k=d_v=d_{model}/h=512/8=64$
+$QK^T$称为注意力矩阵（attention）,表示两个句子中的任意两个单词的相关性。所以attention mask不一定是方阵。
+前向传播模块
+Q、K、V经过Multi-Head Attention模块再加上一个残差跳链，维度不变，输入维度是（4，512），输出维度还是（4,512），只不过输出的矩阵的每一行已经融合了其他行的信息（根据attention mask）。 这里前向传播模块是一个两层的全连接。公式如下：
+$FFN(x)=max(0, xW_1+b_1)W_2+b_2$, 其中输入输出维度为$d_model=512$, 中间维度$d_{ff}=2048$
+带Mask的多头注意力机制
+这里的Mask Multi-head Attention与步骤2中的稍有不同。“我爱中国”的英文翻译为“I love china”。 在翻译到“love”的时候，其实我们是不知道“china”的这个单词的，所以在训练的时候，就需要来模拟这个过程。即用一个mask来遮住后面信息。这个mask在实际实现中是一个三角矩阵（主对角线及下方为0，上方为-inf）， 定义为$attention_mask$大概就长下面这个样子 !</description></item><item><title>Transformer研究综述</title><link>https://payne4handsome.github.io/posts/machine-learning/transformer%E7%A0%94%E7%A9%B6%E7%BB%BC%E8%BF%B0/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://payne4handsome.github.io/posts/machine-learning/transformer%E7%A0%94%E7%A9%B6%E7%BB%BC%E8%BF%B0/</guid><description>一、基础部分 2017年google发表了一篇All Attention Is All You Need论文, 在机器翻译任务中取得了SOTA 的成绩。论文中提出的Transformer结构取消了传统的Seg2Seg模型中RNN和CNN传统神经网络单元，取而代之代之的Self-Attention（自注意力机制）的计算单元。该计算单元并行化程度高，训练时间短。所以Transformer引起了学术界和工业界的广泛注意。目前已经是NLP领域的标配。随后在2019年google提出基本Transformer的bert模型, 该模型在大量的数据集中通过自监督的训练，然后在特定任务上只需要做少量改动和训练就可以得到非常好的效果，开源的bert模型在11个NLP任务取得SOTA结果。
+Transformer除了在NLP任务上表现优异，在CV领域也取得了很多突破。2020年google又发表了一篇 VIT Transformer的论文，实验证明Transformer在imagenet分类任务上取得了SOTA结果。后来CV领域中的各种基本问题，比如目标检测、语义分割、物体追踪、视频等各种任务都用Transformer方法又搞了一遍，基本上也取得了一些不错的结果。
+鉴于Transformer在NLP和CV上的巨大成功，本文竟可能详细描述Transformer的基本原理；特定的一些应用，主要是一些经典论文的方法；以及目前Transformer在效率问题上的一些改进的方案。
+1.1 Attention 在学习Transformer之前，了解一些基础问题是很有必要。毕竟在没有Transformer之前，学术上在NLP领域也做了大量的研究和成果。我们先从Encoder Decoder和Seq2Seq开始说起。我想大家肯定都听过这两个名称，简单来说就是如下图。 Encoder输入（可以是文字也可以是图像）编程成一个固定长度的向量（content）,那么这个content向量肯定是包含输入的信息的（至于包含多少那就看这个编码了），Decoder根据content解码出我们需要的结果。Encoder Decoder可以是机器翻译问题、语义分割问题等等。那么Seq2Seq（Sequence-to-sequence ）是什么？输入一个序列，输出另一个序列。这种结构最重要的地方在于输入序列和输出序列的长度是可变的。如下图所示。
+从本质上看，Encoder-Decoder和seq2seq好像差不多，但是又有一点区别。
+Seq2Seq 属于 Encoder-Decoder 的大范畴 Seq2Seq 更强调目的，Encoder-Decoder 更强调方法 那么这个Encoder-Decoder有什么缺陷呢？
+从上面的示意图我们看到，无论输入的信息又多少，Encoder后就剩下一个content向量了，那么这里面有一个缺陷就是这个content向量会丢掉一些信息，特别是输入很大（文本很长图像分辨率很高）的情况下。尽管后面出现的LSTM、GRU等通过门设计的循环神经网络单元，可以一定程度上缓解长距离问题，但是效果有限。
+从这里开始，我们要进入文章的正题了，Transformer的核心是Self-Attention，那么在这之前，我们最起码要了解什么是Attention，然后再看是这么在 Attention的基础上加上self的。
+1.1.1 NLP中的Attention 由于传统的Encoder-Decoder模型将所有的输入信息编码成一个固定长度的content向量存在长距离问题。那么随之而然的一个做法就是我们在decoder阶段解码$h_t$不仅依赖前一个节点的隐藏状态$h_{t-1}$, 同时依赖Encoder阶段所有的状态，就和我们自已翻译的时候一样。这里有两个经典注意力机制，Bahdanau Attention （2014年提出）和 Luong Attention（2015年）。
+1.1.1.1 Bahdanau Attention 注意力机制 示意图如下： 假设现在我们Decoder t时刻。 那么$h_t$隐状态计算过程如下：
+计算对齐向量$a_t$
+$a_t$的长度与Encoder输出向量的个数相同。$a_t(s)$表示Decoder阶段的转态$h_{t-1}$与Encoder阶段第s个隐状态，通过align对齐函数计算出的一个权重。$a_t$就是$h_{t-1}与每一个Encoder隐状态计算权重后组成的一个向量。
+计算$c_t$即content vector
+将上一步计算出的$a_t$向量乘以Encoder所有的隐向量。即Encoder所有的隐向量的加权和。
+计算Decoder阶段t时刻的输出，$h_t$
+将$h^{l-1}{t-1}$与concat（$c_t$， $h{t-1}$）送入多层RNN（最后一层）。其中$h^{l-1}{t-1}$为上一阶段的预测输出。concat（$c_t$， $h{t-1}$）相当于RNN的隐状态。最终将$h_t$过一个softmax就可以预测最终的输出（$y^t$）了。
+1.1.1.2 Luong Attention 注意力机制 Luong Attention是在Bahdanau Attention之后提出的。结构更加简洁，效果也更加好一点。 假设现在我们Decoder t时刻。 那么$h_t$隐状态计算过程如下：
+计算对齐向量$a_t$
+$a_t$的长度与Encoder输出向量的个数相同。$a_t(s)$表示Decoder阶段的状态$h_t$与Encoder阶段第s个隐状态，通过align对齐函数计算出的一个权重。$a_t$就是$h_t$与每一个Encoder隐状态计算权重后组成的一个向量。</description></item></channel></rss>

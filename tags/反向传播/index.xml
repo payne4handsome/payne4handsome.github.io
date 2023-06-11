@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>反向传播 on Pan'Log</title><link>https://payne4handsome.github.io/tags/%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD/</link><description>Recent content in 反向传播 on Pan'Log</description><image><title>Pan'Log</title><url>https://payne4handsome.github.io/papermod-cover.png</url><link>https://payne4handsome.github.io/papermod-cover.png</link></image><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sun, 04 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://payne4handsome.github.io/tags/%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD/index.xml" rel="self" type="application/rss+xml"/><item><title>机器学习基础之反向传播</title><link>https://payne4handsome.github.io/posts/machine-learning/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E4%B9%8B%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD/</link><pubDate>Sun, 04 Sep 2022 00:00:00 +0000</pubDate><guid>https://payne4handsome.github.io/posts/machine-learning/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E4%B9%8B%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD/</guid><description>机器学习基础二-反向传播 神经网络之所以可以训练，得益于与Hinton在1986年提出的反向传播算法。反向传播背后的数学原理就是链式法则。本文会具体的实例来演示反向传播具体的计算过程，让大家有一个实际的印象。文中公式都是一个字符一个字符敲出来的，转载请注明出处。文中参考了其他作者的一些例子和数据，均在参考文献中列出。 一个简单的两层神经网络如上图所示。其中
+$i_1, i_2$ : 训练时候实际的输入
+$o_1, o_2$ : 训练时候实际的输出（ground truth）
+$out_{o1}, out_{o2}$: 模型预测的结果
+我们的目的就是通过反向传播，更新模型的参数$w_i,b_i$, 使得$out_{o1}, out_{o2}$尽可能的逼近$o_1, o_2$。
+本例中激活函数用$sigmod(x)=\frac{1}{1+e^{-x}}$;
+损失函数用$L_2=\frac{1}{2}*(target-output)^2$
+前向传播 隐藏层计算 $net_{h1}=w_1i_1+w_2i_2+b_1\=0.150.05+0.20.1+0.35=0.3775$
+$out_{h1}=sigmod(net_{h1})=\frac{1}{1+e^{-0.3775}}=0.593269992$
+同理 $out_{h2}=0.596884378$
+输出层计算 $net_{o1}=w_5out_{h1}+w_6out_{h2}+b_2\=0.40.593269992+0.450.596884378=1.105905967$
+$out_{o1}=sigmod(net_{o1})=0.75136507$
+同理 $out_{o2}=0.772928465$
+最终我们看到前向传播的结果为（0.75136507，0.772928465）与我们的目标（0.01,0.99）差的比较多，所以接下来用反向传播算法学习
+反向传播 要想反向传播，还需要两步（1）计算损失，（2）计算梯度。过程如下图所示 总的损失$E_{total}=E_{o1}+E_{o2}$,其中
+$E_{o1}=\frac{1}{2}(target_{o1}-out_{o1})^2=\frac{1}{2}(0.01-0.75136507)^2=0.274811083\ E_{o2}=\frac{1}{2}(target_{o2}-out_{o2})^2=0.023560026\ E_{total}=E_{o1}+E_{o2}=0.274811083+0.023560026=0.298371109 $
+计算参数$w_5$的梯度 根据链式法则，公式如下： $\frac{\partial E_{total}}{\partial w_5}=\frac{\partial E_{total}}{\partial out_{o1}}\frac{\partial out_{o1}}{\partial net_{o1}}\frac{\partial net_{o1}}{\partial w_5}$
+$\frac{\partial E_{total}}{\partial out_{o1}}=(target_{o1}-out_{o1})*-1=-(0.01-0.75136507)=0.74136507$
+$\frac{\partial out_{o1}}{\partial net_{o1}}=out_{o1}*(1-out_{o1})=0.75136507(1-0.75136507)=0.186815602$
+$\frac{\partial net_{o1}}{\partial out_{w_5}}=out_{h1}=0.593269992$
+所以$\frac{\partial E_{total}}{\partial w_5}=0.741365070.1868156020.593269992=0.082167041$
+在计算后面参数的梯度时，都会需要用到$\frac{\partial E_{total}}{\partial net_{o1}}, \frac{\partial E_{total}}{\partial net_{o2}}$的值。我们把这个称为输出层的误差, 符号记为：</description></item></channel></rss>

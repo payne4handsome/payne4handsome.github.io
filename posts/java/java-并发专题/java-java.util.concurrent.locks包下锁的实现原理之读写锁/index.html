@@ -1,0 +1,232 @@
+<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>java.util.concurrent.locks包下锁的实现原理之读写锁 | Pan'Log</title><meta name=keywords content="java,并发"><meta name=description content="java并发包已经存在Reentrant锁和条件锁，已经可以满足很多并发场景下线程安全的需求。但是在大量读少量写的场景下，并不是最优的选择。与传统锁不同的是读写锁的规则是可以共享读，但只能一个写。很多博客中总结写到读读不互斥，读写互斥，写写互斥。就读写这个场景下来说，如果一个线程获取了写锁，然后再获取读锁（同一个线程）也是可以的。锁降级就是这种情况。但是如果也是同一个线程，先获取读锁，再获取写锁是获取不到的（发生死锁）。所以严谨一点情况如下：
+项目 非同一个线程 同一个线程 读读 不互斥 不互斥 读写 互斥 锁升级（不支持），发生死锁 写读 互斥 锁降级（支持），不互斥 写写 互斥 不互斥 读写锁的主要特性： 公平性：支持公平性和非公平性。 重入性：支持重入。读写锁最多支持 65535 个递归写入锁和 65535 个递归读取锁。 锁降级：遵循获取写锁，再获取读锁，最后释放写锁的次序，如此写锁能够降级成为读锁。 ReentrantReadWriteLock java.util.concurrent.locks.ReentrantReadWriteLock ，实现 ReadWriteLock 接口，可重入的读写锁实现类。在它内部，维护了一对相关的锁，一个用于只读操作（共享锁），另一个用于写入操作（排它锁）。 ReentrantReadWriteLock 类的大体结构如下：
+/** 内部类 读锁 */ private final ReentrantReadWriteLock.ReadLock readerLock; /** 内部类 写锁 */ private final ReentrantReadWriteLock.WriteLock writerLock; final Sync sync; /** 使用默认（非公平）的排序属性创建一个新的 ReentrantReadWriteLock */ public ReentrantReadWriteLock() { this(false); } /** 使用给定的公平策略创建一个新的 ReentrantReadWriteLock */ public ReentrantReadWriteLock(boolean fair) { sync = fair ?"><meta name=author content="pan"><link rel=canonical href=https://payne4handsome.github.io/posts/java/java-%E5%B9%B6%E5%8F%91%E4%B8%93%E9%A2%98/java-java.util.concurrent.locks%E5%8C%85%E4%B8%8B%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/><link crossorigin=anonymous href=/assets/css/stylesheet.7140587df96a2b1a49eb723fa7063dc0c641a6cb638f3140e8d3beb4deae4f5c.css integrity="sha256-cUBYfflqKxpJ63I/pwY9wMZBpstjjzFA6NO+tN6uT1w=" rel="preload stylesheet" as=style><link rel=icon href=https://payne4handsome.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://payne4handsome.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://payne4handsome.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://payne4handsome.github.io/apple-touch-icon.png><link rel=mask-icon href=https://payne4handsome.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--hljs-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="java.util.concurrent.locks包下锁的实现原理之读写锁"><meta property="og:description" content="java并发包已经存在Reentrant锁和条件锁，已经可以满足很多并发场景下线程安全的需求。但是在大量读少量写的场景下，并不是最优的选择。与传统锁不同的是读写锁的规则是可以共享读，但只能一个写。很多博客中总结写到读读不互斥，读写互斥，写写互斥。就读写这个场景下来说，如果一个线程获取了写锁，然后再获取读锁（同一个线程）也是可以的。锁降级就是这种情况。但是如果也是同一个线程，先获取读锁，再获取写锁是获取不到的（发生死锁）。所以严谨一点情况如下：
+项目 非同一个线程 同一个线程 读读 不互斥 不互斥 读写 互斥 锁升级（不支持），发生死锁 写读 互斥 锁降级（支持），不互斥 写写 互斥 不互斥 读写锁的主要特性： 公平性：支持公平性和非公平性。 重入性：支持重入。读写锁最多支持 65535 个递归写入锁和 65535 个递归读取锁。 锁降级：遵循获取写锁，再获取读锁，最后释放写锁的次序，如此写锁能够降级成为读锁。 ReentrantReadWriteLock java.util.concurrent.locks.ReentrantReadWriteLock ，实现 ReadWriteLock 接口，可重入的读写锁实现类。在它内部，维护了一对相关的锁，一个用于只读操作（共享锁），另一个用于写入操作（排它锁）。 ReentrantReadWriteLock 类的大体结构如下：
+/** 内部类 读锁 */ private final ReentrantReadWriteLock.ReadLock readerLock; /** 内部类 写锁 */ private final ReentrantReadWriteLock.WriteLock writerLock; final Sync sync; /** 使用默认（非公平）的排序属性创建一个新的 ReentrantReadWriteLock */ public ReentrantReadWriteLock() { this(false); } /** 使用给定的公平策略创建一个新的 ReentrantReadWriteLock */ public ReentrantReadWriteLock(boolean fair) { sync = fair ?"><meta property="og:type" content="article"><meta property="og:url" content="https://payne4handsome.github.io/posts/java/java-%E5%B9%B6%E5%8F%91%E4%B8%93%E9%A2%98/java-java.util.concurrent.locks%E5%8C%85%E4%B8%8B%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/"><meta property="og:image" content="https://payne4handsome.github.io/papermod-cover.png"><meta property="article:section" content="posts"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://payne4handsome.github.io/papermod-cover.png"><meta name=twitter:title content="java.util.concurrent.locks包下锁的实现原理之读写锁"><meta name=twitter:description content="java并发包已经存在Reentrant锁和条件锁，已经可以满足很多并发场景下线程安全的需求。但是在大量读少量写的场景下，并不是最优的选择。与传统锁不同的是读写锁的规则是可以共享读，但只能一个写。很多博客中总结写到读读不互斥，读写互斥，写写互斥。就读写这个场景下来说，如果一个线程获取了写锁，然后再获取读锁（同一个线程）也是可以的。锁降级就是这种情况。但是如果也是同一个线程，先获取读锁，再获取写锁是获取不到的（发生死锁）。所以严谨一点情况如下：
+项目 非同一个线程 同一个线程 读读 不互斥 不互斥 读写 互斥 锁升级（不支持），发生死锁 写读 互斥 锁降级（支持），不互斥 写写 互斥 不互斥 读写锁的主要特性： 公平性：支持公平性和非公平性。 重入性：支持重入。读写锁最多支持 65535 个递归写入锁和 65535 个递归读取锁。 锁降级：遵循获取写锁，再获取读锁，最后释放写锁的次序，如此写锁能够降级成为读锁。 ReentrantReadWriteLock java.util.concurrent.locks.ReentrantReadWriteLock ，实现 ReadWriteLock 接口，可重入的读写锁实现类。在它内部，维护了一对相关的锁，一个用于只读操作（共享锁），另一个用于写入操作（排它锁）。 ReentrantReadWriteLock 类的大体结构如下：
+/** 内部类 读锁 */ private final ReentrantReadWriteLock.ReadLock readerLock; /** 内部类 写锁 */ private final ReentrantReadWriteLock.WriteLock writerLock; final Sync sync; /** 使用默认（非公平）的排序属性创建一个新的 ReentrantReadWriteLock */ public ReentrantReadWriteLock() { this(false); } /** 使用给定的公平策略创建一个新的 ReentrantReadWriteLock */ public ReentrantReadWriteLock(boolean fair) { sync = fair ?"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":2,"name":"Posts","item":"https://payne4handsome.github.io/posts/"},{"@type":"ListItem","position":3,"name":"java.util.concurrent.locks包下锁的实现原理之读写锁","item":"https://payne4handsome.github.io/posts/java/java-%E5%B9%B6%E5%8F%91%E4%B8%93%E9%A2%98/java-java.util.concurrent.locks%E5%8C%85%E4%B8%8B%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"java.util.concurrent.locks包下锁的实现原理之读写锁","name":"java.util.concurrent.locks包下锁的实现原理之读写锁","description":"java并发包已经存在Reentrant锁和条件锁，已经可以满足很多并发场景下线程安全的需求。但是在大量读少量写的场景下，并不是最优的选择。与传统锁不同的是读写锁的规则是可以共享读，但只能一个写。很多博客中总结写到读读不互斥，读写互斥，写写互斥。就读写这个场景下来说，如果一个线程获取了写锁，然后再获取读锁（同一个线程）也是可以的。锁降级就是这种情况。但是如果也是同一个线程，先获取读锁，再获取写锁是获取不到的（发生死锁）。所以严谨一点情况如下：\n项目 非同一个线程 同一个线程 读读 不互斥 不互斥 读写 互斥 锁升级（不支持），发生死锁 写读 互斥 锁降级（支持），不互斥 写写 互斥 不互斥 读写锁的主要特性： 公平性：支持公平性和非公平性。 重入性：支持重入。读写锁最多支持 65535 个递归写入锁和 65535 个递归读取锁。 锁降级：遵循获取写锁，再获取读锁，最后释放写锁的次序，如此写锁能够降级成为读锁。 ReentrantReadWriteLock java.util.concurrent.locks.ReentrantReadWriteLock ，实现 ReadWriteLock 接口，可重入的读写锁实现类。在它内部，维护了一对相关的锁，一个用于只读操作（共享锁），另一个用于写入操作（排它锁）。 ReentrantReadWriteLock 类的大体结构如下：\n/** 内部类 读锁 */ private final ReentrantReadWriteLock.ReadLock readerLock; /** 内部类 写锁 */ private final ReentrantReadWriteLock.WriteLock writerLock; final Sync sync; /** 使用默认（非公平）的排序属性创建一个新的 ReentrantReadWriteLock */ public ReentrantReadWriteLock() { this(false); } /** 使用给定的公平策略创建一个新的 ReentrantReadWriteLock */ public ReentrantReadWriteLock(boolean fair) { sync = fair ?","keywords":["java","并发"],"articleBody":"java并发包已经存在Reentrant锁和条件锁，已经可以满足很多并发场景下线程安全的需求。但是在大量读少量写的场景下，并不是最优的选择。与传统锁不同的是读写锁的规则是可以共享读，但只能一个写。很多博客中总结写到读读不互斥，读写互斥，写写互斥。就读写这个场景下来说，如果一个线程获取了写锁，然后再获取读锁（同一个线程）也是可以的。锁降级就是这种情况。但是如果也是同一个线程，先获取读锁，再获取写锁是获取不到的（发生死锁）。所以严谨一点情况如下：\n项目 非同一个线程 同一个线程 读读 不互斥 不互斥 读写 互斥 锁升级（不支持），发生死锁 写读 互斥 锁降级（支持），不互斥 写写 互斥 不互斥 读写锁的主要特性： 公平性：支持公平性和非公平性。 重入性：支持重入。读写锁最多支持 65535 个递归写入锁和 65535 个递归读取锁。 锁降级：遵循获取写锁，再获取读锁，最后释放写锁的次序，如此写锁能够降级成为读锁。 ReentrantReadWriteLock java.util.concurrent.locks.ReentrantReadWriteLock ，实现 ReadWriteLock 接口，可重入的读写锁实现类。在它内部，维护了一对相关的锁，一个用于只读操作（共享锁），另一个用于写入操作（排它锁）。 ReentrantReadWriteLock 类的大体结构如下：\n/** 内部类 读锁 */ private final ReentrantReadWriteLock.ReadLock readerLock; /** 内部类 写锁 */ private final ReentrantReadWriteLock.WriteLock writerLock; final Sync sync; /** 使用默认（非公平）的排序属性创建一个新的 ReentrantReadWriteLock */ public ReentrantReadWriteLock() { this(false); } /** 使用给定的公平策略创建一个新的 ReentrantReadWriteLock */ public ReentrantReadWriteLock(boolean fair) { sync = fair ? new FairSync() : new NonfairSync(); readerLock = new ReadLock(this); writerLock = new WriteLock(this); } /** 返回用于写入操作的锁 */ @Override public ReentrantReadWriteLock.WriteLock writeLock() { return writerLock; } /** 返回用于读取操作的锁 */ @Override public ReentrantReadWriteLock.ReadLock readLock() { return readerLock; } abstract static class Sync extends AbstractQueuedSynchronizer { /** * 省略其余源代码 */ } public static class WriteLock implements Lock, java.io.Serializable { /** * 省略其余源代码 */ } public static class ReadLock implements Lock, java.io.Serializable { /** * 省略其余源代码 */ } ReentrantReadWriteLock 与 ReentrantLock一样，其锁主体也是 Sync，它的读锁、写锁都是通过 Sync 来实现的。所以 ReentrantReadWriteLock 实际上只有一个锁，只是在获取读取锁和写入锁的方式上不一样。 它的读写锁对应两个类：ReadLock 和 WriteLock 。这两个类都是 Lock 的子类实现。 在 ReentrantLock 中，使用 Sync ( 实际是 AQS )的 int 类型的 state 来表示同步状态，表示锁被一个线程重复获取的次数。但是，读写锁 ReentrantReadWriteLock 内部维护着一对读写锁，如果要用一个变量维护多种状态，需要采用“按位切割使用”的方式来维护这个变量，将其切分为两部分：高16为表示读，低16为表示写。\n分割之后，读写锁是如何迅速确定读锁和写锁的状态呢？通过位运算。假如当前同步状态为S，那么：\n写状态，等于 S \u0026 0x0000FFFF（将高 16 位全部抹去） 读状态，等于 S »\u003e 16 (无符号补 0 右移 16 位)。 ![image.png](/java java.util.concurrent.locks包下锁的实现原理之读写锁/8596800-06d27edad82c7d0e.png) 关键属性 读写锁由于要读读是共享的，所以实现比ReentrantLock复杂的多。在ReentrantReadWriteLock类中有几个成员属性，先单独提出来，有助于理解下面的源码分析。\n//每个线程读锁持有数量 static final class HoldCounter { int count = 0; // 这个getThreadId用到了UNSAFE，why？Thread本身是有getId可以获取线程id的，这里为什么要用UNSAFE是为了防止重写 final long tid = getThreadId(Thread.currentThread()); } // ThreadLocal类型，这样HoldCounter 就可以与线程进行绑定。获取当前线程的HoldCounter private transient ThreadLocalHoldCounter readHolds; //缓存的上一个读取线程的HoldCounter private transient HoldCounter cachedHoldCounter; // 第一个获得读锁的线程（最后一个把共享锁计算从0变到1的线程） private transient Thread firstReader = null; // firstReader 持有读锁的数量 private transient int firstReaderHoldCount; 读锁获取 获取读锁调用ReentrantReadWriteLock#readLock#lock就可以，来看实现\npublic void lock() { //acquireShared获取共享锁，实现在AQS的类中 sync.acquireShared(1); } public final void acquireShared(int arg) { //获取读锁 if (tryAcquireShared(arg) \u003c 0) //读锁获取失败，阻塞等待 doAcquireShared(arg); } 关键的代码在tryAcquireShared方法中\nprotected final int tryAcquireShared(int unused) { Thread current = Thread.currentThread(); int c = getState(); //如果已经存在了写锁，并且获取写锁的不是当前线程，那么返回，读锁获取失败。注意获取写锁的是当前线程，是可以重入的（锁降级） if (exclusiveCount(c) != 0 \u0026\u0026 getExclusiveOwnerThread() != current) return -1; //获取读锁数量（读锁是共享的，所以这个数量是所有线程读锁的累加和），位运算 int r = sharedCount(c); //判断读锁是否需要阻塞，注意公平锁和非公平不一样 if (!readerShouldBlock() \u0026\u0026 r \u003c MAX_COUNT \u0026\u0026 //如果下面的CAS设置成功了，那么读锁也就获取成功了 compareAndSetState(c, c + SHARED_UNIT)) { if (r == 0) { // 设置firstReader firstReader = current; firstReaderHoldCount = 1; } else if (firstReader == current) { //同一个线程重入 firstReaderHoldCount++; } else { // 设置cachedHoldCounter、readHolds HoldCounter rh = cachedHoldCounter;// 最后一个成功获取读锁的线程 if (rh == null || rh.tid != getThreadId(current)) cachedHoldCounter = rh = readHolds.get(); else if (rh.count == 0)// 为什么rh.count会等于0？当一个线程获取读锁释放，再次获取读锁，就是这种情况 readHolds.set(rh); rh.count++; } return 1; } return fullTryAcquireShared(current); } readerShouldBlock的公平性和非公平性 非公平性的readerShouldBlock 对于非公平性的读锁，为了防止写锁饿死，需要判断AQS队列的第一个等待锁的节点是不是写锁，如果是写锁，那么读锁让步；如果不是写锁，那么可以竞争。 final boolean apparentlyFirstQueuedIsExclusive() { Node h, s; return (h = head) != null \u0026\u0026 (s = h.next) != null \u0026\u0026 !s.isShared() \u0026\u0026 s.thread != null; } 公平性的readerShouldBlock ReentrantLock中已经分析过这个方法，不是AQS队列中节点是读锁还是写锁都加到队列末尾等待，完全公平。 public final boolean hasQueuedPredecessors() { Node t = tail; // Read fields in reverse initialization order Node h = head; Node s; return h != t \u0026\u0026 ((s = h.next) == null || s.thread != Thread.currentThread()); } fullTryAcquireShared的代码和tryAcquireShared存在一定程度冗余，我个人觉得不要tryAcquireShared那一段代码也是可以的，这个如果哪位同学有更深的理解可以交流下。总之，fullTryAcquireShared是tryAcquireShared自旋重试的版本, 不再赘述\nfinal int fullTryAcquireShared(Thread current) { HoldCounter rh = null; for (;;) { int c = getState(); if (exclusiveCount(c) != 0) { if (getExclusiveOwnerThread() != current) return -1; } else if (readerShouldBlock()) { if (firstReader == current) { // assert firstReaderHoldCount \u003e 0; } else { if (rh == null) { rh = cachedHoldCounter; if (rh == null || rh.tid != getThreadId(current)) { rh = readHolds.get(); if (rh.count == 0) readHolds.remove(); } } if (rh.count == 0) return -1; } } if (sharedCount(c) == MAX_COUNT) throw new Error(\"Maximum lock count exceeded\"); if (compareAndSetState(c, c + SHARED_UNIT)) { if (sharedCount(c) == 0) { firstReader = current; firstReaderHoldCount = 1; } else if (firstReader == current) { firstReaderHoldCount++; } else { if (rh == null) rh = cachedHoldCounter; if (rh == null || rh.tid != getThreadId(current)) rh = readHolds.get(); else if (rh.count == 0) readHolds.set(rh); rh.count++; cachedHoldCounter = rh; // cache for release } return 1; } } } 读锁释放 public final boolean releaseShared(int arg) { if (tryReleaseShared(arg)) { doReleaseShared(); return true; } return false; } tryReleaseShared比较简单，主要就是修改firstReader、readHolds、state的值\nprotected final boolean tryReleaseShared(int unused) { Thread current = Thread.currentThread(); //释放firstReader if (firstReader == current) { // assert firstReaderHoldCount \u003e 0; if (firstReaderHoldCount == 1) firstReader = null; else firstReaderHoldCount--; } else { HoldCounter rh = cachedHoldCounter; if (rh == null || rh.tid != getThreadId(current)) rh = readHolds.get(); int count = rh.count; if (count \u003c= 1) { readHolds.remove(); if (count \u003c= 0) throw unmatchedUnlockException(); } --rh.count; } for (;;) { int c = getState(); int nextc = c - SHARED_UNIT; if (compareAndSetState(c, nextc)) // Releasing the read lock has no effect on readers, // but it may allow waiting writers to proceed if // both read and write locks are now free. return nextc == 0; } } 唤醒后继节点\nprivate void doReleaseShared() { for (;;) { Node h = head; if (h != null \u0026\u0026 h != tail) { int ws = h.waitStatus; if (ws == Node.SIGNAL) { if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0)) continue; // loop to recheck cases unparkSuccessor(h); } else if (ws == 0 \u0026\u0026 !compareAndSetWaitStatus(h, 0, Node.PROPAGATE)) continue; // loop on failed CAS } if (h == head) // loop if head changed break; } } 写锁获取 写锁释放 锁降级 参考资料 【1】http://www.iocoder.cn/JUC/sike/ReentrantReadWriteLock/\n","wordCount":"803","inLanguage":"zh","datePublished":"0001-01-01T00:00:00Z","dateModified":"0001-01-01T00:00:00Z","author":{"@type":"Person","name":"pan"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://payne4handsome.github.io/posts/java/java-%E5%B9%B6%E5%8F%91%E4%B8%93%E9%A2%98/java-java.util.concurrent.locks%E5%8C%85%E4%B8%8B%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/"},"publisher":{"@type":"Organization","name":"Pan'Log","logo":{"@type":"ImageObject","url":"https://payne4handsome.github.io/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://payne4handsome.github.io accesskey=h title="Pan'Log (Alt + H)">Pan'Log</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://payne4handsome.github.io/posts/ title=Posts><span>Posts</span></a></li><li><a href=https://payne4handsome.github.io/search/ title="Search (Alt + /)" accesskey=/><span>Search</span></a></li><li><a href=https://payne4handsome.github.io/tags/ title=Tags><span>Tags</span></a></li><li><a href=https://payne4handsome.github.io/archives title=Archive><span>Archive</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://payne4handsome.github.io>主页</a>&nbsp;»&nbsp;<a href=https://payne4handsome.github.io/posts/>Posts</a></div><h1 class=post-title>java.util.concurrent.locks包下锁的实现原理之读写锁</h1><div class=post-meta>4 分钟&nbsp;·&nbsp;pan</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>目录</span></summary><div class=inner><ul><li><a href=#reentrantreadwritelock aria-label=ReentrantReadWriteLock>ReentrantReadWriteLock</a></li><li><a href=#%e5%85%b3%e9%94%ae%e5%b1%9e%e6%80%a7 aria-label=关键属性>关键属性</a></li><li><a href=#%e8%af%bb%e9%94%81%e8%8e%b7%e5%8f%96 aria-label=读锁获取>读锁获取</a><ul><li><a href=#readershouldblock%e7%9a%84%e5%85%ac%e5%b9%b3%e6%80%a7%e5%92%8c%e9%9d%9e%e5%85%ac%e5%b9%b3%e6%80%a7 aria-label=readerShouldBlock的公平性和非公平性>readerShouldBlock的公平性和非公平性</a></li></ul></li><li><a href=#%e8%af%bb%e9%94%81%e9%87%8a%e6%94%be aria-label=读锁释放>读锁释放</a></li><li><a href=#%e5%86%99%e9%94%81%e8%8e%b7%e5%8f%96 aria-label=写锁获取>写锁获取</a></li><li><a href=#%e5%86%99%e9%94%81%e9%87%8a%e6%94%be aria-label=写锁释放>写锁释放</a></li><li><a href=#%e9%94%81%e9%99%8d%e7%ba%a7 aria-label=锁降级>锁降级</a></li><li><a href=#%e5%8f%82%e8%80%83%e8%b5%84%e6%96%99 aria-label=参考资料>参考资料</a></li></ul></div></details></div><div class=post-content><p>java并发包已经存在<a href=https://www.jianshu.com/p/94b6cfbc3e3d>Reentrant锁</a>和<a href=https://www.jianshu.com/p/7af838a0b8d7>条件锁</a>，已经可以满足很多并发场景下线程安全的需求。但是在大量读少量写的场景下，并不是最优的选择。与传统锁不同的是读写锁的规则是可以共享读，但只能一个写。很多博客中总结写到<strong>读读不互斥，读写互斥，写写互斥</strong>。就读写这个场景下来说，如果一个线程获取了写锁，然后再获取读锁（同一个线程）也是可以的。锁降级就是这种情况。但是如果也是同一个线程，先获取读锁，再获取写锁是获取不到的（发生死锁）。所以严谨一点情况如下：</p><table><thead><tr><th style=text-align:center>项目</th><th style=text-align:center>非同一个线程</th><th style=text-align:center>同一个线程</th></tr></thead><tbody><tr><td style=text-align:center>读读</td><td style=text-align:center>不互斥</td><td style=text-align:center>不互斥</td></tr><tr><td style=text-align:center>读写</td><td style=text-align:center>互斥</td><td style=text-align:center>锁升级（不支持），<strong>发生死锁</strong></td></tr><tr><td style=text-align:center>写读</td><td style=text-align:center>互斥</td><td style=text-align:center>锁降级（支持），不互斥</td></tr><tr><td style=text-align:center>写写</td><td style=text-align:center>互斥</td><td style=text-align:center>不互斥</td></tr><tr><td style=text-align:center>读写锁的主要特性：</td><td></td><td></td></tr></tbody></table><ul><li>公平性：支持公平性和非公平性。</li><li>重入性：支持重入。读写锁最多支持 65535 个递归写入锁和 65535 个递归读取锁。</li><li>锁降级：遵循获取写锁，再获取读锁，最后释放写锁的次序，如此写锁能够降级成为读锁。</li></ul><h2 id=reentrantreadwritelock>ReentrantReadWriteLock<a hidden class=anchor aria-hidden=true href=#reentrantreadwritelock>#</a></h2><p>java.util.concurrent.locks.ReentrantReadWriteLock ，实现 ReadWriteLock 接口，可重入的读写锁实现类。在它内部，维护了一对相关的锁，一个用于只读操作（共享锁），另一个用于写入操作（排它锁）。
+ReentrantReadWriteLock 类的大体结构如下：</p><pre tabindex=0><code>/** 内部类  读锁 */
+private final ReentrantReadWriteLock.ReadLock readerLock;
+/** 内部类  写锁 */
+private final ReentrantReadWriteLock.WriteLock writerLock;
+
+final Sync sync;
+
+/** 使用默认（非公平）的排序属性创建一个新的 ReentrantReadWriteLock */
+public ReentrantReadWriteLock() {
+    this(false);
+}
+
+/** 使用给定的公平策略创建一个新的 ReentrantReadWriteLock */
+public ReentrantReadWriteLock(boolean fair) {
+    sync = fair ? new FairSync() : new NonfairSync();
+    readerLock = new ReadLock(this);
+    writerLock = new WriteLock(this);
+}
+
+/** 返回用于写入操作的锁 */
+@Override
+public ReentrantReadWriteLock.WriteLock writeLock() { return writerLock; }
+/** 返回用于读取操作的锁 */
+@Override
+public ReentrantReadWriteLock.ReadLock  readLock()  { return readerLock; }
+
+abstract static class Sync extends AbstractQueuedSynchronizer {
+    /**
+     * 省略其余源代码
+     */
+}
+public static class WriteLock implements Lock, java.io.Serializable {
+    /**
+     * 省略其余源代码
+     */
+}
+
+public static class ReadLock implements Lock, java.io.Serializable {
+    /**
+     * 省略其余源代码
+     */
+}
+</code></pre><ul><li>ReentrantReadWriteLock 与 ReentrantLock一样，其锁主体也是 Sync，它的读锁、写锁都是通过 Sync 来实现的。所以 ReentrantReadWriteLock 实际上只有一个锁，只是在获取读取锁和写入锁的方式上不一样。</li><li>它的读写锁对应两个类：ReadLock 和 WriteLock 。这两个类都是 Lock 的子类实现。</li></ul><p>在 ReentrantLock 中，使用 Sync ( 实际是 AQS )的 int 类型的 state 来表示同步状态，表示锁被一个线程重复获取的次数。但是，读写锁 ReentrantReadWriteLock 内部维护着一对读写锁，如果要用一个变量维护多种状态，需要采用“按位切割使用”的方式来维护这个变量，将其切分为两部分：高16为表示读，低16为表示写。</p><p>分割之后，读写锁是如何迅速确定读锁和写锁的状态呢？通过位运算。假如当前同步状态为S，那么：</p><ul><li>写状态，等于 S & 0x0000FFFF（将高 16 位全部抹去）</li><li>读状态，等于 S &#187;> 16 (无符号补 0 右移 16 位)。
+![image.png](/java java.util.concurrent.locks包下锁的实现原理之读写锁/8596800-06d27edad82c7d0e.png)</li></ul><h2 id=关键属性>关键属性<a hidden class=anchor aria-hidden=true href=#关键属性>#</a></h2><p>读写锁由于要读读是共享的，所以实现比ReentrantLock复杂的多。在ReentrantReadWriteLock类中有几个成员属性，先单独提出来，有助于理解下面的源码分析。</p><pre tabindex=0><code>//每个线程读锁持有数量
+ static final class HoldCounter {
+            int count = 0;
+            // 这个getThreadId用到了UNSAFE，why？Thread本身是有getId可以获取线程id的，这里为什么要用UNSAFE是为了防止重写
+            final long tid = getThreadId(Thread.currentThread());
+        }
+
+// ThreadLocal类型，这样HoldCounter 就可以与线程进行绑定。获取当前线程的HoldCounter
+ private transient ThreadLocalHoldCounter readHolds;
+
+//缓存的上一个读取线程的HoldCounter
+ private transient HoldCounter cachedHoldCounter;
+// 第一个获得读锁的线程（最后一个把共享锁计算从0变到1的线程）
+ private transient Thread firstReader = null;
+// firstReader 持有读锁的数量
+ private transient int firstReaderHoldCount;
+</code></pre><h2 id=读锁获取>读锁获取<a hidden class=anchor aria-hidden=true href=#读锁获取>#</a></h2><p>获取读锁调用ReentrantReadWriteLock#readLock#lock就可以，来看实现</p><pre tabindex=0><code> public void lock() {
+             //acquireShared获取共享锁，实现在AQS的类中
+            sync.acquireShared(1);
+        }
+</code></pre><pre tabindex=0><code> public final void acquireShared(int arg) {
+      //获取读锁
+        if (tryAcquireShared(arg) &lt; 0)
+            //读锁获取失败，阻塞等待
+            doAcquireShared(arg);
+    }
+</code></pre><p>关键的代码在tryAcquireShared方法中</p><pre tabindex=0><code>protected final int tryAcquireShared(int unused) {
+            Thread current = Thread.currentThread();
+            int c = getState();
+            //如果已经存在了写锁，并且获取写锁的不是当前线程，那么返回，读锁获取失败。注意获取写锁的是当前线程，是可以重入的（锁降级）
+            if (exclusiveCount(c) != 0 &amp;&amp;
+                getExclusiveOwnerThread() != current)
+                return -1;
+           //获取读锁数量（读锁是共享的，所以这个数量是所有线程读锁的累加和），位运算
+            int r = sharedCount(c);
+            //判断读锁是否需要阻塞，注意公平锁和非公平不一样
+            if (!readerShouldBlock() &amp;&amp;
+                r &lt; MAX_COUNT &amp;&amp;
+                //如果下面的CAS设置成功了，那么读锁也就获取成功了
+                compareAndSetState(c, c + SHARED_UNIT)) {
+                if (r == 0) {
+                   // 设置firstReader
+                    firstReader = current;
+                    firstReaderHoldCount = 1;
+                } else if (firstReader == current) {
+                    //同一个线程重入
+                    firstReaderHoldCount++;
+                } else {
+                    // 设置cachedHoldCounter、readHolds
+                    HoldCounter rh = cachedHoldCounter;// 最后一个成功获取读锁的线程
+                    if (rh == null || rh.tid != getThreadId(current))
+                        cachedHoldCounter = rh = readHolds.get();
+                    else if (rh.count == 0)// 为什么rh.count会等于0？当一个线程获取读锁释放，再次获取读锁，就是这种情况
+                        readHolds.set(rh);
+                    rh.count++;
+                }
+                return 1;
+            }
+            return fullTryAcquireShared(current);
+        }
+</code></pre><h3 id=readershouldblock的公平性和非公平性>readerShouldBlock的公平性和非公平性<a hidden class=anchor aria-hidden=true href=#readershouldblock的公平性和非公平性>#</a></h3><ul><li>非公平性的readerShouldBlock
+对于非公平性的读锁，为了防止写锁饿死，需要判断AQS队列的第一个等待锁的节点是不是写锁，如果是写锁，那么读锁让步；如果不是写锁，那么可以竞争。</li></ul><pre tabindex=0><code> final boolean apparentlyFirstQueuedIsExclusive() {
+        Node h, s;
+        return (h = head) != null &amp;&amp;
+            (s = h.next)  != null &amp;&amp;
+            !s.isShared()         &amp;&amp;
+            s.thread != null;
+    }
+</code></pre><ul><li>公平性的readerShouldBlock
+ReentrantLock中已经分析过这个方法，不是AQS队列中节点是读锁还是写锁都加到队列末尾等待，完全公平。</li></ul><pre tabindex=0><code>  public final boolean hasQueuedPredecessors() {
+        Node t = tail; // Read fields in reverse initialization order
+        Node h = head;
+        Node s;
+        return h != t &amp;&amp;
+            ((s = h.next) == null || s.thread != Thread.currentThread());
+    }
+</code></pre><p>fullTryAcquireShared的代码和tryAcquireShared存在一定程度冗余，我个人觉得不要tryAcquireShared那一段代码也是可以的，这个如果哪位同学有更深的理解可以交流下。总之，fullTryAcquireShared是tryAcquireShared自旋重试的版本, 不再赘述</p><pre tabindex=0><code>final int fullTryAcquireShared(Thread current) {
+            HoldCounter rh = null;
+            for (;;) {
+                int c = getState();
+                if (exclusiveCount(c) != 0) {
+                    if (getExclusiveOwnerThread() != current)
+                        return -1;
+                } else if (readerShouldBlock()) {
+                    if (firstReader == current) {
+                        // assert firstReaderHoldCount &gt; 0;
+                    } else {
+                        if (rh == null) {
+                            rh = cachedHoldCounter;
+                            if (rh == null || rh.tid != getThreadId(current)) {
+                                rh = readHolds.get();
+                                if (rh.count == 0)
+                                    readHolds.remove();
+                            }
+                        }
+                        if (rh.count == 0)
+                            return -1;
+                    }
+                }
+                if (sharedCount(c) == MAX_COUNT)
+                    throw new Error(&#34;Maximum lock count exceeded&#34;);
+                if (compareAndSetState(c, c + SHARED_UNIT)) {
+                    if (sharedCount(c) == 0) {
+                        firstReader = current;
+                        firstReaderHoldCount = 1;
+                    } else if (firstReader == current) {
+                        firstReaderHoldCount++;
+                    } else {
+                        if (rh == null)
+                            rh = cachedHoldCounter;
+                        if (rh == null || rh.tid != getThreadId(current))
+                            rh = readHolds.get();
+                        else if (rh.count == 0)
+                            readHolds.set(rh);
+                        rh.count++;
+                        cachedHoldCounter = rh; // cache for release
+                    }
+                    return 1;
+                }
+            }
+        }
+</code></pre><h2 id=读锁释放>读锁释放<a hidden class=anchor aria-hidden=true href=#读锁释放>#</a></h2><pre tabindex=0><code>  public final boolean releaseShared(int arg) {
+        if (tryReleaseShared(arg)) {
+            doReleaseShared();
+            return true;
+        }
+        return false;
+    }
+</code></pre><p>tryReleaseShared比较简单，主要就是修改firstReader、readHolds、state的值</p><pre tabindex=0><code>protected final boolean tryReleaseShared(int unused) {
+            Thread current = Thread.currentThread();
+            //释放firstReader
+            if (firstReader == current) {
+                // assert firstReaderHoldCount &gt; 0;
+                if (firstReaderHoldCount == 1)
+                    firstReader = null;
+                else
+                    firstReaderHoldCount--;
+            } else {
+                HoldCounter rh = cachedHoldCounter;
+                if (rh == null || rh.tid != getThreadId(current))
+                    rh = readHolds.get();
+                int count = rh.count;
+                if (count &lt;= 1) {
+                    readHolds.remove();
+                    if (count &lt;= 0)
+                        throw unmatchedUnlockException();
+                }
+                --rh.count;
+            }
+            for (;;) {
+                int c = getState();
+                int nextc = c - SHARED_UNIT;
+                if (compareAndSetState(c, nextc))
+                    // Releasing the read lock has no effect on readers,
+                    // but it may allow waiting writers to proceed if
+                    // both read and write locks are now free.
+                    return nextc == 0;
+            }
+        }
+</code></pre><p>唤醒后继节点</p><pre tabindex=0><code>private void doReleaseShared() {
+        for (;;) {
+            Node h = head;
+            if (h != null &amp;&amp; h != tail) {
+                int ws = h.waitStatus;
+                if (ws == Node.SIGNAL) {
+                    if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))
+                        continue;            // loop to recheck cases
+                    unparkSuccessor(h);
+                }
+                else if (ws == 0 &amp;&amp;
+                         !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))
+                    continue;                // loop on failed CAS
+            }
+            if (h == head)                   // loop if head changed
+                break;
+        }
+    }
+</code></pre><h2 id=写锁获取>写锁获取<a hidden class=anchor aria-hidden=true href=#写锁获取>#</a></h2><h2 id=写锁释放>写锁释放<a hidden class=anchor aria-hidden=true href=#写锁释放>#</a></h2><h2 id=锁降级>锁降级<a hidden class=anchor aria-hidden=true href=#锁降级>#</a></h2><h2 id=参考资料>参考资料<a hidden class=anchor aria-hidden=true href=#参考资料>#</a></h2><p>【1】<a href=http://www.iocoder.cn/JUC/sike/ReentrantReadWriteLock/>http://www.iocoder.cn/JUC/sike/ReentrantReadWriteLock/</a></p></div><footer class=post-footer><ul class=post-tags><li><a href=https://payne4handsome.github.io/tags/java/>java</a></li><li><a href=https://payne4handsome.github.io/tags/%E5%B9%B6%E5%8F%91/>并发</a></li></ul><nav class=paginav><a class=prev href=https://payne4handsome.github.io/posts/java/java-%E5%B9%B6%E5%8F%91%E4%B8%93%E9%A2%98/java-java.util.concurrent.locks%E5%8C%85%E4%B8%8B%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B9%8Breentrantlock/><span class=title>« 上一页</span><br><span>java.util.concurrent.locks包下锁的实现原理之ReentrantLock</span></a>
+<a class=next href=https://payne4handsome.github.io/posts/java/java-%E5%B9%B6%E5%8F%91%E4%B8%93%E9%A2%98/java-java.util.concurrent.locks%E5%8C%85%E4%B8%8B%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B9%8B%E6%9D%A1%E4%BB%B6%E9%94%81/><span class=title>下一页 »</span><br><span>java.util.concurrent.locks包下锁的实现原理之条件锁</span></a></nav><div class=share-buttons><a target=_blank rel="noopener noreferrer" aria-label="share java.util.concurrent.locks包下锁的实现原理之读写锁 on twitter" href="https://twitter.com/intent/tweet/?text=java.util.concurrent.locks%e5%8c%85%e4%b8%8b%e9%94%81%e7%9a%84%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86%e4%b9%8b%e8%af%bb%e5%86%99%e9%94%81&amp;url=https%3a%2f%2fpayne4handsome.github.io%2fposts%2fjava%2fjava-%25E5%25B9%25B6%25E5%258F%2591%25E4%25B8%2593%25E9%25A2%2598%2fjava-java.util.concurrent.locks%25E5%258C%2585%25E4%25B8%258B%25E9%2594%2581%25E7%259A%2584%25E5%25AE%259E%25E7%258E%25B0%25E5%258E%259F%25E7%2590%2586%25E4%25B9%258B%25E8%25AF%25BB%25E5%2586%2599%25E9%2594%2581%2f&amp;hashtags=java%2c%e5%b9%b6%e5%8f%91"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM195.519 424.544c135.939.0 210.268-112.643 210.268-210.268.0-3.218.0-6.437-.153-9.502 14.406-10.421 26.973-23.448 36.935-38.314-13.18 5.824-27.433 9.809-42.452 11.648 15.326-9.196 26.973-23.602 32.49-40.92-14.252 8.429-30.038 14.56-46.896 17.931-13.487-14.406-32.644-23.295-53.946-23.295-40.767.0-73.87 33.104-73.87 73.87.0 5.824.613 11.494 1.992 16.858-61.456-3.065-115.862-32.49-152.337-77.241-6.284 10.881-9.962 23.601-9.962 37.088.0 25.594 13.027 48.276 32.95 61.456-12.107-.307-23.448-3.678-33.41-9.196v.92c0 35.862 25.441 65.594 59.311 72.49-6.13 1.686-12.72 2.606-19.464 2.606-4.751.0-9.348-.46-13.946-1.38 9.349 29.426 36.628 50.728 68.965 51.341-25.287 19.771-57.164 31.571-91.8 31.571-5.977.0-11.801-.306-17.625-1.073 32.337 21.15 71.264 33.41 112.95 33.41z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share java.util.concurrent.locks包下锁的实现原理之读写锁 on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fpayne4handsome.github.io%2fposts%2fjava%2fjava-%25E5%25B9%25B6%25E5%258F%2591%25E4%25B8%2593%25E9%25A2%2598%2fjava-java.util.concurrent.locks%25E5%258C%2585%25E4%25B8%258B%25E9%2594%2581%25E7%259A%2584%25E5%25AE%259E%25E7%258E%25B0%25E5%258E%259F%25E7%2590%2586%25E4%25B9%258B%25E8%25AF%25BB%25E5%2586%2599%25E9%2594%2581%2f&amp;title=java.util.concurrent.locks%e5%8c%85%e4%b8%8b%e9%94%81%e7%9a%84%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86%e4%b9%8b%e8%af%bb%e5%86%99%e9%94%81&amp;summary=java.util.concurrent.locks%e5%8c%85%e4%b8%8b%e9%94%81%e7%9a%84%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86%e4%b9%8b%e8%af%bb%e5%86%99%e9%94%81&amp;source=https%3a%2f%2fpayne4handsome.github.io%2fposts%2fjava%2fjava-%25E5%25B9%25B6%25E5%258F%2591%25E4%25B8%2593%25E9%25A2%2598%2fjava-java.util.concurrent.locks%25E5%258C%2585%25E4%25B8%258B%25E9%2594%2581%25E7%259A%2584%25E5%25AE%259E%25E7%258E%25B0%25E5%258E%259F%25E7%2590%2586%25E4%25B9%258B%25E8%25AF%25BB%25E5%2586%2599%25E9%2594%2581%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM160.461 423.278V197.561h-75.04v225.717h75.04zm270.539.0V293.839c0-69.333-37.018-101.586-86.381-101.586-39.804.0-57.634 21.891-67.617 37.266v-31.958h-75.021c.995 21.181.0 225.717.0 225.717h75.02V297.222c0-6.748.486-13.492 2.474-18.315 5.414-13.475 17.767-27.434 38.494-27.434 27.135.0 38.007 20.707 38.007 51.037v120.768H431zM123.448 88.722C97.774 88.722 81 105.601 81 127.724c0 21.658 16.264 39.002 41.455 39.002h.484c26.165.0 42.452-17.344 42.452-39.002-.485-22.092-16.241-38.954-41.943-39.002z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share java.util.concurrent.locks包下锁的实现原理之读写锁 on reddit" href="https://reddit.com/submit?url=https%3a%2f%2fpayne4handsome.github.io%2fposts%2fjava%2fjava-%25E5%25B9%25B6%25E5%258F%2591%25E4%25B8%2593%25E9%25A2%2598%2fjava-java.util.concurrent.locks%25E5%258C%2585%25E4%25B8%258B%25E9%2594%2581%25E7%259A%2584%25E5%25AE%259E%25E7%258E%25B0%25E5%258E%259F%25E7%2590%2586%25E4%25B9%258B%25E8%25AF%25BB%25E5%2586%2599%25E9%2594%2581%2f&title=java.util.concurrent.locks%e5%8c%85%e4%b8%8b%e9%94%81%e7%9a%84%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86%e4%b9%8b%e8%af%bb%e5%86%99%e9%94%81"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM446 265.638c0-22.964-18.616-41.58-41.58-41.58-11.211.0-21.361 4.457-28.841 11.666-28.424-20.508-67.586-33.757-111.204-35.278l18.941-89.121 61.884 13.157c.756 15.734 13.642 28.29 29.56 28.29 16.407.0 29.706-13.299 29.706-29.701.0-16.403-13.299-29.702-29.706-29.702-11.666.0-21.657 6.792-26.515 16.578l-69.105-14.69c-1.922-.418-3.939-.042-5.585 1.036-1.658 1.073-2.811 2.761-3.224 4.686l-21.152 99.438c-44.258 1.228-84.046 14.494-112.837 35.232-7.468-7.164-17.589-11.591-28.757-11.591-22.965.0-41.585 18.616-41.585 41.58.0 16.896 10.095 31.41 24.568 37.918-.639 4.135-.99 8.328-.99 12.576.0 63.977 74.469 115.836 166.33 115.836s166.334-51.859 166.334-115.836c0-4.218-.347-8.387-.977-12.493 14.564-6.47 24.735-21.034 24.735-38.001zM326.526 373.831c-20.27 20.241-59.115 21.816-70.534 21.816-11.428.0-50.277-1.575-70.522-21.82-3.007-3.008-3.007-7.882.0-10.889 3.003-2.999 7.882-3.003 10.885.0 12.777 12.781 40.11 17.317 59.637 17.317 19.522.0 46.86-4.536 59.657-17.321 3.016-2.999 7.886-2.995 10.885.008 3.008 3.011 3.003 7.882-.008 10.889zm-5.23-48.781c-16.373.0-29.701-13.324-29.701-29.698.0-16.381 13.328-29.714 29.701-29.714 16.378.0 29.706 13.333 29.706 29.714.0 16.374-13.328 29.698-29.706 29.698zM160.91 295.348c0-16.381 13.328-29.71 29.714-29.71 16.369.0 29.689 13.329 29.689 29.71.0 16.373-13.32 29.693-29.689 29.693-16.386.0-29.714-13.32-29.714-29.693z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share java.util.concurrent.locks包下锁的实现原理之读写锁 on facebook" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fpayne4handsome.github.io%2fposts%2fjava%2fjava-%25E5%25B9%25B6%25E5%258F%2591%25E4%25B8%2593%25E9%25A2%2598%2fjava-java.util.concurrent.locks%25E5%258C%2585%25E4%25B8%258B%25E9%2594%2581%25E7%259A%2584%25E5%25AE%259E%25E7%258E%25B0%25E5%258E%259F%25E7%2590%2586%25E4%25B9%258B%25E8%25AF%25BB%25E5%2586%2599%25E9%2594%2581%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H342.978V319.085h66.6l12.672-82.621h-79.272v-53.617c0-22.603 11.073-44.636 46.58-44.636H425.6v-70.34s-32.71-5.582-63.982-5.582c-65.288.0-107.96 39.569-107.96 111.204v62.971h-72.573v82.621h72.573V512h-191.104c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share java.util.concurrent.locks包下锁的实现原理之读写锁 on whatsapp" href="https://api.whatsapp.com/send?text=java.util.concurrent.locks%e5%8c%85%e4%b8%8b%e9%94%81%e7%9a%84%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86%e4%b9%8b%e8%af%bb%e5%86%99%e9%94%81%20-%20https%3a%2f%2fpayne4handsome.github.io%2fposts%2fjava%2fjava-%25E5%25B9%25B6%25E5%258F%2591%25E4%25B8%2593%25E9%25A2%2598%2fjava-java.util.concurrent.locks%25E5%258C%2585%25E4%25B8%258B%25E9%2594%2581%25E7%259A%2584%25E5%25AE%259E%25E7%258E%25B0%25E5%258E%259F%25E7%2590%2586%25E4%25B9%258B%25E8%25AF%25BB%25E5%2586%2599%25E9%2594%2581%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zm-58.673 127.703c-33.842-33.881-78.847-52.548-126.798-52.568-98.799.0-179.21 80.405-179.249 179.234-.013 31.593 8.241 62.428 23.927 89.612l-25.429 92.884 95.021-24.925c26.181 14.28 55.659 21.807 85.658 21.816h.074c98.789.0 179.206-80.413 179.247-179.243.018-47.895-18.61-92.93-52.451-126.81zM263.976 403.485h-.06c-26.734-.01-52.954-7.193-75.828-20.767l-5.441-3.229-56.386 14.792 15.05-54.977-3.542-5.637c-14.913-23.72-22.791-51.136-22.779-79.287.033-82.142 66.867-148.971 149.046-148.971 39.793.014 77.199 15.531 105.329 43.692 28.128 28.16 43.609 65.592 43.594 105.4-.034 82.149-66.866 148.983-148.983 148.984zm81.721-111.581c-4.479-2.242-26.499-13.075-30.604-14.571-4.105-1.495-7.091-2.241-10.077 2.241-2.986 4.483-11.569 14.572-14.182 17.562-2.612 2.988-5.225 3.364-9.703 1.12-4.479-2.241-18.91-6.97-36.017-22.23C231.8 264.15 222.81 249.484 220.198 245s-.279-6.908 1.963-9.14c2.016-2.007 4.48-5.232 6.719-7.847 2.24-2.615 2.986-4.484 4.479-7.472 1.493-2.99.747-5.604-.374-7.846-1.119-2.241-10.077-24.288-13.809-33.256-3.635-8.733-7.327-7.55-10.077-7.688-2.609-.13-5.598-.158-8.583-.158-2.986.0-7.839 1.121-11.944 5.604-4.105 4.484-15.675 15.32-15.675 37.364.0 22.046 16.048 43.342 18.287 46.332 2.24 2.99 31.582 48.227 76.511 67.627 10.685 4.615 19.028 7.371 25.533 9.434 10.728 3.41 20.492 2.929 28.209 1.775 8.605-1.285 26.499-10.833 30.231-21.295 3.732-10.464 3.732-19.431 2.612-21.298-1.119-1.869-4.105-2.99-8.583-5.232z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share java.util.concurrent.locks包下锁的实现原理之读写锁 on telegram" href="https://telegram.me/share/url?text=java.util.concurrent.locks%e5%8c%85%e4%b8%8b%e9%94%81%e7%9a%84%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86%e4%b9%8b%e8%af%bb%e5%86%99%e9%94%81&amp;url=https%3a%2f%2fpayne4handsome.github.io%2fposts%2fjava%2fjava-%25E5%25B9%25B6%25E5%258F%2591%25E4%25B8%2593%25E9%25A2%2598%2fjava-java.util.concurrent.locks%25E5%258C%2585%25E4%25B8%258B%25E9%2594%2581%25E7%259A%2584%25E5%25AE%259E%25E7%258E%25B0%25E5%258E%259F%25E7%2590%2586%25E4%25B9%258B%25E8%25AF%25BB%25E5%2586%2599%25E9%2594%2581%2f"><svg viewBox="2 2 28 28" height="30" width="30" fill="currentcolor"><path d="M26.49 29.86H5.5a3.37 3.37.0 01-2.47-1 3.35 3.35.0 01-1-2.47V5.48A3.36 3.36.0 013 3 3.37 3.37.0 015.5 2h21A3.38 3.38.0 0129 3a3.36 3.36.0 011 2.46V26.37a3.35 3.35.0 01-1 2.47 3.38 3.38.0 01-2.51 1.02zm-5.38-6.71a.79.79.0 00.85-.66L24.73 9.24a.55.55.0 00-.18-.46.62.62.0 00-.41-.17q-.08.0-16.53 6.11a.59.59.0 00-.41.59.57.57.0 00.43.52l4 1.24 1.61 4.83a.62.62.0 00.63.43.56.56.0 00.4-.17L16.54 20l4.09 3A.9.9.0 0021.11 23.15zM13.8 20.71l-1.21-4q8.72-5.55 8.78-5.55c.15.0.23.0.23.16a.18.18.0 010 .06s-2.51 2.3-7.52 6.8z"/></svg></a></div></footer></article></main><footer class=footer><span>&copy; 2023 <a href=https://payne4handsome.github.io>Pan'Log</a></span>
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="复制";function s(){t.innerHTML="已复制！",setTimeout(()=>{t.innerHTML="复制"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script><script type=text/javascript>MathJax={tex:{displayMath:[["$$","$$"],["\\[","\\]"]],inlineMath:[["$","$"],["\\(","\\)"]]}}</script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js integrity=sha384-+BSz3oj3ILMYvOBr16U9i0H4RZRmGyQQ+1q9eqr8T3skmAFrJk8GmgwgqlCZdNSo crossorigin=anonymous referrerpolicy=no-referrer type=text/javascript></script></body></html>
